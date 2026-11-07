@@ -70,6 +70,10 @@ form{background:#fff;border:1px solid var(--line);border-top:4px solid var(--nav
 .tel #ind_otro{grid-column:1/-1}
 .hid{display:none}
 input.sub{margin-top:8px}
+.lockmsg{display:none;margin:10px 0 4px;padding:10px 14px;border-left:5px solid var(--navy);background:#e8eef7;color:var(--navy);font-size:13.5px;font-weight:500}
+.lockmsg.on{display:block}
+#f input:disabled,#f select:disabled{background:#eef1f5;cursor:not-allowed;opacity:.7}
+#send:disabled{cursor:not-allowed}
 @media(max-width:420px){.tel{grid-template-columns:minmax(104px,42%) 1fr}}
 
 label{display:block;font-weight:500;font-size:13px;color:var(--navy);margin-bottom:5px}
@@ -180,6 +184,7 @@ footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;
     <div class="role" style="--c:#17407a;--c-bg:#e8eef7"><input type="radio" name="rol" value="Organizador" id="r4"><span><b>Organizador</b><small>Comité organizador</small></span></div>
   </div>
   <div class="msg" id="e_rol"></div>
+  <div class="lockmsg" id="lockmsg">▲ Elija primero su tipo de participación para continuar con el formulario.</div>
 
   <div class="cond" id="c_ponente">
     <label for="ponencia">Nombre de su ponencia <span class="req">*</span></label>
@@ -294,6 +299,8 @@ function buildCharla() {
 /* ---- campos según el rol ---- */
 function onRol() {
   const r = rolSel();
+  document.querySelectorAll('#f input:not([name=rol]):not(#web), #f select, #send').forEach(el => { el.disabled = !r; });
+  $('lockmsg').classList.toggle('on', !r);
   $('c_ponente').classList.toggle('on', r === 'Ponente');
   const showCharla = r === 'Asistente' || r === 'Invitado';
   $('c_charla').classList.toggle('on', showCharla);
