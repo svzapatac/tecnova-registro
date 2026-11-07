@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registro presencial · TECNOVA 2026</title>
+<meta name="description" content="Registro presencial del I Congreso Internacional de Innovación Tecnológica Aplicada – TECNOVA 2026. Facultad Tecnológica, Universidad Distrital Francisco José de Caldas, Bogotá.">
+<style>
+@font-face{font-family:Poppins;font-weight:400;font-display:swap;src:url(assets/fonts/poppins-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:500;font-display:swap;src:url(assets/fonts/poppins-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:600;font-display:swap;src:url(assets/fonts/poppins-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:700;font-display:swap;src:url(assets/fonts/poppins-latin-700-normal.woff2) format("woff2")}
+:root{--ink:#102542;--navy:#0f2b54;--navy2:#0a1f40;--blue:#17407a;--acc:#E75B2F;--mut:#55657a;--line:#c9d3df;--soft:#eef2f7;--ok:#14804a;--err:#b3261e}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--ink);font:400 15px/1.55 Poppins,"Segoe UI",Arial,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* ---- barra superior ---- */
+.top{border-bottom:2px solid var(--navy);background:#fff}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:12px;padding-bottom:12px}
+.top img.t{height:58px;width:auto;display:block}
+.top img.r{height:54px;width:auto;display:block}
+
+/* ---- portada ---- */
+.hero{position:relative;background:var(--navy);color:#fff;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='360' fill='none' stroke='%23ffffff' stroke-opacity='.09' stroke-width='2'%3E%3Cpath d='M0 60h120l40 40h120M60 0v90l50 50h90M300 0v70l40 40h140M20 220h100l40-40h70M120 360v-80l40-40h160l40 40h120M420 360v-60l-30-30h-90M200 120v60M480 200h40'/%3E%3Ccircle cx='280' cy='100' r='6'/%3E%3Ccircle cx='200' cy='180' r='6'/%3E%3Ccircle cx='320' cy='240' r='6'/%3E%3Ccircle cx='480' cy='110' r='6'/%3E%3C/svg%3E");background-size:520px 360px;opacity:1}
+.hero .wrap{position:relative;display:block;min-height:340px}
+.hero .txt{width:54%;min-height:340px;padding:46px 12px 46px 0;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2}
+.kick{font-weight:600;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--acc)}
+.hero h1{margin:12px 0 14px;font-size:38px;line-height:1.12;font-weight:700;letter-spacing:-.01em}
+.hero h1 b{color:var(--acc);font-weight:700}
+.hero p{margin:0;max-width:470px;color:#cdd9ea;font-size:15px}
+.hero .when{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 22px;font-weight:500;font-size:14px}
+.hero .when span{display:inline-flex;align-items:center;gap:8px}
+.hero .when svg{width:17px;height:17px;stroke:var(--acc);fill:none;stroke-width:2}
+.photo{position:absolute;top:0;right:0;bottom:0;width:max(44%,calc(50% - 120px));background:var(--acc);clip-path:polygon(14% 0,100% 0,100% 100%,0 100%)}
+.photo i{position:absolute;inset:0;background:url(assets/facultad.jpg) center/cover;clip-path:polygon(calc(14% + 12px) 0,100% 0,100% 100%,12px 100%)}
+.photo:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,43,84,.35),rgba(15,43,84,0) 45%);clip-path:polygon(calc(14% + 12px) 0,100% 0,100% 100%,12px 100%)}
+
+/* ---- datos de la sede ---- */
+.info{border-bottom:1px solid var(--line);background:var(--soft)}
+.info .wrap{display:grid;grid-template-columns:repeat(3,1fr)}
+.it{display:flex;gap:12px;padding:18px 18px 18px 0;align-items:flex-start}
+.it+.it{border-left:1px solid var(--line);padding-left:20px}
+.it svg{flex:none;width:24px;height:24px;stroke:var(--blue);fill:none;stroke-width:1.8;margin-top:2px}
+.it b{display:block;font-weight:600;font-size:13.5px;color:var(--navy)}
+.it span{display:block;font-size:12.5px;color:var(--mut);line-height:1.45;margin-top:1px}
+
+/* ---- formulario ---- */
+main{padding:34px 0 10px}
+.cols{display:grid;grid-template-columns:1fr;max-width:860px;margin:0 auto}
+form{background:#fff;border:1px solid var(--line);border-top:4px solid var(--navy);border-radius:6px;padding:30px 30px 32px;box-shadow:0 1px 0 rgba(15,43,84,.04)}
+.sec{display:flex;align-items:baseline;gap:12px;margin:0 0 16px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.sec+* {}
+.sec em{font-style:normal;font-weight:700;font-size:13px;color:var(--acc);letter-spacing:.06em}
+.sec h2{margin:0;font-size:14px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--navy)}
+.sec.n2{margin-top:34px}
+.roles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.role{position:relative}
+.role input{position:absolute;opacity:0;inset:0;cursor:pointer;width:100%;height:100%;margin:0;z-index:2}
+.role span{display:block;height:100%;padding:13px 12px 12px 16px;border:1.5px solid var(--line);border-left:6px solid var(--c);border-radius:4px;background:#fff;transition:background .15s,border-color .15s,box-shadow .15s}
+.role b{display:block;font-weight:600;font-size:14.5px;color:var(--navy)}
+.role small{display:block;font-size:11.5px;line-height:1.35;color:var(--mut);margin-top:2px}
+.role input:checked+span{background:var(--c-bg);border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c)}
+.role input:focus-visible+span{outline:3px solid var(--ink);outline-offset:2px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px}
+label{display:block;font-weight:500;font-size:13px;color:var(--navy);margin-bottom:5px}
+label .opt{font-weight:400;color:var(--mut)}
+label .req{color:var(--acc)}
+input[type=text],input[type=email],input[type=tel],select{width:100%;min-height:48px;padding:10px 13px;border:1.5px solid #b6c2d1;border-radius:4px;font:400 15px Poppins,Arial,sans-serif;color:var(--ink);background:#fff}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' fill='none' stroke='%2317407a' stroke-width='2'%3E%3Cpath d='m1 1 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;text-overflow:ellipsis}
+input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(23,64,122,.16)}
+.bad{border-color:var(--err)!important}
+.msg{font-size:12.5px;margin-top:4px;color:var(--err)}
+.hint{font-size:12.5px;color:var(--mut);margin-top:6px}
+.chip{display:none;margin-top:9px;background:var(--soft);border-left:4px solid var(--blue);color:var(--navy);padding:8px 12px;font-size:12.5px;font-weight:500}
+.chip.on{display:block}
+.sug{display:none;margin-top:6px;font-size:12.5px}
+.sug.on{display:block}
+.sug button{all:unset;cursor:pointer;color:var(--blue);font-weight:600;text-decoration:underline}
+.cond{display:none;margin-top:16px;padding:16px 18px;background:var(--soft);border-left:4px solid var(--acc);border-radius:0 4px 4px 0}
+.cond.on{display:block}
+.consent{display:flex;gap:12px;align-items:flex-start;margin-top:26px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--mut)}
+.consent input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--blue)}
+.consent label{font-weight:400;font-size:12.5px;color:var(--mut);margin:0}
+button.send{margin-top:22px;width:100%;min-height:58px;border:0;border-radius:12px;background:var(--acc);color:#fff;font:700 17px Poppins,Arial,sans-serif;cursor:pointer;box-shadow:0 8px 18px -10px var(--acc)}
+button.send:disabled{opacity:.6;cursor:progress}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.warn{display:none;background:#fff4e5;border:1px solid #f2c27b;color:#7a4a00;border-radius:4px;padding:10px 12px;margin-bottom:18px;font-size:13px}
+.warn.on{display:block}
+
+/* ---- pie ---- */
+footer{margin-top:40px;border-top:2px solid var(--navy);background:#fff}
+footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--navy);padding:22px 0 14px}
+.logos{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px 30px;padding:0 0 22px}
+.logos img{height:44px;width:auto;display:block}
+.logos img.sq{height:54px}
+.foot2{background:var(--navy);color:#b9c8de;font-size:12px;text-align:center;padding:14px 16px}
+.foot2 b{color:#fff;font-weight:600}
+
+/* ---- ventanas ---- */
+.ov{position:fixed;inset:0;background:rgba(10,31,64,.78);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+.ov.on{display:flex}
+.box{background:#fff;border-radius:8px;border-top:6px solid var(--navy);max-width:460px;width:100%;padding:30px 26px;text-align:center}
+.box h3{margin:12px 0 8px;font-size:23px;font-weight:700;color:var(--navy)}
+.box p{margin:0 0 6px;color:var(--mut);font-size:14px}
+.mark{width:66px;height:66px;border-radius:50%;margin:0 auto;display:grid;place-items:center;font-size:34px;color:#fff;font-weight:700}
+.box button{margin-top:18px;min-height:50px;padding:0 26px;border:0;border-radius:10px;background:var(--navy);color:#fff;font:600 15px Poppins,Arial,sans-serif;cursor:pointer}
+.spin{width:52px;height:52px;border-radius:50%;border:6px solid #dbe5f1;border-top-color:var(--acc);margin:0 auto;animation:r 1s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+
+@media(max-width:860px){
+  .hero{display:flex;flex-direction:column}
+  .hero .wrap{min-height:0;padding:0}
+  .hero .txt{width:auto;min-height:0;padding:26px 22px 30px}
+  .hero h1{font-size:29px}
+  .photo{position:relative;width:100%;height:190px;order:-1;clip-path:none;background:none}
+  .photo i,.photo:after{clip-path:none}
+  .photo:before{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--acc);z-index:3}
+  .info .wrap{grid-template-columns:1fr;padding:0 24px}
+  .it+.it{border-left:0;border-top:1px solid var(--line);padding-left:0}
+  .it{padding:14px 0}
+  .roles{grid-template-columns:1fr 1fr}
+  .grid{grid-template-columns:1fr}
+  form{padding:22px 18px 26px}
+  .top img.t{height:46px}.top img.r{height:42px}
+  .wrap{padding:0 16px}
+  .logos img{height:36px}
+}
+@media(max-width:340px){.roles{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap">
+  <img class="t" src="assets/tecnova-logo.png" alt="TECNOVA 2026 · I Congreso Internacional de Innovación Tecnológica Aplicada">
+  <img class="r" src="assets/logos/01_tecred.png" alt="TEC-RED · Red de Programas Tecnológicos">
+</div></div>
+
+<section class="hero">
+  <div class="photo"><i></i></div>
+  <div class="wrap">
+    <div class="txt">
+      <div class="kick">Registro presencial</div>
+      <h1>Inscríbase y reciba su<br><b>distintivo</b> en el correo</h1>
+      <p>Complete el formulario para participar en el congreso. Su sticker de identificación llegará a su correo en pocos minutos.</p>
+      <div class="when">
+        <span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>11, 12 y 13 de noviembre de 2026</span>
+        <span><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Facultad Tecnológica · Bogotá</span>
+      </div>
+    </div>
+  </div>
+  </section>
+
+<section class="info"><div class="wrap">
+  <div class="it"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+    <div><b>Sede presencial</b><span>Facultad Tecnológica, Universidad Distrital Francisco José de Caldas<br>Calle 68D Bis A Sur # 49F-70, Bogotá</span></div></div>
+  <div class="it"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    <div><b>Registro de asistentes</b><span>Desde las 7:30 a. m. · Auditorio Lectus<br>Horarios en hora de Bogotá</span></div></div>
+  <div class="it"><svg viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>
+    <div><b>Entrada libre</b><span>Participación gratuita<br>Cupos sujetos al aforo del auditorio</span></div></div>
+</div></section>
+
+<main><div class="wrap"><div class="cols">
+<form id="f" novalidate autocomplete="off">
+  
+  <div class="sec"><em>01</em><h2>Tipo de participación</h2></div>
+  <div class="roles" id="roles">
+    <div class="role" style="--c:#00a3c0;--c-bg:#e7f6f9"><input type="radio" name="rol" value="Asistente" id="r1"><span><b>Asistente</b><small>Participa en el congreso</small></span></div>
+    <div class="role" style="--c:#ee6a35;--c-bg:#fdeee7"><input type="radio" name="rol" value="Ponente" id="r2"><span><b>Ponente</b><small>Presenta una ponencia</small></span></div>
+    <div class="role" style="--c:#7a54ee;--c-bg:#f0ecfd"><input type="radio" name="rol" value="Invitado" id="r3"><span><b>Invitado</b><small>Invitado a un evento o charla</small></span></div>
+    <div class="role" style="--c:#17407a;--c-bg:#e8eef7"><input type="radio" name="rol" value="Organizador" id="r4"><span><b>Organizador</b><small>Comité organizador</small></span></div>
+  </div>
+  <div class="msg" id="e_rol"></div>
+
+  <div class="cond" id="c_ponente">
+    <label for="ponencia">Nombre de su ponencia <span class="req">*</span></label>
+    <input type="text" id="ponencia" list="lista-ponencias" placeholder="Escriba o elija el título de su ponencia" autocomplete="off">
+    <datalist id="lista-ponencias"></datalist>
+    <div class="chip" id="ponchip"></div>
+    <div class="hint">Si su ponencia está en el programa, aparece al escribir. Si no, escriba el título completo.</div>
+    <div class="msg" id="e_ponencia"></div>
+  </div>
+
+  <div class="cond" id="c_charla">
+    <label for="charla"><span id="charla_lbl">¿A qué charla asistirá?</span> <span class="opt" id="charla_opt">(opcional)</span><span class="req" id="charla_req" hidden>*</span></label>
+    <select id="charla"></select>
+    <div id="otro_wrap" hidden style="margin-top:10px">
+      <input type="text" id="charla_otra" placeholder="Escriba el nombre del evento o charla">
+    </div>
+    <div class="hint" id="charla_hint">Si todavía no sabe, déjelo así.</div>
+    <div class="msg" id="e_charla"></div>
+  </div>
+
+  <div class="sec n2"><em>02</em><h2>Datos personales</h2></div>
+  <div class="grid">
+    <div><label for="tipo_doc">Tipo de documento <span class="req">*</span></label>
+      <select id="tipo_doc"><option value="">Seleccione…</option><option>CC</option><option>CE</option><option>TI</option><option>Pasaporte</option><option>PEP / PPT</option><option>Otro</option></select><div class="msg" id="e_tipo_doc"></div></div>
+    <div><label for="documento">Número de documento <span class="req">*</span></label>
+      <input type="text" id="documento" inputmode="text" autocapitalize="characters"><div class="msg" id="e_documento"></div></div>
+    <div><label for="nombres">Nombre(s) <span class="req">*</span></label>
+      <input type="text" id="nombres" autocapitalize="words"><div class="msg" id="e_nombres"></div></div>
+    <div><label for="apellidos">Apellido(s) <span class="req">*</span></label>
+      <input type="text" id="apellidos" autocapitalize="words"><div class="msg" id="e_apellidos"></div></div>
+    <div><label for="correo">Correo electrónico <span class="req">*</span></label>
+      <input type="email" id="correo" inputmode="email" autocapitalize="none" spellcheck="false">
+      <div class="sug" id="sug">¿Quiso decir <button type="button" id="sugbtn"></button>?</div><div class="msg" id="e_correo"></div></div>
+    <div><label for="correo2">Confirme su correo <span class="req">*</span></label>
+      <input type="email" id="correo2" inputmode="email" autocapitalize="none" spellcheck="false"><div class="msg" id="e_correo2"></div></div>
+    <div><label for="telefono">Celular <span class="opt">(opcional)</span></label>
+      <input type="tel" id="telefono" inputmode="tel"></div>
+    <div><label for="entidad">Entidad, universidad o empresa <span class="req">*</span></label>
+      <input type="text" id="entidad" autocapitalize="words"><div class="msg" id="e_entidad"></div></div>
+    <div><label for="pais">País de residencia <span class="req">*</span></label>
+      <input type="text" id="pais" value="Colombia" list="lista-paises"><datalist id="lista-paises"></datalist><div class="msg" id="e_pais"></div></div>
+    <div><label for="ciudad">Ciudad de residencia <span class="req">*</span></label>
+      <input type="text" id="ciudad" autocapitalize="words"><div class="msg" id="e_ciudad"></div></div>
+  </div>
+
+  <div class="hp" aria-hidden="true"><label>No llenar<input type="text" id="web" tabindex="-1" autocomplete="off"></label></div>
+
+  <div class="consent">
+    <input type="checkbox" id="acepta">
+    <label for="acepta">Autorizo el tratamiento de mis datos personales por parte de la Universidad de San Buenaventura y TEC-RED, con el fin de gestionar mi participación y comunicarme información del congreso TECNOVA 2026.</label>
+  </div>
+  <div class="msg" id="e_acepta"></div>
+
+  <button class="send" id="send" type="submit">Registrarme y recibir mi sticker</button>
+</form>
+</div></div></main>
+
+<footer>
+  <div class="lb">Instituciones organizadoras y redes aliadas</div>
+  <div class="wrap"><div class="logos" id="logos"></div></div>
+  <div class="foot2"><b>TECNOVA 2026</b> · I Congreso Internacional de Innovación Tecnológica Aplicada · Bogotá, 11 al 13 de noviembre de 2026 · congresotecnova.com</div>
+</footer>
+
+<div class="ov" id="ov"><div class="box" id="box"></div></div>
+
+<script>
+/* ============ CONEXIÓN CON SUPABASE (llave pública: solo puede insertar) ============ */
+const SUPABASE_URL = 'https://lhmsnlglynyscypnjavv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_deVkpWRVb9jbNNjUFzWRdw_1sSXVp7Q';
+/* ============================================================================ */
+
+const DATA = {"P":[{"cod":"11","tit":"Desarrollo de un chasis ligero para dron agropecuario: optimización de diseño, manufactura y testeo","dia":"Miércoles 11 nov","hora":"14:00","lugar":"SALA P01","mod":"Presencial"},{"cod":"20","tit":"Diseño y evaluación de una arquitectura de interconexión segura entre la sede Fundación Universitaria Compensar y la sede C.U.R. de Compensar","dia":"Miércoles 11 nov","hora":"14:20","lugar":"SALA P01","mod":"Presencial"},{"cod":"21","tit":"Diseño y evaluación de una arquitectura de interconexión segura entre la sede Fundación Universitaria Compensar y la sede C.U.R. de Compensar","dia":"Miércoles 11 nov","hora":"14:40","lugar":"SALA P01","mod":"Presencial"},{"cod":"22","tit":"Sistema mecatrónico para caracterización de materiales en función de medición de coeficientes de fricción estático y dinámico","dia":"Miércoles 11 nov","hora":"15:00","lugar":"SALA P01","mod":"Presencial"},{"cod":"28","tit":"Diseño e implementación de una solución de software para la detección temprana del cáncer de mama mediante inteligencia artificial","dia":"Miércoles 11 nov","hora":"15:20","lugar":"SALA P01","mod":"Presencial"},{"cod":"29","tit":"Marco de validación multicapa para sistemas de inteligencia artificial aplicados al tamizaje de cáncer de mama","dia":"Miércoles 11 nov","hora":"15:40","lugar":"SALA P01","mod":"Presencial"},{"cod":"08","tit":"Jurimetría, informática jurídica y enfoques stream: como herramientas innovadoras para la transformación pedagógica del derecho en la educación superior","dia":"Miércoles 11 nov","hora":"14:00","lugar":"SALA P02","mod":"Presencial"},{"cod":"25","tit":"Simulador Académico en Seguridad Electrónica - SIA","dia":"Miércoles 11 nov","hora":"14:20","lugar":"SALA P02","mod":"Presencial"},{"cod":"58","tit":"Microcurso de bioquímica basado en microlearning y WhatsApp","dia":"Miércoles 11 nov","hora":"14:40","lugar":"SALA P02","mod":"Presencial"},{"cod":"56","tit":"Entorno de pesca en realidad virtual para posaccidente cerebrováscular","dia":"Miércoles 11 nov","hora":"15:00","lugar":"SALA P02","mod":"Presencial"},{"cod":"23","tit":"Sintonización PID de un sistema Ball and Beam: Ziegler-Nichols frente a MATLAB","dia":"Miércoles 11 nov","hora":"15:20","lugar":"SALA P02","mod":"Presencial"},{"cod":"38","tit":"Inteligencia artificial en procesos de diseño gráfico: enfoque STEAM","dia":"Miércoles 11 nov","hora":"15:40","lugar":"SALA P02","mod":"Presencial"},{"cod":"37","tit":"Escalera hidropónica automatizada con control IoT para agricultura urbana","dia":"Miércoles 11 nov","hora":"14:00","lugar":"SALA P03","mod":"Presencial"},{"cod":"39","tit":"PsyBridge propuesta de asistente virtual de apoyo emocional","dia":"Miércoles 11 nov","hora":"14:20","lugar":"SALA P03","mod":"Presencial"},{"cod":"33","tit":"Aprendizaje basado en retos mediante la plataforma MakeX para el fomento de competencias STEM en la educación básica y media","dia":"Miércoles 11 nov","hora":"14:40","lugar":"SALA P03","mod":"Presencial"},{"cod":"65","tit":"Desempeño deportivo de los Equipos de Fútbol Profesional Colombiano Primera A caracterizado como Tecnologías","dia":"Miércoles 11 nov","hora":"15:00","lugar":"SALA P03","mod":"Presencial"},{"cod":"66","tit":"Wikipedias, Producción Científica, Empresariado Comercio Exterior e Inteligencia Artificial Generativa","dia":"Miércoles 11 nov","hora":"15:20","lugar":"SALA P03","mod":"Presencial"},{"cod":"69","tit":"PULSO: Predicción y Simulación del Riesgo de Desabastecimiento de Medicamentos en Colombia","dia":"Miércoles 11 nov","hora":"15:40","lugar":"SALA P03","mod":"Presencial"},{"cod":"13","tit":"IA aplicada a Finanzas","dia":"Miércoles 11 nov","hora":"18:20","lugar":"SALA V01","mod":"Virtual"},{"cod":"30","tit":"Diseño de una página web y perfiles institucionales en redes sociales para una institución educativa de Soledad","dia":"Miércoles 11 nov","hora":"18:40","lugar":"SALA V01","mod":"Virtual"},{"cod":"35","tit":"Diseño, construcción y validación de un prototipo mecatrónico: clasificación automática de envases de bebidas","dia":"Miércoles 11 nov","hora":"19:00","lugar":"SALA V01","mod":"Virtual"},{"cod":"40","tit":"Sistema de verificación biométrica para el programa de alimentación escolar (PAE) en cafeterías institucionales","dia":"Miércoles 11 nov","hora":"19:20","lugar":"SALA V01","mod":"Virtual"},{"cod":"44","tit":"Detección de fibrilación auricular mediante procesamiento digital de señales PPG","dia":"Miércoles 11 nov","hora":"19:40","lugar":"SALA V01","mod":"Virtual"},{"cod":"48","tit":"Evaluación de tecnologías para la adquisición de señales fotopletismográficas (PPG) mediante dispositivos móviles","dia":"Miércoles 11 nov","hora":"20:00","lugar":"SALA V01","mod":"Virtual"},{"cod":"16","tit":"Clasificación Multietiqueta de Señales Electrocardiográficas","dia":"Miércoles 11 nov","hora":"18:20","lugar":"SALA V02","mod":"Virtual"},{"cod":"51","tit":"Desempeño deportivo de los equipos de fútbol profesional colombiano primera A caracterizado como tecnologías","dia":"Miércoles 11 nov","hora":"18:40","lugar":"SALA V02","mod":"Virtual"},{"cod":"55","tit":"Análisis de la relación entre el uso de inteligencia artificial y el desarrollo del pensamiento lógico y computacional en estudiantes de programación apoyado en un modelo de analítica y visualización de datos","dia":"Miércoles 11 nov","hora":"19:00","lugar":"SALA V02","mod":"Virtual"},{"cod":"64","tit":"Modelo ontológico para la representación de la medicina tradicional afrocolombiana y palenquera en un sistema sensible al contexto","dia":"Miércoles 11 nov","hora":"19:20","lugar":"SALA V02","mod":"Virtual"},{"cod":"14","tit":"Arquitectura de ciberseguridad para IoT basada en ESP32-S3","dia":"Miércoles 11 nov","hora":"19:40","lugar":"SALA V02","mod":"Virtual"},{"cod":"36","tit":"Detección de intrusiones en red con redes bayesianas interpretables: un análisis probabilístico sobre el conjunto de datos abierto NSL-KDD","dia":"Miércoles 11 nov","hora":"20:00","lugar":"SALA V02","mod":"Virtual"},{"cod":"50","tit":"Prototipo mecatrónico para clasificación automática de envases de bebidas","dia":"Miércoles 11 nov","hora":"18:20","lugar":"SALA V03","mod":"Virtual"},{"cod":"41","tit":"Realidad virtual y prototipado 3D para evaluación ergonómica de prendas de protección balística","dia":"Miércoles 11 nov","hora":"18:40","lugar":"SALA V03","mod":"Virtual"},{"cod":"46","tit":"Patrones de influencia y persuasión automatizada en la ingeniería social 2.0","dia":"Miércoles 11 nov","hora":"19:00","lugar":"SALA V03","mod":"Virtual"},{"cod":"09","tit":"Evaluación técnico-económica fotovoltaica en un equipamiento universitario patrimonial","dia":"Miércoles 11 nov","hora":"19:20","lugar":"SALA V03","mod":"Virtual"},{"cod":"10","tit":"Distorsión armónica y desbalance de tensión en redes de distribución con generación fotovoltaica: análisis del estado del arte y mitigación","dia":"Miércoles 11 nov","hora":"19:40","lugar":"SALA V03","mod":"Virtual"},{"cod":"05","tit":"Evaluación multisemilla de aumentación para detectar cálices de uchuva","dia":"Jueves 12 nov","hora":"14:00","lugar":"SALA P04","mod":"Presencial"},{"cod":"15","tit":"Sistema de clasificación de tumores cerebrales con IRM mediante un modelo de aprendizaje por transferencia","dia":"Jueves 12 nov","hora":"14:20","lugar":"SALA P04","mod":"Presencial"},{"cod":"62","tit":"Sistema inteligente de monitoreo de calidad del aire","dia":"Jueves 12 nov","hora":"14:40","lugar":"SALA P04","mod":"Presencial"},{"cod":"61","tit":"Sistema de integración y gestión de datos ambientales y de salud","dia":"Jueves 12 nov","hora":"15:00","lugar":"SALA P04","mod":"Presencial"},{"cod":"34","tit":"Optimización de la proporción de clases en conjuntos de datos mediante algoritmos genéticos para el balanceo de clases en problemas de clasificación de Machine Learning","dia":"Jueves 12 nov","hora":"15:20","lugar":"SALA P04","mod":"Presencial"},{"cod":"31","tit":"Evidencia de transferencia Sim2real en robótica móvil","dia":"Jueves 12 nov","hora":"15:40","lugar":"SALA P04","mod":"Presencial"},{"cod":"53","tit":"Innovación de base (Grassroots innovation) en asistencia social: un estudio a gran escala de repositorios públicos de software","dia":"Jueves 12 nov","hora":"14:00","lugar":"SALA P05","mod":"Presencial"},{"cod":"07","tit":"Proyecto astronómico escolar tecnoética: Una oportunidad de acercar la ciencia al territorio de Soacha (Xua Chá)","dia":"Jueves 12 nov","hora":"14:20","lugar":"SALA P05","mod":"Presencial"},{"cod":"57","tit":"Laboratorio urbano de inteligencia ambiental y salud pública","dia":"Jueves 12 nov","hora":"14:40","lugar":"SALA P05","mod":"Presencial"},{"cod":"17","tit":"Del biosensor a la interfaz: integración arquitectónica para el procesamiento y visualización de señales biomédicas","dia":"Jueves 12 nov","hora":"15:00","lugar":"SALA P05","mod":"Presencial"},{"cod":"18","tit":"Arquitectura multiagente para gestionar, propagar y publicar redes profesionales","dia":"Jueves 12 nov","hora":"15:20","lugar":"SALA P05","mod":"Presencial"},{"cod":"19","tit":"Impacto del hardening en el rendimiento de dispositivos IoT de recursos limitados: estudio de caso con Raspberry Pi 3","dia":"Jueves 12 nov","hora":"15:40","lugar":"SALA P05","mod":"Presencial"},{"cod":"24","tit":"Optimización logística para la recolección y distribución de residuos textiles en una empresa de aprovechamiento","dia":"Jueves 12 nov","hora":"14:00","lugar":"SALA P06","mod":"Presencial"},{"cod":"32","tit":"PH-GNNBind: modelo de predicción de la afinidad proteína-ligando que integra homología persistente y redes neuronales de grafos","dia":"Jueves 12 nov","hora":"14:20","lugar":"SALA P06","mod":"Presencial"},{"cod":"24","tit":"Optimización logística para la recolección y distribución de residuos textiles en una empresa de aprovechamiento","dia":"Jueves 12 nov","hora":"14:40","lugar":"SALA P06","mod":"Presencial"},{"cod":"53","tit":"Innovación de base (Grassroots innovation) en asistencia social: un estudio a gran escala de repositorios públicos de software","dia":"Jueves 12 nov","hora":"15:00","lugar":"SALA P06","mod":"Presencial"},{"cod":"01","tit":"El uso de la IA como estrategia didáctica para la labor docente en la educación superior","dia":"Jueves 12 nov","hora":"18:20","lugar":"SALA V04","mod":"Virtual"},{"cod":"02","tit":"Perfiles de Brecha Digital Académica y diferencias en la calidad percibida del entorno virtual de aprendizaje","dia":"Jueves 12 nov","hora":"18:40","lugar":"SALA V04","mod":"Virtual"},{"cod":"06","tit":"Legitimidad pedagógica ante IAGen: reversibilidad formativa del juicio","dia":"Jueves 12 nov","hora":"19:00","lugar":"SALA V04","mod":"Virtual"},{"cod":"26","tit":"Implementación de un Sistema Integral de Simulación Aeronáutica con Arquitectura ROS para Entornos de Aprendizaje – AeroX","dia":"Jueves 12 nov","hora":"19:20","lugar":"SALA V04","mod":"Virtual"},{"cod":"47","tit":"Implementación de un Sistema Integral de Simulación Aeronáutica con Arquitectura ROS para Entornos de Aprendizaje – AeroX","dia":"Jueves 12 nov","hora":"19:40","lugar":"SALA V04","mod":"Virtual"},{"cod":"54","tit":"Diseño e implementación inicial de Mati como arquitectura conversacional para construir tutores pedagógicos de inteligencia artificial","dia":"Jueves 12 nov","hora":"20:20","lugar":"SALA V04","mod":"Virtual"},{"cod":"04","tit":"Entropía en grafos de conectividad cerebral derivados de EEG/MEG: Mapeo exploratorio de alcance","dia":"Jueves 12 nov","hora":"18:20","lugar":"SALA V05","mod":"Virtual"},{"cod":"42","tit":"Influencia del bienestar organizacional en la motivación laboral","dia":"Jueves 12 nov","hora":"18:40","lugar":"SALA V05","mod":"Virtual"},{"cod":"43","tit":"De la apropiación individual al fortalecimiento institucional de las TIC: una revisión sistemática en medios digitales","dia":"Jueves 12 nov","hora":"19:00","lugar":"SALA V05","mod":"Virtual"},{"cod":"52","tit":"Identidad digital docente: ciberseguridad, reputación y huella virtual","dia":"Jueves 12 nov","hora":"19:20","lugar":"SALA V05","mod":"Virtual"},{"cod":"12","tit":"A.M.A.Shield","dia":"Jueves 12 nov","hora":"19:40","lugar":"SALA V05","mod":"Virtual"},{"cod":"27","tit":"Photovoltaic Output Power Prediction Using Data Science: A Comparative Study of Machine Learning and Deep Learning for a Campus-Scale System in Ecuador","dia":"Jueves 12 nov","hora":"20:20","lugar":"SALA V05","mod":"Virtual"},{"cod":"59","tit":"Microcurso en WhatsApp para cuidadores de personas con discapacidad","dia":"Jueves 12 nov","hora":"18:20","lugar":"SALA V06","mod":"Virtual"},{"cod":"60","tit":"Microcurso móvil para la formulación de proyectos comunitarios","dia":"Jueves 12 nov","hora":"18:40","lugar":"SALA V06","mod":"Virtual"},{"cod":"63","tit":"Implementación de un Sistema Integral de Simulación Aeronáutica con Arquitectura ROS para Entornos de Aprendizaje – AeroX","dia":"Jueves 12 nov","hora":"19:00","lugar":"SALA V06","mod":"Virtual"},{"cod":"49","tit":"Proyecto Bus Inter Conexión (BIC)","dia":"Jueves 12 nov","hora":"19:20","lugar":"SALA V06","mod":"Virtual"},{"cod":"09","tit":"Evaluación técnico-económica fotovoltaica en un equipamiento universitario patrimonial","dia":"Jueves 12 nov","hora":"19:40","lugar":"SALA V06","mod":"Virtual"},{"cod":"10","tit":"Distorsión armónica y desbalance de tensión en redes de distribución con generación fotovoltaica: análisis del estado del arte y mitigación","dia":"Jueves 12 nov","hora":"20:20","lugar":"SALA V06","mod":"Virtual"}],"E":[{"g":"Miércoles 11 · Apertura y conferencias magistrales","items":[{"id":"W0","tit":"Apertura del congreso","hora":"08:30 – 09:00","dia":"Miércoles 11 nov","tipo":"evento"},{"id":"W1","tit":"Ética profesional y ciberseguridad: binomio inseparable","hora":"09:00 – 09:45","dia":"Miércoles 11 nov","tipo":"magistral","resp":"Jaime Alberto Báez Peñuela"},{"id":"W2","tit":"DeepTech y Capital de Riesgo","hora":"09:45 – 10:30","dia":"Miércoles 11 nov","tipo":"magistral","resp":"Juan David Martínez"},{"id":"W3","tit":"Co-creating AI decision support systems for hyperlocal, proactive climate-health adaptation","hora":"11:00 – 11:45","dia":"Miércoles 11 nov","tipo":"magistral","resp":"Dr. Plinio Morita"}]},{"g":"Jueves 12 · Feria de empleabilidad","items":[{"id":"J1","tit":"Bienvenida y apertura de la jornada de empleabilidad","hora":"08:00 – 08:30","dia":"Jueves 12 nov","tipo":"evento"},{"id":"J2","tit":"Charla: Ruta de empleabilidad · Socios Talento Capital","hora":"08:30 – 09:15","dia":"Jueves 12 nov","tipo":"evento"},{"id":"J3","tit":"Charla: Hoja de vida y habilidades para la empleabilidad (SENA)","hora":"09:15 – 10:00","dia":"Jueves 12 nov","tipo":"evento"},{"id":"J4","tit":"Charla: Avanzando en las Ciencias de Computación (Oracle Academy)","hora":"10:00 – 10:45","dia":"Jueves 12 nov","tipo":"evento"},{"id":"J5","tit":"Presentación de empresas","hora":"10:45 – 11:45","dia":"Jueves 12 nov","tipo":"evento"},{"id":"J6","tit":"Networking y cierre de la feria","hora":"11:45 – 12:30","dia":"Jueves 12 nov","tipo":"evento"}]},{"g":"Viernes 13 · Jornada de emprendimiento","items":[{"id":"V1","tit":"Bienvenida y apertura de la jornada de emprendimiento","hora":"08:00 – 08:30","dia":"Viernes 13 nov","tipo":"evento"},{"id":"V2","tit":"Presentación de startups exitosas","hora":"08:30 – 11:00","dia":"Viernes 13 nov","tipo":"evento"},{"id":"V3","tit":"Concurso de pitch de equipos emprendedores","hora":"11:00 – 13:00","dia":"Viernes 13 nov","tipo":"evento"},{"id":"V4","tit":"Charlas de emprendimiento","hora":"14:00 – 17:00","dia":"Viernes 13 nov","tipo":"evento"},{"id":"V5","tit":"Cierre del congreso","hora":"17:00 – 17:30","dia":"Viernes 13 nov","tipo":"evento"},{"id":"V6","tit":"Muestra empresarial de emprendimientos","hora":"","dia":"Viernes 13 nov","tipo":"evento"},{"id":"V7","tit":"Encuentro de la Red de Programas Tecnológicos TEC-RED","hora":"","dia":"Viernes 13 nov","tipo":"evento"}]}]};
+const $ = id => document.getElementById(id);
+const rolSel = () => (document.querySelector('input[name=rol]:checked') || {}).value || '';
+
+/* ---- logos del pie ---- */
+[['02_ud','Universidad Distrital Francisco José de Caldas'],['03_umng','Universidad Militar Nueva Granada'],['04_usb','Universidad de San Buenaventura'],['05_ucompensar','Universidad Compensar'],['06_uan','Universidad Antonio Nariño'],['07_cordoba','Universidad de Córdoba'],['09_upn','Universidad Pedagógica Nacional'],['08_sanmarcos','Universidad Nacional Mayor de San Marcos'],['10_ua','Universidad de Antofagasta'],['01_tecred','TEC-RED']].forEach(([f, n]) => {
+  const i = document.createElement('img'); i.src = 'assets/logos/' + f + '.png'; i.alt = n; i.loading = 'lazy'; if (['08_sanmarcos','09_upn','10_ua'].includes(f)) i.className = 'sq'; $('logos').appendChild(i);
+});
+
+/* ---- listas ---- */
+DATA.P.forEach(p => { const o = document.createElement('option'); o.value = p.tit; $('lista-ponencias').appendChild(o); });
+['Colombia','México','Perú','Ecuador','Argentina','Chile','Brasil','Venezuela','Panamá','Costa Rica','España','Estados Unidos','Bolivia','Uruguay','Paraguay','Guatemala','República Dominicana','Cuba'].forEach(c => { const o = document.createElement('option'); o.value = c; $('lista-paises').appendChild(o); });
+
+const trunc = (s, n) => s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s;
+function buildCharla() {
+  const s = $('charla'); s.innerHTML = '';
+  const add = (parent, v, t) => { const o = document.createElement('option'); o.value = v; o.textContent = t; parent.appendChild(o); };
+  add(s, '', rolSel() === 'Invitado' ? 'Seleccione…' : 'Aún no lo sé');
+  const DIAS = [['Miércoles', 'MIÉRCOLES 11'], ['Jueves', 'JUEVES 12'], ['Viernes', 'VIERNES 13']];
+  DIAS.forEach(([d, lab]) => {
+    /* 1) eventos del día: apertura, magistrales, feria, charlas... */
+    DATA.E.filter(g => g.items[0].dia.startsWith(d)).forEach(g => {
+      const og = document.createElement('optgroup'); og.label = lab + ' · ' + g.g.split(' · ').slice(1).join(' · ');
+      g.items.forEach(e => add(og, 'E:' + e.id, (e.hora ? e.hora.split(' – ')[0] + ' · ' : '') + trunc(e.tit, 78)));
+      s.appendChild(og);
+    });
+    /* 2) ponencias del día, sala por sala */
+    const salas = {};
+    DATA.P.filter(p => p.dia.startsWith(d)).forEach(p => { (salas[p.lugar] = salas[p.lugar] || []).push(p); });
+    Object.keys(salas).sort().forEach(k => {
+      const og = document.createElement('optgroup'); og.label = lab + ' · Ponencias · ' + k.replace('SALA', 'Sala') + ' · ' + salas[k][0].mod;
+      salas[k].forEach(p => add(og, 'P:' + p.cod, p.hora + ' · ' + trunc(p.tit, 80)));
+      s.appendChild(og);
+    });
+  });
+  if (rolSel() === 'Invitado') add(s, 'OTRO', 'Otro evento o charla (escribir)');
+}
+
+/* ---- campos según el rol ---- */
+function onRol() {
+  const r = rolSel();
+  $('c_ponente').classList.toggle('on', r === 'Ponente');
+  const showCharla = r === 'Asistente' || r === 'Invitado';
+  $('c_charla').classList.toggle('on', showCharla);
+  if (showCharla) {
+    const inv = r === 'Invitado';
+    $('charla_lbl').textContent = inv ? '¿A qué evento o charla es invitado?' : '¿A qué charla asistirá?';
+    $('charla_opt').hidden = inv; $('charla_req').hidden = !inv;
+    $('charla_hint').textContent = inv ? 'Elija la charla o evento al que fue invitado.' : 'Si todavía no sabe, déjelo así.';
+    buildCharla(); $('otro_wrap').hidden = true;
+  }
+  $('e_rol').textContent = '';
+}
+document.querySelectorAll('input[name=rol]').forEach(i => i.addEventListener('change', onRol));
+$('charla').addEventListener('change', () => { $('otro_wrap').hidden = $('charla').value !== 'OTRO'; });
+
+/* ---- ponencia: si coincide con el programa, mostrar datos ---- */
+const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+const findPon = t => DATA.P.find(p => norm(p.tit) === norm(t));
+$('ponencia').addEventListener('input', () => {
+  const p = findPon($('ponencia').value), c = $('ponchip');
+  if (p) { c.textContent = 'En el programa · Código ' + p.cod + ' · ' + p.lugar.replace('SALA', 'Sala') + ' · ' + p.dia + ' · ' + p.hora; c.classList.add('on'); }
+  else c.classList.remove('on');
+});
+
+/* ---- sugerencia de correo ---- */
+const TYPO = { 'gmial.com':'gmail.com','gmai.com':'gmail.com','gmail.co':'gmail.com','gamil.com':'gmail.com','gmail.con':'gmail.com','hotmial.com':'hotmail.com','hotmal.com':'hotmail.com','hotmail.con':'hotmail.com','outlok.com':'outlook.com','outlook.con':'outlook.com','yaho.com':'yahoo.com','yahoo.con':'yahoo.com','usbbog.edu.com':'usbbog.edu.co','unal.edu.com':'unal.edu.co' };
+$('correo').addEventListener('blur', () => {
+  const v = $('correo').value.trim().toLowerCase(), at = v.lastIndexOf('@');
+  if (at > 0 && TYPO[v.slice(at + 1)]) { const fix = v.slice(0, at + 1) + TYPO[v.slice(at + 1)]; $('sugbtn').textContent = fix; $('sug').classList.add('on'); $('sugbtn').onclick = () => { $('correo').value = fix; $('sug').classList.remove('on'); }; }
+  else $('sug').classList.remove('on');
+});
+
+/* ---- validación ---- */
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function setErr(id, m) { const e = $('e_' + id), el = $(id); if (e) e.textContent = m || ''; if (el && el.classList) el.classList.toggle('bad', !!m); return !m; }
+function validar() {
+  let ok = true, first = null;
+  const chk = (id, cond, m) => { const good = setErr(id, cond ? '' : m); if (!good) { ok = false; if (!first) first = $(id) || $('roles'); } };
+  const r = rolSel();
+  chk('rol', !!r, 'Elija el tipo de participación.');
+  chk('tipo_doc', !!$('tipo_doc').value, 'Seleccione el tipo de documento.');
+  chk('documento', $('documento').value.replace(/[\s.\-]/g, '').length >= 4, 'Escriba el número de documento.');
+  chk('nombres', $('nombres').value.trim().length >= 2, 'Escriba su(s) nombre(s).');
+  chk('apellidos', $('apellidos').value.trim().length >= 2, 'Escriba su(s) apellido(s).');
+  const c1 = $('correo').value.trim().toLowerCase(), c2 = $('correo2').value.trim().toLowerCase();
+  chk('correo', EMAIL.test(c1), 'Escriba un correo válido.');
+  chk('correo2', c1 === c2, 'Los dos correos deben ser iguales.');
+  chk('entidad', $('entidad').value.trim().length >= 2, 'Escriba su entidad.');
+  chk('pais', $('pais').value.trim().length >= 2, 'Escriba el país.');
+  chk('ciudad', $('ciudad').value.trim().length >= 2, 'Escriba la ciudad.');
+  if (r === 'Ponente') chk('ponencia', $('ponencia').value.trim().length >= 5, 'Escriba el nombre de su ponencia.');
+  if (r === 'Invitado') {
+    const v = $('charla').value;
+    chk('charla', !!v && (v !== 'OTRO' || $('charla_otra').value.trim().length >= 3), 'Indique a qué evento o charla es invitado.');
+  }
+  const a = $('acepta').checked; setErr('acepta', a ? '' : 'Debe autorizar el tratamiento de datos para continuar.'); if (!a) { ok = false; if (!first) first = $('acepta'); }
+  if (!ok && first && first.scrollIntoView) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  return ok;
+}
+
+/* ---- envío ---- */
+function charlaObj() {
+  const v = $('charla').value; if (!v) return null;
+  if (v === 'OTRO') return { tipo: 'otro', titulo: $('charla_otra').value.trim() };
+  if (v.startsWith('E:')) {
+    const id = v.slice(2); let e = null; DATA.E.forEach(g => g.items.forEach(x => { if (x.id === id) e = x; }));
+    return e ? { tipo: e.tipo, titulo: e.tit, dia: e.dia, hora: e.hora, responsable: e.resp || '' } : null;
+  }
+  const p = DATA.P.find(x => x.cod === v.slice(2)); return p ? { tipo: 'ponencia', cod: p.cod, titulo: p.tit, dia: p.dia, hora: p.hora, lugar: p.lugar } : null;
+}
+function payload() {
+  const r = rolSel(), pon = r === 'Ponente' ? $('ponencia').value.trim() : '', pm = pon ? findPon(pon) : null;
+  const tel = $('telefono').value.trim();
+  return {
+    origen: 'presencial',
+    rol: r, tipo_doc: $('tipo_doc').value, documento: $('documento').value.replace(/[\s.\-]/g, '').toUpperCase(),
+    nombres: $('nombres').value.trim(), apellidos: $('apellidos').value.trim(), correo: $('correo').value.trim().toLowerCase(),
+    telefono: tel || null, pais: $('pais').value.trim(), ciudad: $('ciudad').value.trim(), entidad: $('entidad').value.trim(),
+    ponencia: r === 'Ponente' ? (pm ? { cod: pm.cod, titulo: pm.tit, dia: pm.dia, hora: pm.hora, lugar: pm.lugar, modalidad: pm.mod } : { cod: '', titulo: pon }) : null,
+    charla: (r === 'Asistente' || r === 'Invitado') ? charlaObj() : null,
+    acepta_datos: true
+  };
+}
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function show(html) { $('box').innerHTML = html; $('ov').classList.add('on'); }
+function hide() { $('ov').classList.remove('on'); }
+let timer = null;
+function reset() { clearInterval(timer); hide(); $('f').reset(); $('pais').value = 'Colombia'; $('ponchip').classList.remove('on'); $('sug').classList.remove('on'); onRol(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function okScreen(nombre, correo) {
+  let n = 12;
+  show('<div class="mark" style="background:var(--ok)">✓</div><h3>¡Registro exitoso, ' + esc(nombre) + '!</h3><p>En uno o dos minutos recibirá su sticker de identificación en</p><p><b style="color:var(--ink)">' + esc(correo) + '</b></p><p style="font-size:13px;margin-top:10px">Guárdelo en su celular y téngalo a la mano durante el congreso. Si no lo ve, revise la carpeta de spam.</p><button id="nuevo" type="button">Nuevo registro (<span id="cnt">' + n + '</span>)</button>');
+  $('nuevo').onclick = reset;
+  timer = setInterval(() => { n--; const c = $('cnt'); if (c) c.textContent = n; if (n <= 0) reset(); }, 1000);
+}
+function errScreen(m) { show('<div class="mark" style="background:var(--err)">!</div><h3>No se pudo registrar</h3><p>' + esc(m) + '</p><button type="button" id="cerrar">Volver al formulario</button>'); $('cerrar').onclick = hide; }
+
+let busy = false;
+$('f').addEventListener('submit', async ev => {
+  ev.preventDefault(); if (busy) return;
+  if (!validar()) return;
+  busy = true; $('send').disabled = true;
+  show('<div class="spin"></div><h3>Guardando su registro…</h3><p>Un momento, no cierre esta página.</p>');
+  const body = payload();
+  try {
+    if ($('web').value) { okScreen(body.nombres.split(' ')[0], body.correo); return; }   /* trampa anti-robots */
+    const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 30000);
+    const res = await fetch(SUPABASE_URL + '/rest/v1/registros', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Prefer': 'return=minimal' },
+      body: JSON.stringify(body), signal: ctl.signal
+    });
+    clearTimeout(to);
+    if (res.status === 201 || res.status === 204) okScreen(body.nombres.split(' ')[0], body.correo);
+    else {
+      let j = {}; try { j = await res.json(); } catch (e) {}
+      if (res.status === 409 || j.code === '23505') errScreen('Ya existe un registro con ese documento. Si no recibió su sticker, avise al personal del evento.');
+      else if (res.status === 400 || res.status === 422) errScreen('Hay un dato que no es válido. Revise el formulario e intente de nuevo.');
+      else errScreen('No pudimos guardar su registro. Intente de nuevo en un momento.');
+    }
+  } catch (e) {
+    errScreen(e.name === 'AbortError' ? 'Tardó demasiado en responder. Intente de nuevo.' : 'No hay conexión a internet. Revise su conexión e intente de nuevo.');
+  } finally { busy = false; $('send').disabled = false; }
+});
+document.querySelectorAll('#f input, #f select').forEach(el => { const h = () => { if (el.id) { setErr(el.id, ''); if (el.id === 'correo') setErr('correo2', ''); } }; el.addEventListener('input', h); el.addEventListener('change', h); });
+onRol();
+</script>
+</body>
+</html>
