@@ -271,7 +271,7 @@ footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;
 
 <div class="ov" id="ov"><div class="box" id="box"></div></div>
 
-<div class="bvdim" id="bvdim"></div><video id="bv" src="assets/bienvenida.mp4" playsinline preload="auto"></video><button id="bvskip" type="button">Saltar</button>
+<div class="bvdim" id="bvdim"></div><video id="bv" src="assets/bienvenida.mp4?v=2" playsinline preload="auto"></video><button id="bvskip" type="button">Saltar</button>
 <script>
 /* ============ CONEXIÓN CON SUPABASE (llave pública: solo puede insertar) ============ */
 const SUPABASE_URL = 'https://lhmsnlglynyscypnjavv.supabase.co';
@@ -663,7 +663,7 @@ let timer = null;
 function reset() { clearInterval(timer); hide(); { const v = $('bv'); if (v) { v.classList.remove('on'); $('bvdim').classList.remove('on'); $('bvskip').classList.remove('on'); try { v.pause(); } catch (e) {} } } $('f').reset(); initLugar(); onInd(); $('ponchip').classList.remove('on'); $('sug').classList.remove('on'); onRol(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function bienvenida() {
   const v = $('bv'), d = $('bvdim'), s = $('bvskip');
-  if (!v || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!v) return;
   const fin = () => { v.classList.remove('on'); d.classList.remove('on'); s.classList.remove('on'); try { v.pause(); } catch (e) {} };
   v.onended = fin; s.onclick = fin;
   try { v.currentTime = 0; } catch (e) {}
