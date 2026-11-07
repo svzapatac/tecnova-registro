@@ -661,6 +661,10 @@ function show(html) { $('box').innerHTML = html; $('ov').classList.add('on'); }
 function hide() { $('ov').classList.remove('on'); }
 let timer = null;
 function reset() { clearInterval(timer); hide(); { const v = $('bv'); if (v) { v.classList.remove('on'); $('bvdim').classList.remove('on'); $('bvskip').classList.remove('on'); try { v.pause(); } catch (e) {} } } $('f').reset(); initLugar(); onInd(); $('ponchip').classList.remove('on'); $('sug').classList.remove('on'); onRol(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function prepVideo() {
+  const v = $('bv'); if (!v) return;
+  try { v.muted = false; const p = v.play(); if (p && p.then) p.then(() => { v.pause(); v.currentTime = 0; }).catch(() => { v.muted = true; v.load(); }); } catch (e) {}
+}
 function bienvenida() {
   const v = $('bv'), d = $('bvdim'), s = $('bvskip');
   if (!v) return;
@@ -684,6 +688,7 @@ let busy = false;
 $('f').addEventListener('submit', async ev => {
   ev.preventDefault(); if (busy) return;
   if (!validar()) return;
+  prepVideo();
   busy = true; $('send').disabled = true;
   if (!(await chequeaCorreo())) { busy = false; $('send').disabled = false; $('correo').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
   show('<div class="spin"></div><h3>Guardando su registro…</h3><p>Un momento, no cierre esta página.</p>');
