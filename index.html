@@ -361,14 +361,45 @@ function addCha() {
   if (chaSelects().length >= MAX_CHA) return;
   const d = document.createElement('div'); d.className = 'xrow';
   d.innerHTML = '<div class="xline"><select class="cha-x"></select><button type="button" class="rm" aria-label="Quitar esta charla">✕</button></div><input type="text" class="cha-o" hidden placeholder="Escriba el nombre del evento o charla" maxlength="200">';
-  const s = d.querySelector('select'); s.innerHTML = $('charla').innerHTML; s.options[0].textContent = 'Seleccione…'; s.value = '';
+  restaura($('charla')); const s = d.querySelector('select'); s.innerHTML = $('charla').innerHTML; s.options[0].textContent = 'Seleccione…'; s.value = '';
   const o = d.querySelector('.cha-o');
-  s.addEventListener('change', () => { o.hidden = s.value !== 'OTRO'; setErr('charla', ''); });
+  s.addEventListener('change', () => { o.hidden = s.value !== 'OTRO'; setErr('charla', ''); refrescaOpciones(); });
   o.addEventListener('input', () => setErr('charla', ''));
-  d.querySelector('.rm').onclick = () => { d.remove(); updAdd(); setErr('charla', ''); };
-  $('cha_extra').appendChild(d); updAdd(); s.focus();
+  d.querySelector('.rm').onclick = () => { d.remove(); updAdd(); setErr('charla', ''); refrescaOpciones(); };
+  $('cha_extra').appendChild(d); updAdd(); refrescaOpciones(); s.focus();
 }
 $('add_pon').onclick = addPon; $('add_cha').onclick = addCha;
+
+/* ---- coherencia: sin repetidas y sin dos actividades a la misma hora ---- */
+const aMin = h => { const m = (h || '').match(/(\d{1,2}):(\d{2})/); return m ? (+m[1]) * 60 + (+m[2]) : null; };
+function slotObj(dia, hora, esPon) {
+  const d = (String(dia).match(/\d+/) || [''])[0], t = (hora || '').match(/\d{1,2}:\d{2}/g) || [];
+  if (!d || !t.length) return null;
+  const ini = aMin(t[0]); const fin = t[1] ? aMin(t[1]) : ini + (esPon ? 20 : 30);
+  return { d, ini, fin };
+}
+const choca = (a, b) => a && b && a.d === b.d && a.ini < b.fin && b.ini < a.fin;
+function slotDe(v) {
+  if (v.startsWith('P:')) { const p = DATA.P.find(x => x.cod === v.slice(2)); return p ? slotObj(p.dia, p.hora, true) : null; }
+  if (v.startsWith('E:')) { let r = null; DATA.E.forEach(g => g.items.forEach(x => { if (x.id === v.slice(2)) r = slotObj(x.dia, x.hora, false); })); return r; }
+  return null;
+}
+function restaura(s) { [...s.options].forEach(o => { if (o.dataset.t !== undefined) { o.textContent = o.dataset.t; } o.disabled = false; }); }
+function refrescaOpciones() {
+  const sel = chaSelects();
+  sel.forEach(s => {
+    const otros = sel.filter(x => x !== s && x.value && x.value !== 'OTRO').map(x => x.value), sl = otros.map(slotDe);
+    [...s.options].forEach(o => {
+      if (!o.value || o.value === 'OTRO') return;
+      if (o.dataset.t === undefined) o.dataset.t = o.textContent;
+      let why = '';
+      if (otros.includes(o.value)) why = ' — ya la eligió';
+      else { const a = slotDe(o.value); if (a && sl.some(b => choca(a, b))) why = ' — mismo horario que otra elegida'; }
+      o.disabled = !!why; o.textContent = o.dataset.t + why;
+    });
+  });
+}
+$('charla').addEventListener('change', refrescaOpciones);
 
 /* ---- sugerencia de correo ---- */
 const TYPO = { 'gmial.com':'gmail.com','gmai.com':'gmail.com','gmail.co':'gmail.com','gamil.com':'gmail.com','gmail.con':'gmail.com','hotmial.com':'hotmail.com','hotmal.com':'hotmail.com','hotmail.con':'hotmail.com','outlok.com':'outlook.com','outlook.con':'outlook.com','yaho.com':'yahoo.com','yahoo.con':'yahoo.com','usbbog.edu.com':'usbbog.edu.co','unal.edu.com':'unal.edu.co' };
@@ -562,6 +593,7 @@ function validar() {
     const vals = ponInputs().map(i => sp(i.value)); let bad = '';
     vals.forEach((v, k) => { if (!bad && (v.length < 5 || nLetters(v) < 4)) bad = k === 0 ? 'Escriba el nombre de su ponencia.' : 'Escriba el nombre de la ponencia ' + (k + 1) + ' o quítela con la ✕.'; });
     const ns = vals.map(norm); if (!bad && new Set(ns).size < ns.length) bad = 'Repitió una ponencia. Quite la duplicada con la ✕.';
+    if (!bad) { const ps = vals.map(findPon).filter(Boolean); for (let i = 0; i < ps.length && !bad; i++) for (let j = i + 1; j < ps.length; j++) if (choca(slotObj(ps[i].dia, ps[i].hora, true), slotObj(ps[j].dia, ps[j].hora, true))) { bad = 'Dos de sus ponencias coinciden en el mismo horario (' + ps[i].dia + ', ' + ps[i].hora + '). Cambie una.'; break; } }
     chk('ponencia', !bad, bad);
   }
   if (r === 'Invitado' || r === 'Asistente') {
@@ -570,6 +602,7 @@ function validar() {
     sel.forEach((s, k) => { if (!bad && k > 0 && !s.value) bad = 'Elija la charla adicional o quítela con la ✕.'; });
     sel.forEach(s => { if (!bad && s.value === 'OTRO') { const o = s === $('charla') ? $('charla_otra') : s.closest('.xrow').querySelector('.cha-o'); if (o.value.trim().length < 3) bad = 'Escriba el nombre del evento o charla.'; } });
     const ne = vals.filter(v => v && v !== 'OTRO'); if (!bad && new Set(ne).size < ne.length) bad = 'Eligió la misma charla dos veces. Quite la repetida con la ✕.';
+    if (!bad) { const sl = ne.map(slotDe); for (let i = 0; i < sl.length && !bad; i++) for (let j = i + 1; j < sl.length; j++) if (choca(sl[i], sl[j])) { bad = 'Dos de las charlas elegidas son en el mismo horario. Solo puede asistir a una.'; break; } }
     chk('charla', !bad, bad);
   }
   const a = $('acepta').checked; setErr('acepta', a ? '' : 'Debe autorizar el tratamiento de datos para continuar.'); if (!a) { ok = false; if (!first) first = $('acepta'); }
