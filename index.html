@@ -70,6 +70,7 @@ form{background:#fff;border:1px solid var(--line);border-top:4px solid var(--nav
 .tel #ind_otro{grid-column:1/-1}
 .hid{display:none}
 input.sub{margin-top:8px}
+.sublab{margin:12px 0 6px;font-size:13px;font-weight:600;color:var(--navy)}
 .addbtn{margin-top:12px;background:#fff;border:1.5px dashed var(--blue);color:var(--blue);padding:10px 16px;font:600 13.5px Poppins,Arial,sans-serif;border-radius:4px;cursor:pointer}
 .addbtn:disabled{opacity:.5;cursor:not-allowed}
 .xrow{margin-top:12px}.xline{display:flex;gap:8px}.xline>input,.xline>select{flex:1;min-width:0}
@@ -193,13 +194,14 @@ footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;
   <div class="lockmsg" id="lockmsg">▲ Elija primero su tipo de participación para continuar con el formulario.</div>
 
   <div class="cond" id="c_ponente">
-    <label for="ponencia">Nombre de su ponencia <span class="req">*</span></label>
-    <input type="text" id="ponencia" list="lista-ponencias" placeholder="Escriba o elija el título de su ponencia" autocomplete="off" maxlength="400">
-    <datalist id="lista-ponencias"></datalist>
+    <label for="ponencia">Su ponencia <span class="req">*</span></label>
+    <select id="ponencia"></select>
+    <div class="sublab">Su participación en esta ponencia <span class="req">*</span></div>
+    <select id="particip" aria-label="Su participación en esta ponencia"><option value="">Seleccione su participación…</option><option>Autor principal</option><option>Coautor</option><option>Presentador</option></select>
     <div class="chip" id="ponchip"></div>
     <div id="pon_extra"></div>
     <button type="button" class="addbtn" id="add_pon">＋ Agregar otra ponencia</button>
-    <div class="hint">Si su ponencia está en el programa, aparece al escribir. Si no, escriba el título completo. Si presenta más de una, agréguelas con el botón.</div>
+    <div class="hint">Elija su ponencia del programa: así se completan sus datos (sala, día y hora). Si presenta más de una, agréguelas con el botón.</div>
     <div class="msg" id="e_ponencia"></div>
   </div>
 
@@ -279,7 +281,6 @@ const rolSel = () => (document.querySelector('input[name=rol]:checked') || {}).v
 });
 
 /* ---- listas ---- */
-DATA.P.forEach(p => { const o = document.createElement('option'); o.value = p.tit; $('lista-ponencias').appendChild(o); });
 
 const trunc = (s, n) => s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s;
 function buildCharla() {
@@ -303,7 +304,20 @@ function buildCharla() {
       s.appendChild(og);
     });
   });
-  if (rolSel() === 'Invitado') add(s, 'OTRO', 'Otro evento o charla (escribir)');
+}
+function buildPon() {
+  const s = $('ponencia'); s.innerHTML = '';
+  const add = (parent, v, t) => { const o = document.createElement('option'); o.value = v; o.textContent = t; parent.appendChild(o); };
+  add(s, '', 'Seleccione su ponencia…');
+  [['Miércoles', 'MIÉRCOLES 11'], ['Jueves', 'JUEVES 12'], ['Viernes', 'VIERNES 13']].forEach(([d, lab]) => {
+    const salas = {};
+    DATA.P.filter(p => p.dia.startsWith(d)).forEach(p => { (salas[p.lugar] = salas[p.lugar] || []).push(p); });
+    Object.keys(salas).sort().forEach(k => {
+      const og = document.createElement('optgroup'); og.label = lab + ' · Ponencias · ' + k.replace('SALA', 'Sala') + ' · ' + salas[k][0].mod;
+      salas[k].forEach(p => add(og, 'P:' + p.cod, p.hora + ' · ' + trunc(p.tit, 80)));
+      s.appendChild(og);
+    });
+  });
 }
 
 /* ---- campos según el rol ---- */
@@ -312,6 +326,7 @@ function onRol() {
   document.querySelectorAll('#f input:not([name=rol]):not(#web), #f select, #send').forEach(el => { el.disabled = !r; });
   $('lockmsg').classList.toggle('on', !r);
   $('c_ponente').classList.toggle('on', r === 'Ponente');
+  if (r === 'Ponente') { buildPon(); $('particip').value = ''; $('ponchip').classList.remove('on'); }
   const showCharla = r === 'Asistente' || r === 'Invitado';
   $('c_charla').classList.toggle('on', showCharla);
   if (showCharla) {
@@ -330,32 +345,28 @@ $('charla').addEventListener('change', () => { $('otro_wrap').hidden = $('charla
 /* ---- ponencia: si coincide con el programa, mostrar datos ---- */
 const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
 const findPon = t => DATA.P.find(p => norm(p.tit) === norm(t));
-$('ponencia').addEventListener('input', () => {
-  const p = findPon($('ponencia').value), c = $('ponchip');
-  if (p) { c.textContent = 'En el programa · Código ' + p.cod + ' · ' + p.lugar.replace('SALA', 'Sala') + ' · ' + p.dia + ' · ' + p.hora; c.classList.add('on'); }
-  else c.classList.remove('on');
-});
+$('ponencia').addEventListener('change', () => { chipFor($('ponencia'), $('ponchip')); refrescaOpciones(); });
 
 
 /* ---- varias ponencias / varias charlas ---- */
 const MAX_PON = 6, MAX_CHA = 8;
-const ponInputs = () => [$('ponencia'), ...document.querySelectorAll('.pon-x')];
+const ponRows = () => [{ sel: $('ponencia'), part: $('particip'), chip: $('ponchip') }, ...[...document.querySelectorAll('#pon_extra .xrow')].map(d => ({ sel: d.querySelector('.pon-x'), part: d.querySelector('.part-x'), chip: d.querySelector('.chip') }))];
+const ponInputs = () => ponRows().map(x => x.sel);
 const chaSelects = () => [$('charla'), ...document.querySelectorAll('.cha-x')];
 function chipFor(inp, c) {
-  const p = findPon(inp.value);
-  if (p) { c.textContent = 'En el programa · Código ' + p.cod + ' · ' + p.lugar.replace('SALA', 'Sala') + ' · ' + p.dia + ' · ' + p.hora; c.classList.add('on'); } else c.classList.remove('on');
+  const p = DATA.P.find(x => x.cod === (inp.value || '').slice(2));
+  if (p) { c.textContent = 'Código ' + p.cod + ' · ' + p.lugar.replace('SALA', 'Sala') + ' · ' + p.dia + ' · ' + p.hora + ' · ' + p.mod; c.classList.add('on'); } else c.classList.remove('on');
 }
 function updAdd() { $('add_pon').hidden = ponInputs().length >= MAX_PON; $('add_cha').hidden = chaSelects().length >= MAX_CHA; }
 function addPon() {
   if (ponInputs().length >= MAX_PON) return;
   const d = document.createElement('div'); d.className = 'xrow';
-  d.innerHTML = '<div class="xline"><input type="text" class="pon-x" list="lista-ponencias" placeholder="Escriba o elija el título de otra ponencia" autocomplete="off" maxlength="400"><button type="button" class="rm" aria-label="Quitar esta ponencia">✕</button></div><div class="chip"></div>';
-  $('pon_extra').appendChild(d);
-  const i = d.querySelector('input');
-  i.addEventListener('input', () => { chipFor(i, d.querySelector('.chip')); setErr('ponencia', ''); });
-  i.addEventListener('blur', () => { i.value = sp(i.value); });
-  d.querySelector('.rm').onclick = () => { d.remove(); updAdd(); setErr('ponencia', ''); };
-  updAdd(); i.focus();
+  d.innerHTML = '<div class="xline"><select class="pon-x"></select><button type="button" class="rm" aria-label="Quitar esta ponencia">✕</button></div><select class="part-x" aria-label="Su participación en esta ponencia" style="margin-top:8px"><option value="">Seleccione su participación…</option><option>Autor principal</option><option>Coautor</option><option>Presentador</option></select><div class="chip"></div>';
+  restaura($('ponencia')); const s = d.querySelector('.pon-x'); s.innerHTML = $('ponencia').innerHTML; s.options[0].textContent = 'Seleccione otra ponencia…'; s.value = '';
+  s.addEventListener('change', () => { chipFor(s, d.querySelector('.chip')); setErr('ponencia', ''); refrescaOpciones(); });
+  d.querySelector('.part-x').addEventListener('change', () => setErr('ponencia', ''));
+  d.querySelector('.rm').onclick = () => { d.remove(); updAdd(); setErr('ponencia', ''); refrescaOpciones(); };
+  $('pon_extra').appendChild(d); updAdd(); refrescaOpciones(); s.focus();
 }
 function addCha() {
   if (chaSelects().length >= MAX_CHA) return;
@@ -385,8 +396,8 @@ function slotDe(v) {
   return null;
 }
 function restaura(s) { [...s.options].forEach(o => { if (o.dataset.t !== undefined) { o.textContent = o.dataset.t; } o.disabled = false; }); }
-function refrescaOpciones() {
-  const sel = chaSelects();
+function refrescaOpciones() { refrescaSet(chaSelects()); refrescaSet(ponInputs()); }
+function refrescaSet(sel) {
   sel.forEach(s => {
     const otros = sel.filter(x => x !== s && x.value && x.value !== 'OTRO').map(x => x.value), sl = otros.map(slotDe);
     [...s.options].forEach(o => {
@@ -571,7 +582,7 @@ $('indicativo').addEventListener('change', onInd);
 $('telefono').addEventListener('input', () => { $('telefono').value = $('telefono').value.replace(/\D/g, '').slice(0, 12); });
 $('ind_otro').addEventListener('input', () => { $('ind_otro').value = $('ind_otro').value.replace(/\D/g, '').slice(0, 4); });
 ['pais_otro', 'ciudad_otro'].forEach(id => { $(id).addEventListener('input', () => { $(id).value = onlyPlace($(id).value); }); $(id).addEventListener('blur', () => { $(id).value = sp($(id).value); }); });
-['nombres', 'apellidos', 'entidad', 'ponencia'].forEach(id => $(id).addEventListener('blur', () => { $(id).value = sp($(id).value); }));
+['nombres', 'apellidos', 'entidad'].forEach(id => $(id).addEventListener('blur', () => { $(id).value = sp($(id).value); }));
 function setErr(id, m) { const e = $('e_' + id), el = $(id); if (e) e.textContent = m || ''; if (el && el.classList) el.classList.toggle('bad', !!m); return !m; }
 function validar() {
   let ok = true, first = null;
@@ -590,10 +601,11 @@ function validar() {
   const mP = paisSel() ? '' : msgLugar('pais_otro', 'su país'); chk('pais', !mP, mP);
   const mC = (paisSel() && $('ciudad').value && $('ciudad').value !== OTRO) ? '' : (paisSel() && !$('ciudad').value ? 'Seleccione su ciudad.' : msgLugar('ciudad_otro', 'su ciudad')); chk('ciudad', !mC, mC);
   if (r === 'Ponente') {
-    const vals = ponInputs().map(i => sp(i.value)); let bad = '';
-    vals.forEach((v, k) => { if (!bad && (v.length < 5 || nLetters(v) < 4)) bad = k === 0 ? 'Escriba el nombre de su ponencia.' : 'Escriba el nombre de la ponencia ' + (k + 1) + ' o quítela con la ✕.'; });
-    const ns = vals.map(norm); if (!bad && new Set(ns).size < ns.length) bad = 'Repitió una ponencia. Quite la duplicada con la ✕.';
-    if (!bad) { const ps = vals.map(findPon).filter(Boolean); for (let i = 0; i < ps.length && !bad; i++) for (let j = i + 1; j < ps.length; j++) if (choca(slotObj(ps[i].dia, ps[i].hora, true), slotObj(ps[j].dia, ps[j].hora, true))) { bad = 'Dos de sus ponencias coinciden en el mismo horario (' + ps[i].dia + ', ' + ps[i].hora + '). Cambie una.'; break; } }
+    const rows = ponRows(); let bad = '';
+    rows.forEach((x, k) => { if (!bad && !x.sel.value) bad = k === 0 ? 'Seleccione su ponencia.' : 'Seleccione la ponencia ' + (k + 1) + ' o quítela con la ✕.'; });
+    rows.forEach((x, k) => { if (!bad && !x.part.value) bad = 'Indique su participación en ' + (rows.length > 1 ? 'la ponencia ' + (k + 1) : 'su ponencia') + '.'; });
+    const vs = rows.map(x => x.sel.value); if (!bad && new Set(vs).size < vs.length) bad = 'Repitió una ponencia. Quite la duplicada con la ✕.';
+    if (!bad) { const sl = vs.map(slotDe); for (let i = 0; i < sl.length && !bad; i++) for (let j = i + 1; j < sl.length; j++) if (choca(sl[i], sl[j])) { bad = 'Dos de sus ponencias coinciden en el mismo horario. Cambie una.'; break; } }
     chk('ponencia', !bad, bad);
   }
   if (r === 'Invitado' || r === 'Asistente') {
@@ -632,7 +644,7 @@ function payload() {
     rol: r, tipo_doc: $('tipo_doc').value, documento: cleanDoc($('documento').value),
     nombres: sp($('nombres').value), apellidos: sp($('apellidos').value), correo: $('correo').value.trim().toLowerCase(),
     telefono: tel || null, pais: paisTxt(), ciudad: ciudadTxt(), entidad: sp($('entidad').value),
-    ponencia: r === 'Ponente' ? ponInputs().map(i => sp(i.value)).filter(Boolean).map(t => { const pm = findPon(t); return pm ? { cod: pm.cod, titulo: pm.tit, dia: pm.dia, hora: pm.hora, lugar: pm.lugar, modalidad: pm.mod } : { cod: '', titulo: t }; }) : null,
+    ponencia: r === 'Ponente' ? ponRows().filter(x => x.sel.value).map(x => { const pm = DATA.P.find(q => q.cod === x.sel.value.slice(2)); return pm ? { cod: pm.cod, titulo: pm.tit, dia: pm.dia, hora: pm.hora, lugar: pm.lugar, modalidad: pm.mod, participacion: x.part.value } : null; }).filter(Boolean) : null,
     charla: (r === 'Asistente' || r === 'Invitado') ? charlasObj() : null,
     acepta_datos: true
   };
