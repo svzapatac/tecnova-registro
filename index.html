@@ -66,6 +66,12 @@ form{background:#fff;border:1px solid var(--line);border-top:4px solid var(--nav
 .role input:checked+span{background:var(--c-bg);border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c)}
 .role input:focus-visible+span{outline:3px solid var(--ink);outline-offset:2px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px}
+.tel{display:grid;grid-template-columns:minmax(120px,40%) 1fr;gap:8px}
+.tel #ind_otro{grid-column:1/-1}
+.hid{display:none}
+input.sub{margin-top:8px}
+@media(max-width:420px){.tel{grid-template-columns:minmax(104px,42%) 1fr}}
+
 label{display:block;font-weight:500;font-size:13px;color:var(--navy);margin-bottom:5px}
 label .opt{font-weight:400;color:var(--mut)}
 label .req{color:var(--acc)}
@@ -210,13 +216,16 @@ footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;
     <div><label for="correo2">Confirme su correo <span class="req">*</span></label>
       <input type="email" id="correo2" inputmode="email" autocapitalize="none" spellcheck="false"><div class="msg" id="e_correo2"></div></div>
     <div><label for="telefono">Celular <span class="opt">(opcional)</span></label>
-      <input type="tel" id="telefono" inputmode="tel" maxlength="16" placeholder="Ej.: 3001234567"><div class="msg" id="e_telefono"></div></div>
+      <div class="tel"><select id="indicativo" aria-label="Indicativo del país"></select><input type="tel" id="telefono" inputmode="numeric" maxlength="12" placeholder="3001234567" autocomplete="tel-national">
+      <input type="text" id="ind_otro" class="hid" inputmode="numeric" maxlength="4" placeholder="Código, ej.: 351" aria-label="Código de marcación"></div><div class="msg" id="e_telefono"></div></div>
     <div><label for="entidad">Entidad, universidad o empresa <span class="req">*</span></label>
       <input type="text" id="entidad" autocapitalize="words" maxlength="150"><div class="msg" id="e_entidad"></div></div>
     <div><label for="pais">País de residencia <span class="req">*</span></label>
-      <input type="text" id="pais" value="Colombia" list="lista-paises" maxlength="60"><datalist id="lista-paises"></datalist><div class="msg" id="e_pais"></div></div>
+      <select id="pais"></select>
+      <input type="text" id="pais_otro" class="hid sub" autocapitalize="words" maxlength="60" placeholder="Escriba su país" aria-label="Otro país"><div class="msg" id="e_pais"></div></div>
     <div><label for="ciudad">Ciudad de residencia <span class="req">*</span></label>
-      <input type="text" id="ciudad" autocapitalize="words" maxlength="60"><div class="msg" id="e_ciudad"></div></div>
+      <select id="ciudad"></select>
+      <input type="text" id="ciudad_otro" class="hid sub" autocapitalize="words" maxlength="60" placeholder="Escriba su ciudad" aria-label="Otra ciudad"><div class="msg" id="e_ciudad"></div></div>
   </div>
 
   <div class="hp" aria-hidden="true"><label>No llenar<input type="text" id="web" tabindex="-1" autocomplete="off"></label></div>
@@ -256,7 +265,6 @@ const rolSel = () => (document.querySelector('input[name=rol]:checked') || {}).v
 
 /* ---- listas ---- */
 DATA.P.forEach(p => { const o = document.createElement('option'); o.value = p.tit; $('lista-ponencias').appendChild(o); });
-['Colombia','México','Perú','Ecuador','Argentina','Chile','Brasil','Venezuela','Panamá','Costa Rica','España','Estados Unidos','Bolivia','Uruguay','Paraguay','Guatemala','República Dominicana','Cuba'].forEach(c => { const o = document.createElement('option'); o.value = c; $('lista-paises').appendChild(o); });
 
 const trunc = (s, n) => s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s;
 function buildCharla() {
@@ -314,12 +322,98 @@ $('ponencia').addEventListener('input', () => {
 const TYPO = { 'gmial.com':'gmail.com','gmai.com':'gmail.com','gmail.co':'gmail.com','gamil.com':'gmail.com','gmail.con':'gmail.com','hotmial.com':'hotmail.com','hotmal.com':'hotmail.com','hotmail.con':'hotmail.com','outlok.com':'outlook.com','outlook.con':'outlook.com','yaho.com':'yahoo.com','yahoo.con':'yahoo.com','usbbog.edu.com':'usbbog.edu.co','unal.edu.com':'unal.edu.co' };
 $('correo').addEventListener('blur', () => {
   const v = $('correo').value.trim().toLowerCase(), at = v.lastIndexOf('@');
-  if (at > 0 && TYPO[v.slice(at + 1)]) { const fix = v.slice(0, at + 1) + TYPO[v.slice(at + 1)]; $('sugbtn').textContent = fix; $('sug').classList.add('on'); $('sugbtn').onclick = () => { $('correo').value = fix; $('sug').classList.remove('on'); }; }
+  const fix = at > 0 ? sugerir(v.slice(at + 1)) : '';
+  if (fix) { const nuevo = v.slice(0, at + 1) + fix; $('sugbtn').textContent = nuevo; $('sug').classList.add('on'); $('sugbtn').onclick = () => { $('correo').value = nuevo; $('correo2').value = $('correo2').value.trim().toLowerCase() === v ? nuevo : $('correo2').value; $('sug').classList.remove('on'); }; }
   else $('sug').classList.remove('on');
+  if (v && !EMAIL.test(v)) setErr('correo', 'Escriba un correo válido, por ejemplo nombre@dominio.com.');
+  else if (v) chequeaCorreo();
 });
 
 /* ---- validación ---- */
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+const EMAIL = /^(?!\.)(?!.*\.\.)[a-z0-9._%+\-]{1,64}(?<!\.)@(?:[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?\.)+[a-z]{2,24}$/;
+const COMUNES = ['gmail.com','hotmail.com','outlook.com','yahoo.com','icloud.com','live.com','outlook.es','hotmail.es','yahoo.es','correo.udistrital.edu.co','udistrital.edu.co','unal.edu.co','misena.edu.co','sena.edu.co'];
+function dist(a, b) { const m = a.length, n = b.length, d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]); for (let j = 1; j <= n; j++) d[0][j] = j; for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1)); return d[m][n]; }
+function sugerir(dom) { if (COMUNES.includes(dom)) return ''; if (TYPO[dom]) return TYPO[dom]; let best = '', bd = 3; COMUNES.forEach(c => { const x = dist(dom, c); if (x < bd && x <= (dom.length > 8 ? 2 : 1)) { bd = x; best = c; } }); return best; }
+/* ¿existe el dominio del correo? (consulta DNS pública; si no hay conexión no bloquea) */
+const dnsCache = {};
+async function dominioExiste(dom) {
+  if (dom in dnsCache) return dnsCache[dom];
+  const q = async tipo => { const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 4000); try { const r = await fetch('https://dns.google/resolve?name=' + encodeURIComponent(dom) + '&type=' + tipo, { signal: ctl.signal }); const j = await r.json(); return j; } finally { clearTimeout(to); } };
+  try {
+    const mx = await q('MX');
+    if (mx.Status === 0 && mx.Answer && mx.Answer.length) return (dnsCache[dom] = true);
+    if (mx.Status === 3) return (dnsCache[dom] = false);
+    const a = await q('A');
+    return (dnsCache[dom] = !!(a.Status === 0 && a.Answer && a.Answer.length));
+  } catch (e) { return null; }
+}
+const MSG_DOM = 'Ese dominio de correo no existe. Revise lo que escribió después de la @.';
+async function chequeaCorreo() {
+  const v = $('correo').value.trim().toLowerCase(); if (!EMAIL.test(v)) return true;
+  const ok = await dominioExiste(v.slice(v.lastIndexOf('@') + 1));
+  if (ok === false) { setErr('correo', MSG_DOM); return false; }
+  return true;
+}
+
+/* ---- países, indicativos y ciudades ---- */
+const OTRO = '__otro';
+const PAISES = [
+ ['Colombia','57',10,10,['Bogotá D.C.','Medellín','Cali','Barranquilla','Cartagena','Bucaramanga','Cúcuta','Pereira','Manizales','Santa Marta','Ibagué','Villavicencio','Pasto','Neiva','Armenia','Montería','Valledupar','Popayán','Tunja','Sincelejo','Florencia','Riohacha','Yopal','Soacha','Chía','Zipaquirá','Facatativá','Fusagasugá','Girardot','Duitama','Sogamoso']],
+ ['México','52',10,10,['Ciudad de México','Guadalajara','Monterrey','Puebla','Querétaro','Tijuana','León','Mérida']],
+ ['Perú','51',9,9,['Lima','Arequipa','Trujillo','Cusco','Chiclayo','Piura']],
+ ['Ecuador','593',9,9,['Quito','Guayaquil','Cuenca','Ambato','Manta']],
+ ['Argentina','54',10,10,['Buenos Aires','Córdoba','Rosario','Mendoza','La Plata','Tucumán']],
+ ['Chile','56',9,9,['Santiago','Valparaíso','Concepción','Antofagasta','Temuco']],
+ ['Brasil','55',10,11,['São Paulo','Río de Janeiro','Brasilia','Salvador','Belo Horizonte']],
+ ['Venezuela','58',10,10,['Caracas','Maracaibo','Valencia','Barquisimeto','Mérida']],
+ ['Panamá','507',8,8,['Ciudad de Panamá','Colón','David']],
+ ['Costa Rica','506',8,8,['San José','Heredia','Cartago','Alajuela']],
+ ['España','34',9,9,['Madrid','Barcelona','Valencia','Sevilla','Bilbao','Málaga']],
+ ['Estados Unidos','1',10,10,['Nueva York','Miami','Los Ángeles','Houston','Washington D.C.','Chicago']],
+ ['Canadá','1',10,10,['Toronto','Montreal','Vancouver','Ottawa']],
+ ['Bolivia','591',8,8,['La Paz','Santa Cruz de la Sierra','Cochabamba','Sucre']],
+ ['Uruguay','598',8,9,['Montevideo','Punta del Este']],
+ ['Paraguay','595',9,9,['Asunción','Ciudad del Este']],
+ ['Guatemala','502',8,8,['Ciudad de Guatemala','Quetzaltenango']],
+ ['Honduras','504',8,8,['Tegucigalpa','San Pedro Sula']],
+ ['El Salvador','503',8,8,['San Salvador','Santa Ana']],
+ ['Nicaragua','505',8,8,['Managua','León']],
+ ['República Dominicana','1',10,10,['Santo Domingo','Santiago de los Caballeros']],
+ ['Cuba','53',8,8,['La Habana','Santiago de Cuba']],
+ ['Francia','33',9,9,['París','Lyon','Marsella']],
+ ['Alemania','49',10,11,['Berlín','Múnich','Hamburgo']],
+ ['Italia','39',9,10,['Roma','Milán']],
+ ['Reino Unido','44',10,10,['Londres','Mánchester']],
+ ['Portugal','351',9,9,['Lisboa','Oporto']]
+];
+const opt = (v, t, sel) => { const o = document.createElement('option'); o.value = v; o.textContent = t; if (sel) o.selected = true; return o; };
+function initLugar() {
+  const P = $('pais'), I = $('indicativo'); P.innerHTML = ''; I.innerHTML = '';
+  PAISES.forEach((p, i) => { P.appendChild(opt(i, p[0], i === 0)); I.appendChild(opt(i, '+' + p[1] + '  ' + p[0], i === 0)); });
+  P.appendChild(opt(OTRO, 'Otro país…')); I.appendChild(opt(OTRO, 'Otro código…'));
+  $('pais_otro').value = ''; $('ciudad_otro').value = ''; $('ind_otro').value = ''; $('telefono').value = '';
+  onPais();
+}
+const paisSel = () => { const v = $('pais').value; return v === OTRO ? null : PAISES[+v]; };
+function onPais() {
+  const p = paisSel(), C = $('ciudad');
+  $('pais_otro').classList.toggle('hid', !!p);
+  C.innerHTML = '';
+  if (p) { C.appendChild(opt('', 'Seleccione su ciudad…')); p[4].forEach(c => C.appendChild(opt(c, c))); C.appendChild(opt(OTRO, 'Otra ciudad…')); C.classList.remove('hid'); }
+  else { C.classList.add('hid'); }
+  onCiudad();
+}
+function onCiudad() {
+  const sinLista = !paisSel();
+  $('ciudad_otro').classList.toggle('hid', !(sinLista || $('ciudad').value === OTRO));
+}
+const indSel = () => { const v = $('indicativo').value; return v === OTRO ? null : PAISES[+v]; };
+function onInd() { $('ind_otro').classList.toggle('hid', !!indSel()); }
+const paisTxt = () => { const p = paisSel(); return p ? p[0] : sp($('pais_otro').value); };
+const ciudadTxt = () => (!paisSel() || $('ciudad').value === OTRO) ? sp($('ciudad_otro').value) : $('ciudad').value;
+const dialTxt = () => { const p = indSel(); return p ? p[1] : $('ind_otro').value.replace(/\D/g, ''); };
+
 
 /* ---- reglas de cada campo ---- */
 const DOC = {
@@ -363,12 +457,17 @@ function msgEntidad() {
   return '';
 }
 function msgTel() {
-  const raw = $('telefono').value.replace(/\s/g, ''); if (!raw) return '';
-  if (!/^\+?\d+$/.test(raw)) return 'Use solo números (puede iniciar con +).';
-  const dig = raw.replace(/\D/g, '');
-  if (/^(\+?57)?3\d{9}$/.test(raw) && (dig.length === 10 || dig.length === 12)) return '';
-  if (norm($('pais').value) === 'colombia' && !raw.startsWith('+')) return 'El celular de Colombia tiene 10 dígitos y empieza por 3.';
-  if (dig.length < 7 || dig.length > 15) return 'El número debe tener entre 7 y 15 dígitos.';
+  const n = $('telefono').value; if (!n) return '';
+  const p = indSel();
+  if (!p) {
+    const d = dialTxt();
+    if (d.length < 1) return 'Escriba el código de marcación del país.';
+    if (n.length < 4 || d.length + n.length > 15) return 'Revise el número: es demasiado corto o largo.';
+    return '';
+  }
+  if (p[1] === '57' && !/^3/.test(n)) return 'Un celular de Colombia empieza por 3.';
+  if (/^(\d)\1+$/.test(n)) return 'Revise el número de celular.';
+  if (n.length < p[2] || n.length > p[3]) return 'El número de ' + p[0] + ' debe tener ' + (p[2] === p[3] ? p[2] : p[2] + ' a ' + p[3]) + ' dígitos (sin el indicativo).';
   return '';
 }
 
@@ -382,9 +481,14 @@ $('tipo_doc').addEventListener('change', () => {
 });
 $('documento').addEventListener('input', () => { const d = DOC[$('tipo_doc').value]; $('documento').value = cleanDoc($('documento').value).slice(0, d ? d.max : 20); });
 ['nombres', 'apellidos'].forEach(id => $(id).addEventListener('input', () => { $(id).value = onlyLetters($(id).value); }));
-['ciudad', 'pais'].forEach(id => $(id).addEventListener('input', () => { $(id).value = onlyPlace($(id).value); }));
-$('telefono').addEventListener('input', () => { $('telefono').value = $('telefono').value.replace(/(?!^\+)[^\d ]/g, ''); });
-['nombres', 'apellidos', 'ciudad', 'pais', 'entidad', 'ponencia'].forEach(id => $(id).addEventListener('blur', () => { $(id).value = sp($(id).value); }));
+
+$('pais').addEventListener('change', () => { onPais(); const v = $('pais').value; if (v !== OTRO) { $('indicativo').value = v; onInd(); } });
+$('ciudad').addEventListener('change', onCiudad);
+$('indicativo').addEventListener('change', onInd);
+$('telefono').addEventListener('input', () => { $('telefono').value = $('telefono').value.replace(/\D/g, '').slice(0, 12); });
+$('ind_otro').addEventListener('input', () => { $('ind_otro').value = $('ind_otro').value.replace(/\D/g, '').slice(0, 4); });
+['pais_otro', 'ciudad_otro'].forEach(id => { $(id).addEventListener('input', () => { $(id).value = onlyPlace($(id).value); }); $(id).addEventListener('blur', () => { $(id).value = sp($(id).value); }); });
+['nombres', 'apellidos', 'entidad', 'ponencia'].forEach(id => $(id).addEventListener('blur', () => { $(id).value = sp($(id).value); }));
 function setErr(id, m) { const e = $('e_' + id), el = $(id); if (e) e.textContent = m || ''; if (el && el.classList) el.classList.toggle('bad', !!m); return !m; }
 function validar() {
   let ok = true, first = null;
@@ -396,12 +500,12 @@ function validar() {
   const mN = msgNombre('nombres', 'su(s) nombre(s)'); chk('nombres', !mN, mN);
   const mA = msgNombre('apellidos', 'su(s) apellido(s)'); chk('apellidos', !mA, mA);
   const c1 = $('correo').value.trim().toLowerCase(), c2 = $('correo2').value.trim().toLowerCase();
-  chk('correo', EMAIL.test(c1), 'Escriba un correo válido.');
+  chk('correo', EMAIL.test(c1), 'Escriba un correo válido, por ejemplo nombre@dominio.com.');
   chk('correo2', c1 === c2, 'Los dos correos deben ser iguales.');
   const mE = msgEntidad(); chk('entidad', !mE, mE);
   const mT = msgTel(); chk('telefono', !mT, mT);
-  const mP = msgLugar('pais', 'el país'); chk('pais', !mP, mP);
-  const mC = msgLugar('ciudad', 'la ciudad'); chk('ciudad', !mC, mC);
+  const mP = paisSel() ? '' : msgLugar('pais_otro', 'su país'); chk('pais', !mP, mP);
+  const mC = (paisSel() && $('ciudad').value && $('ciudad').value !== OTRO) ? '' : (paisSel() && !$('ciudad').value ? 'Seleccione su ciudad.' : msgLugar('ciudad_otro', 'su ciudad')); chk('ciudad', !mC, mC);
   if (r === 'Ponente') chk('ponencia', sp($('ponencia').value).length >= 5 && nLetters($('ponencia').value) >= 4, 'Escriba el nombre de su ponencia.');
   if (r === 'Invitado') {
     const v = $('charla').value;
@@ -424,12 +528,12 @@ function charlaObj() {
 }
 function payload() {
   const r = rolSel(), pon = r === 'Ponente' ? $('ponencia').value.trim() : '', pm = pon ? findPon(pon) : null;
-  const tel = $('telefono').value.trim();
+  const tel = $('telefono').value ? '+' + dialTxt() + $('telefono').value : '';
   return {
     origen: 'presencial',
     rol: r, tipo_doc: $('tipo_doc').value, documento: cleanDoc($('documento').value),
     nombres: sp($('nombres').value), apellidos: sp($('apellidos').value), correo: $('correo').value.trim().toLowerCase(),
-    telefono: tel.replace(/\s/g, '') || null, pais: sp($('pais').value), ciudad: sp($('ciudad').value), entidad: sp($('entidad').value),
+    telefono: tel || null, pais: paisTxt(), ciudad: ciudadTxt(), entidad: sp($('entidad').value),
     ponencia: r === 'Ponente' ? (pm ? { cod: pm.cod, titulo: pm.tit, dia: pm.dia, hora: pm.hora, lugar: pm.lugar, modalidad: pm.mod } : { cod: '', titulo: pon }) : null,
     charla: (r === 'Asistente' || r === 'Invitado') ? charlaObj() : null,
     acepta_datos: true
@@ -439,7 +543,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 function show(html) { $('box').innerHTML = html; $('ov').classList.add('on'); }
 function hide() { $('ov').classList.remove('on'); }
 let timer = null;
-function reset() { clearInterval(timer); hide(); $('f').reset(); $('pais').value = 'Colombia'; $('ponchip').classList.remove('on'); $('sug').classList.remove('on'); onRol(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function reset() { clearInterval(timer); hide(); $('f').reset(); initLugar(); onInd(); $('ponchip').classList.remove('on'); $('sug').classList.remove('on'); onRol(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function okScreen(nombre, correo) {
   let n = 12;
   show('<div class="mark" style="background:var(--ok)">✓</div><h3>¡Registro exitoso, ' + esc(nombre) + '!</h3><p>En uno o dos minutos recibirá su sticker de identificación en</p><p><b style="color:var(--ink)">' + esc(correo) + '</b></p><p style="font-size:13px;margin-top:10px">Guárdelo en su celular y téngalo a la mano durante el congreso. Si no lo ve, revise la carpeta de spam.</p><button id="nuevo" type="button">Nuevo registro (<span id="cnt">' + n + '</span>)</button>');
@@ -453,6 +557,7 @@ $('f').addEventListener('submit', async ev => {
   ev.preventDefault(); if (busy) return;
   if (!validar()) return;
   busy = true; $('send').disabled = true;
+  if (!(await chequeaCorreo())) { busy = false; $('send').disabled = false; $('correo').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
   show('<div class="spin"></div><h3>Guardando su registro…</h3><p>Un momento, no cierre esta página.</p>');
   const body = payload();
   try {
@@ -476,6 +581,7 @@ $('f').addEventListener('submit', async ev => {
   } finally { busy = false; $('send').disabled = false; }
 });
 document.querySelectorAll('#f input, #f select').forEach(el => { const h = () => { if (el.id) { setErr(el.id, ''); if (el.id === 'correo') setErr('correo2', ''); } }; el.addEventListener('input', h); el.addEventListener('change', h); });
+initLugar(); onInd();
 onRol();
 </script>
 </body>
