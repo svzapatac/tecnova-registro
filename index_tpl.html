@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registro presencial · TECNOVA 2026</title>
+<meta name="description" content="Registro presencial del I Congreso Internacional de Innovación Tecnológica Aplicada – TECNOVA 2026. Facultad Tecnológica, Universidad Distrital Francisco José de Caldas, Bogotá.">
+<style>
+@font-face{font-family:Poppins;font-weight:400;font-display:swap;src:url(assets/fonts/poppins-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:500;font-display:swap;src:url(assets/fonts/poppins-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:600;font-display:swap;src:url(assets/fonts/poppins-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:700;font-display:swap;src:url(assets/fonts/poppins-latin-700-normal.woff2) format("woff2")}
+:root{--ink:#102542;--navy:#0f2b54;--navy2:#0a1f40;--blue:#17407a;--acc:#E75B2F;--mut:#55657a;--line:#c9d3df;--soft:#eef2f7;--ok:#14804a;--err:#b3261e}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--ink);font:400 15px/1.55 Poppins,"Segoe UI",Arial,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* ---- barra superior ---- */
+.top{border-bottom:2px solid var(--navy);background:#fff}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:12px;padding-bottom:12px}
+.top img.t{height:58px;width:auto;display:block}
+.top img.r{height:54px;width:auto;display:block}
+
+/* ---- portada ---- */
+.hero{position:relative;background:var(--navy);color:#fff;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='360' fill='none' stroke='%23ffffff' stroke-opacity='.09' stroke-width='2'%3E%3Cpath d='M0 60h120l40 40h120M60 0v90l50 50h90M300 0v70l40 40h140M20 220h100l40-40h70M120 360v-80l40-40h160l40 40h120M420 360v-60l-30-30h-90M200 120v60M480 200h40'/%3E%3Ccircle cx='280' cy='100' r='6'/%3E%3Ccircle cx='200' cy='180' r='6'/%3E%3Ccircle cx='320' cy='240' r='6'/%3E%3Ccircle cx='480' cy='110' r='6'/%3E%3C/svg%3E");background-size:520px 360px;opacity:1}
+.hero .wrap{position:relative;display:block;min-height:340px}
+.hero .txt{width:54%;min-height:340px;padding:46px 12px 46px 0;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2}
+.kick{font-weight:600;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--acc)}
+.hero h1{margin:12px 0 14px;font-size:38px;line-height:1.12;font-weight:700;letter-spacing:-.01em}
+.hero h1 b{color:var(--acc);font-weight:700}
+.hero p{margin:0;max-width:470px;color:#cdd9ea;font-size:15px}
+.hero .when{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 22px;font-weight:500;font-size:14px}
+.hero .when span{display:inline-flex;align-items:center;gap:8px}
+.hero .when svg{width:17px;height:17px;stroke:var(--acc);fill:none;stroke-width:2}
+.photo{position:absolute;top:0;right:0;bottom:0;width:max(44%,calc(50% - 120px));background:var(--acc);clip-path:polygon(14% 0,100% 0,100% 100%,0 100%)}
+.photo i{position:absolute;inset:0;background:url(assets/facultad.jpg) center/cover;clip-path:polygon(calc(14% + 12px) 0,100% 0,100% 100%,12px 100%)}
+.photo:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,43,84,.35),rgba(15,43,84,0) 45%);clip-path:polygon(calc(14% + 12px) 0,100% 0,100% 100%,12px 100%)}
+
+/* ---- datos de la sede ---- */
+.info{border-bottom:1px solid var(--line);background:var(--soft)}
+.info .wrap{display:grid;grid-template-columns:repeat(3,1fr)}
+.it{display:flex;gap:12px;padding:18px 18px 18px 0;align-items:flex-start}
+.it+.it{border-left:1px solid var(--line);padding-left:20px}
+.it svg{flex:none;width:24px;height:24px;stroke:var(--blue);fill:none;stroke-width:1.8;margin-top:2px}
+.it b{display:block;font-weight:600;font-size:13.5px;color:var(--navy)}
+.it span{display:block;font-size:12.5px;color:var(--mut);line-height:1.45;margin-top:1px}
+
+/* ---- formulario ---- */
+main{padding:34px 0 10px}
+.cols{display:grid;grid-template-columns:1fr;max-width:860px;margin:0 auto}
+form{background:#fff;border:1px solid var(--line);border-top:4px solid var(--navy);border-radius:6px;padding:30px 30px 32px;box-shadow:0 1px 0 rgba(15,43,84,.04)}
+.sec{display:flex;align-items:baseline;gap:12px;margin:0 0 16px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.sec+* {}
+.sec em{font-style:normal;font-weight:700;font-size:13px;color:var(--acc);letter-spacing:.06em}
+.sec h2{margin:0;font-size:14px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--navy)}
+.sec.n2{margin-top:34px}
+.roles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.role{position:relative}
+.role input{position:absolute;opacity:0;inset:0;cursor:pointer;width:100%;height:100%;margin:0;z-index:2}
+.role span{display:block;height:100%;padding:13px 12px 12px 16px;border:1.5px solid var(--line);border-left:6px solid var(--c);border-radius:4px;background:#fff;transition:background .15s,border-color .15s,box-shadow .15s}
+.role b{display:block;font-weight:600;font-size:14.5px;color:var(--navy)}
+.role small{display:block;font-size:11.5px;line-height:1.35;color:var(--mut);margin-top:2px}
+.role input:checked+span{background:var(--c-bg);border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c)}
+.role input:focus-visible+span{outline:3px solid var(--ink);outline-offset:2px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px}
+.tel{display:grid;grid-template-columns:minmax(120px,40%) 1fr;gap:8px}
+.tel #ind_otro{grid-column:1/-1}
+.hid{display:none}
+input.sub{margin-top:8px}
+.sublab{margin:12px 0 6px;font-size:13px;font-weight:600;color:var(--navy)}
+.addbtn{margin-top:12px;background:#fff;border:1.5px dashed var(--blue);color:var(--blue);padding:10px 16px;font:600 13.5px Poppins,Arial,sans-serif;border-radius:4px;cursor:pointer}
+.addbtn:disabled{opacity:.5;cursor:not-allowed}
+.xrow{margin-top:12px}.xline{display:flex;gap:8px}.xline>input,.xline>select{flex:1;min-width:0}
+.rm{flex:none;width:48px;border:1.5px solid #b6c2d1;background:#fff;color:var(--err);border-radius:4px;font-size:16px;cursor:pointer}
+.xrow input.cha-o{margin-top:8px}
+
+.lockmsg{display:none;margin:10px 0 4px;padding:10px 14px;border-left:5px solid var(--navy);background:#e8eef7;color:var(--navy);font-size:13.5px;font-weight:500}
+.lockmsg.on{display:block}
+#f input:disabled,#f select:disabled{background:#eef1f5;cursor:not-allowed;opacity:.7}
+#send:disabled{cursor:not-allowed}
+@media(max-width:420px){.tel{grid-template-columns:minmax(104px,42%) 1fr}}
+
+label{display:block;font-weight:500;font-size:13px;color:var(--navy);margin-bottom:5px}
+label .opt{font-weight:400;color:var(--mut)}
+label .req{color:var(--acc)}
+input[type=text],input[type=email],input[type=tel],select{width:100%;min-height:48px;padding:10px 13px;border:1.5px solid #b6c2d1;border-radius:4px;font:400 15px Poppins,Arial,sans-serif;color:var(--ink);background:#fff}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' fill='none' stroke='%2317407a' stroke-width='2'%3E%3Cpath d='m1 1 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;text-overflow:ellipsis}
+input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(23,64,122,.16)}
+.bad{border-color:var(--err)!important}
+.msg{font-size:12.5px;margin-top:4px;color:var(--err)}
+.hint{font-size:12.5px;color:var(--mut);margin-top:6px}
+.chip{display:none;margin-top:9px;background:var(--soft);border-left:4px solid var(--blue);color:var(--navy);padding:8px 12px;font-size:12.5px;font-weight:500}
+.chip.on{display:block}
+.sug{display:none;margin-top:6px;font-size:12.5px}
+.sug.on{display:block}
+.sug button{all:unset;cursor:pointer;color:var(--blue);font-weight:600;text-decoration:underline}
+.cond{display:none;margin-top:16px;padding:16px 18px;background:var(--soft);border-left:4px solid var(--acc);border-radius:0 4px 4px 0}
+.cond.on{display:block}
+.consent{display:flex;gap:12px;align-items:flex-start;margin-top:26px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--mut)}
+.consent input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--blue)}
+.consent label{font-weight:400;font-size:12.5px;color:var(--mut);margin:0}
+button.send{margin-top:22px;width:100%;min-height:58px;border:0;border-radius:12px;background:var(--acc);color:#fff;font:700 17px Poppins,Arial,sans-serif;cursor:pointer;box-shadow:0 8px 18px -10px var(--acc)}
+button.send:disabled{opacity:.6;cursor:progress}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.warn{display:none;background:#fff4e5;border:1px solid #f2c27b;color:#7a4a00;border-radius:4px;padding:10px 12px;margin-bottom:18px;font-size:13px}
+.warn.on{display:block}
+
+/* ---- pie ---- */
+footer{margin-top:40px;border-top:2px solid var(--navy);background:#fff}
+footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--navy);padding:22px 0 14px}
+.logos{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px 30px;padding:0 0 22px}
+.logos img{height:44px;width:auto;display:block}
+.logos img.sq{height:54px}
+.foot2{background:var(--navy);color:#b9c8de;font-size:12px;text-align:center;padding:14px 16px}
+.foot2 b{color:#fff;font-weight:600}
+
+/* ---- ventanas ---- */
+.ov{position:fixed;inset:0;background:rgba(10,31,64,.78);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+.ov.on{display:flex}
+.box{background:#fff;border-radius:8px;border-top:6px solid var(--navy);max-width:460px;width:100%;padding:30px 26px;text-align:center}
+.box h3{margin:12px 0 8px;font-size:23px;font-weight:700;color:var(--navy)}
+.box p{margin:0 0 6px;color:var(--mut);font-size:14px}
+.mark{width:66px;height:66px;border-radius:50%;margin:0 auto;display:grid;place-items:center;font-size:34px;color:#fff;font-weight:700}
+.box button{margin-top:18px;min-height:50px;padding:0 26px;border:0;border-radius:10px;background:var(--navy);color:#fff;font:600 15px Poppins,Arial,sans-serif;cursor:pointer}
+.spin{width:52px;height:52px;border-radius:50%;border:6px solid #dbe5f1;border-top-color:var(--acc);margin:0 auto;animation:r 1s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+
+@media(max-width:860px){
+  .hero{display:flex;flex-direction:column}
+  .hero .wrap{min-height:0;padding:0}
+  .hero .txt{width:auto;min-height:0;padding:26px 22px 30px}
+  .hero h1{font-size:29px}
+  .photo{position:relative;width:100%;height:190px;order:-1;clip-path:none;background:none}
+  .photo i,.photo:after{clip-path:none}
+  .photo:before{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--acc);z-index:3}
+  .info .wrap{grid-template-columns:1fr;padding:0 24px}
+  .it+.it{border-left:0;border-top:1px solid var(--line);padding-left:0}
+  .it{padding:14px 0}
+  .roles{grid-template-columns:1fr 1fr}
+  .grid{grid-template-columns:1fr}
+  form{padding:22px 18px 26px}
+  .top img.t{height:46px}.top img.r{height:42px}
+  .wrap{padding:0 16px}
+  .logos img{height:36px}
+}
+@media(max-width:340px){.roles{grid-template-columns:1fr}}
+.bvdim{position:fixed;inset:0;background:rgba(10,31,64,.55);z-index:15;opacity:0;pointer-events:none;transition:opacity .6s}
+.bvdim.on{opacity:1;pointer-events:auto}
+#bv{position:fixed;inset:0;width:100%;height:100%;object-fit:contain;mix-blend-mode:screen;z-index:20;opacity:0;pointer-events:none;transition:opacity .8s;background:transparent}
+#bv.on{opacity:1}
+#bvskip{position:fixed;right:16px;bottom:16px;z-index:25;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:6px 14px;font:500 13px inherit;cursor:pointer;display:none}
+#bvskip.on{display:block}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap">
+  <img class="t" src="assets/tecnova-logo.png" alt="TECNOVA 2026 · I Congreso Internacional de Innovación Tecnológica Aplicada">
+  <img class="r" src="assets/logos/01_tecred.png" alt="TEC-RED · Red de Programas Tecnológicos">
+</div></div>
+
+<section class="hero">
+  <div class="photo"><i></i></div>
+  <div class="wrap">
+    <div class="txt">
+      <div class="kick">Registro presencial</div>
+      <h1>Inscríbase y reciba su<br><b>distintivo</b> en el correo</h1>
+      <p>Complete el formulario para participar en el congreso. Su sticker de identificación llegará a su correo en pocos minutos.</p>
+      <div class="when">
+        <span><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>11, 12 y 13 de noviembre de 2026</span>
+        <span><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Facultad Tecnológica · Bogotá</span>
+      </div>
+    </div>
+  </div>
+  </section>
+
+<section class="info"><div class="wrap">
+  <div class="it"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+    <div><b>Sede presencial</b><span>Facultad Tecnológica, Universidad Distrital Francisco José de Caldas<br>Calle 68D Bis A Sur # 49F-70, Bogotá</span></div></div>
+  <div class="it"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    <div><b>Registro de asistentes</b><span>Desde las 7:30 a. m. · Auditorio Lectus<br>Horarios en hora de Bogotá</span></div></div>
+  <div class="it"><svg viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>
+    <div><b>Entrada libre</b><span>Participación gratuita<br>Cupos sujetos al aforo del auditorio</span></div></div>
+</div></section>
+
+<main><div class="wrap"><div class="cols">
+<form id="f" novalidate autocomplete="off">
+  
+  <div class="sec"><em>01</em><h2>Tipo de participación</h2></div>
+  <div class="roles" id="roles">
+    <div class="role" style="--c:#00a3c0;--c-bg:#e7f6f9"><input type="radio" name="rol" value="Asistente" id="r1"><span><b>Asistente</b><small>Participa en el congreso</small></span></div>
+    <div class="role" style="--c:#ee6a35;--c-bg:#fdeee7"><input type="radio" name="rol" value="Ponente" id="r2"><span><b>Ponente</b><small>Presenta una ponencia</small></span></div>
+    <div class="role" style="--c:#7a54ee;--c-bg:#f0ecfd"><input type="radio" name="rol" value="Invitado" id="r3"><span><b>Invitado</b><small>Invitado a un evento o charla</small></span></div>
+    <div class="role" style="--c:#17407a;--c-bg:#e8eef7"><input type="radio" name="rol" value="Organizador" id="r4"><span><b>Organizador</b><small>Comité organizador</small></span></div>
+  </div>
+  <div class="msg" id="e_rol"></div>
+  <div class="lockmsg" id="lockmsg">▲ Elija primero su tipo de participación para continuar con el formulario.</div>
+
+  <div class="cond" id="c_ponente">
+    <label for="ponencia">Su ponencia <span class="req">*</span></label>
+    <select id="ponencia"></select>
+    <div class="sublab">Su participación en esta ponencia <span class="req">*</span></div>
+    <select id="particip" aria-label="Su participación en esta ponencia"><option value="">Seleccione su participación…</option><option>Autor principal</option><option>Coautor</option><option>Presentador</option></select>
+    <div class="chip" id="ponchip"></div>
+    <div id="pon_extra"></div>
+    <button type="button" class="addbtn" id="add_pon">＋ Agregar otra ponencia</button>
+    <div class="hint">Elija su ponencia del programa: así se completan sus datos (sala, día y hora). Si presenta más de una, agréguelas con el botón.</div>
+    <div class="msg" id="e_ponencia"></div>
+  </div>
+
+  <div class="cond" id="c_charla">
+    <label for="charla"><span id="charla_lbl">¿A qué charla asistirá?</span> <span class="opt" id="charla_opt">(opcional)</span><span class="req" id="charla_req" hidden>*</span></label>
+    <select id="charla"></select>
+    <div id="otro_wrap" hidden style="margin-top:10px">
+      <input type="text" id="charla_otra" placeholder="Escriba el nombre del evento o charla">
+    </div>
+    <div id="cha_extra"></div>
+    <button type="button" class="addbtn" id="add_cha">＋ Agregar otra charla o evento</button>
+    <div class="hint" id="charla_hint">Si todavía no sabe, déjelo así.</div>
+    <div class="msg" id="e_charla"></div>
+  </div>
+
+  <div class="sec n2"><em>02</em><h2>Datos personales</h2></div>
+  <div class="grid">
+    <div><label for="tipo_doc">Tipo de documento <span class="req">*</span></label>
+      <select id="tipo_doc"><option value="">Seleccione…</option><option>CC</option><option>CE</option><option>TI</option><option>Pasaporte</option><option>PEP / PPT</option><option>Otro</option></select><div class="msg" id="e_tipo_doc"></div></div>
+    <div><label for="documento">Número de documento <span class="req">*</span></label>
+      <input type="text" id="documento" inputmode="text" autocapitalize="characters" maxlength="20" autocomplete="off"><div class="hint" id="h_documento">Primero elija el tipo de documento.</div><div class="msg" id="e_documento"></div></div>
+    <div><label for="nombres">Nombre(s) <span class="req">*</span></label>
+      <input type="text" id="nombres" autocapitalize="words" maxlength="60"><div class="msg" id="e_nombres"></div></div>
+    <div><label for="apellidos">Apellido(s) <span class="req">*</span></label>
+      <input type="text" id="apellidos" autocapitalize="words" maxlength="60"><div class="msg" id="e_apellidos"></div></div>
+    <div><label for="correo">Correo electrónico <span class="req">*</span></label>
+      <input type="email" id="correo" inputmode="email" autocapitalize="none" spellcheck="false">
+      <div class="sug" id="sug">¿Quiso decir <button type="button" id="sugbtn"></button>?</div><div class="msg" id="e_correo"></div></div>
+    <div><label for="correo2">Confirme su correo <span class="req">*</span></label>
+      <input type="email" id="correo2" inputmode="email" autocapitalize="none" spellcheck="false"><div class="msg" id="e_correo2"></div></div>
+    <div><label for="telefono">Celular <span class="opt">(opcional)</span></label>
+      <div class="tel"><select id="indicativo" aria-label="Indicativo del país"></select><input type="tel" id="telefono" inputmode="numeric" maxlength="12" placeholder="3001234567" autocomplete="tel-national">
+      <input type="text" id="ind_otro" class="hid" inputmode="numeric" maxlength="4" placeholder="Código, ej.: 351" aria-label="Código de marcación"></div><div class="msg" id="e_telefono"></div></div>
+    <div><label for="entidad">Entidad, universidad o empresa <span class="req">*</span></label>
+      <input type="text" id="entidad" autocapitalize="words" maxlength="150"><div class="msg" id="e_entidad"></div></div>
+    <div><label for="pais">País de residencia <span class="req">*</span></label>
+      <select id="pais"></select>
+      <input type="text" id="pais_otro" class="hid sub" autocapitalize="words" maxlength="60" placeholder="Escriba su país" aria-label="Otro país"><div class="msg" id="e_pais"></div></div>
+    <div><label for="ciudad">Ciudad de residencia <span class="req">*</span></label>
+      <select id="ciudad"></select>
+      <input type="text" id="ciudad_otro" class="hid sub" autocapitalize="words" maxlength="60" placeholder="Escriba su ciudad" aria-label="Otra ciudad"><div class="msg" id="e_ciudad"></div></div>
+  </div>
+
+  <div class="hp" aria-hidden="true"><label>No llenar<input type="text" id="web" tabindex="-1" autocomplete="off"></label></div>
+
+  <div class="consent">
+    <input type="checkbox" id="acepta">
+    <label for="acepta">Autorizo el tratamiento de mis datos personales por parte de la Universidad de San Buenaventura y TEC-RED, con el fin de gestionar mi participación y comunicarme información del congreso TECNOVA 2026.</label>
+  </div>
+  <div class="msg" id="e_acepta"></div>
+
+  <button class="send" id="send" type="submit">Registrarme y recibir mi sticker</button>
+</form>
+</div></div></main>
+
+<footer>
+  <div class="lb">Instituciones organizadoras y redes aliadas</div>
+  <div class="wrap"><div class="logos" id="logos"></div></div>
+  <div class="foot2"><b>TECNOVA 2026</b> · I Congreso Internacional de Innovación Tecnológica Aplicada · Bogotá, 11 al 13 de noviembre de 2026 · congresotecnova.com</div>
+</footer>
+
+<div class="ov" id="ov"><div class="box" id="box"></div></div>
+
+<div class="bvdim" id="bvdim"></div><video id="bv" src="assets/bienvenida.mp4" playsinline preload="auto"></video><button id="bvskip" type="button">Saltar</button>
+<script>
+/* ============ CONEXIÓN CON SUPABASE (llave pública: solo puede insertar) ============ */
+const SUPABASE_URL = 'https://lhmsnlglynyscypnjavv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_deVkpWRVb9jbNNjUFzWRdw_1sSXVp7Q';
+/* ============================================================================ */
+
+const DATA = /*DATA*/;
+const $ = id => document.getElementById(id);
+const rolSel = () => (document.querySelector('input[name=rol]:checked') || {}).value || '';
+
+/* ---- logos del pie ---- */
+[['02_ud','Universidad Distrital Francisco José de Caldas'],['03_umng','Universidad Militar Nueva Granada'],['04_usb','Universidad de San Buenaventura'],['05_ucompensar','Universidad Compensar'],['06_uan','Universidad Antonio Nariño'],['07_cordoba','Universidad de Córdoba'],['09_upn','Universidad Pedagógica Nacional'],['08_sanmarcos','Universidad Nacional Mayor de San Marcos'],['10_ua','Universidad de Antofagasta'],['01_tecred','TEC-RED']].forEach(([f, n]) => {
+  const i = document.createElement('img'); i.src = 'assets/logos/' + f + '.png'; i.alt = n; i.loading = 'lazy'; if (['08_sanmarcos','09_upn','10_ua'].includes(f)) i.className = 'sq'; $('logos').appendChild(i);
+});
+
+/* ---- listas ---- */
+
+const trunc = (s, n) => s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s;
+function buildCharla() {
+  const s = $('charla'); s.innerHTML = '';
+  const add = (parent, v, t) => { const o = document.createElement('option'); o.value = v; o.textContent = t; parent.appendChild(o); };
+  add(s, '', rolSel() === 'Invitado' ? 'Seleccione…' : 'Aún no lo sé');
+  const DIAS = [['Miércoles', 'MIÉRCOLES 11'], ['Jueves', 'JUEVES 12'], ['Viernes', 'VIERNES 13']];
+  DIAS.forEach(([d, lab]) => {
+    /* 1) eventos del día: apertura, magistrales, feria, charlas... */
+    DATA.E.filter(g => g.items[0].dia.startsWith(d)).forEach(g => {
+      const og = document.createElement('optgroup'); og.label = lab + ' · ' + g.g.split(' · ').slice(1).join(' · ');
+      g.items.forEach(e => add(og, 'E:' + e.id, (e.hora ? e.hora.split(' – ')[0] + ' · ' : '') + trunc(e.tit, 78)));
+      s.appendChild(og);
+    });
+    /* 2) ponencias del día, sala por sala */
+    const salas = {};
+    DATA.P.filter(p => p.dia.startsWith(d)).forEach(p => { (salas[p.lugar] = salas[p.lugar] || []).push(p); });
+    Object.keys(salas).sort().forEach(k => {
+      const og = document.createElement('optgroup'); og.label = lab + ' · Ponencias · ' + k.replace('SALA', 'Sala') + ' · ' + salas[k][0].mod;
+      salas[k].forEach(p => add(og, 'P:' + p.cod, p.hora + ' · ' + trunc(p.tit, 80)));
+      s.appendChild(og);
+    });
+  });
+}
+function buildPon() {
+  const s = $('ponencia'); s.innerHTML = '';
+  const add = (parent, v, t) => { const o = document.createElement('option'); o.value = v; o.textContent = t; parent.appendChild(o); };
+  add(s, '', 'Seleccione su ponencia…');
+  [['Miércoles', 'MIÉRCOLES 11'], ['Jueves', 'JUEVES 12'], ['Viernes', 'VIERNES 13']].forEach(([d, lab]) => {
+    const salas = {};
+    DATA.P.filter(p => p.dia.startsWith(d)).forEach(p => { (salas[p.lugar] = salas[p.lugar] || []).push(p); });
+    Object.keys(salas).sort().forEach(k => {
+      const og = document.createElement('optgroup'); og.label = lab + ' · Ponencias · ' + k.replace('SALA', 'Sala') + ' · ' + salas[k][0].mod;
+      salas[k].forEach(p => add(og, 'P:' + p.cod, p.hora + ' · ' + trunc(p.tit, 80)));
+      s.appendChild(og);
+    });
+  });
+}
+
+/* ---- campos según el rol ---- */
+function onRol() {
+  const r = rolSel();
+  document.querySelectorAll('#f input:not([name=rol]):not(#web), #f select, #send').forEach(el => { el.disabled = !r; });
+  $('lockmsg').classList.toggle('on', !r);
+  $('c_ponente').classList.toggle('on', r === 'Ponente');
+  if (r === 'Ponente') { buildPon(); $('particip').value = ''; $('ponchip').classList.remove('on'); }
+  const showCharla = r === 'Asistente' || r === 'Invitado';
+  $('c_charla').classList.toggle('on', showCharla);
+  if (showCharla) {
+    const inv = r === 'Invitado';
+    $('charla_lbl').textContent = inv ? '¿A qué evento o charla es invitado?' : '¿A qué charla asistirá?';
+    $('charla_opt').hidden = inv; $('charla_req').hidden = !inv;
+    $('charla_hint').textContent = inv ? 'Elija la charla o evento al que fue invitado. Si son varios, agréguelos con el botón.' : 'Si todavía no sabe, déjelo así. Si asistirá a varias, agréguelas con el botón.';
+    buildCharla(); $('otro_wrap').hidden = true;
+  }
+  $('pon_extra').innerHTML = ''; $('cha_extra').innerHTML = ''; updAdd();
+  $('e_rol').textContent = '';
+}
+document.querySelectorAll('input[name=rol]').forEach(i => i.addEventListener('change', onRol));
+$('charla').addEventListener('change', () => { $('otro_wrap').hidden = $('charla').value !== 'OTRO'; });
+
+/* ---- ponencia: si coincide con el programa, mostrar datos ---- */
+const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+const findPon = t => DATA.P.find(p => norm(p.tit) === norm(t));
+$('ponencia').addEventListener('change', () => { chipFor($('ponencia'), $('ponchip')); refrescaOpciones(); });
+
+
+/* ---- varias ponencias / varias charlas ---- */
+const MAX_PON = 6, MAX_CHA = 8;
+const ponRows = () => [{ sel: $('ponencia'), part: $('particip'), chip: $('ponchip') }, ...[...document.querySelectorAll('#pon_extra .xrow')].map(d => ({ sel: d.querySelector('.pon-x'), part: d.querySelector('.part-x'), chip: d.querySelector('.chip') }))];
+const ponInputs = () => ponRows().map(x => x.sel);
+const chaSelects = () => [$('charla'), ...document.querySelectorAll('.cha-x')];
+function chipFor(inp, c) {
+  const p = DATA.P.find(x => x.cod === (inp.value || '').slice(2));
+  if (p) { c.textContent = 'Código ' + p.cod + ' · ' + p.lugar.replace('SALA', 'Sala') + ' · ' + p.dia + ' · ' + p.hora + ' · ' + p.mod; c.classList.add('on'); } else c.classList.remove('on');
+}
+function updAdd() { $('add_pon').hidden = ponInputs().length >= MAX_PON; $('add_cha').hidden = chaSelects().length >= MAX_CHA; }
+function addPon() {
+  if (ponInputs().length >= MAX_PON) return;
+  const d = document.createElement('div'); d.className = 'xrow';
+  d.innerHTML = '<div class="xline"><select class="pon-x"></select><button type="button" class="rm" aria-label="Quitar esta ponencia">✕</button></div><select class="part-x" aria-label="Su participación en esta ponencia" style="margin-top:8px"><option value="">Seleccione su participación…</option><option>Autor principal</option><option>Coautor</option><option>Presentador</option></select><div class="chip"></div>';
+  restaura($('ponencia')); const s = d.querySelector('.pon-x'); s.innerHTML = $('ponencia').innerHTML; s.options[0].textContent = 'Seleccione otra ponencia…'; s.value = '';
+  s.addEventListener('change', () => { chipFor(s, d.querySelector('.chip')); setErr('ponencia', ''); refrescaOpciones(); });
+  d.querySelector('.part-x').addEventListener('change', () => setErr('ponencia', ''));
+  d.querySelector('.rm').onclick = () => { d.remove(); updAdd(); setErr('ponencia', ''); refrescaOpciones(); };
+  $('pon_extra').appendChild(d); updAdd(); refrescaOpciones(); s.focus();
+}
+function addCha() {
+  if (chaSelects().length >= MAX_CHA) return;
+  const d = document.createElement('div'); d.className = 'xrow';
+  d.innerHTML = '<div class="xline"><select class="cha-x"></select><button type="button" class="rm" aria-label="Quitar esta charla">✕</button></div><input type="text" class="cha-o" hidden placeholder="Escriba el nombre del evento o charla" maxlength="200">';
+  restaura($('charla')); const s = d.querySelector('select'); s.innerHTML = $('charla').innerHTML; s.options[0].textContent = 'Seleccione…'; s.value = '';
+  const o = d.querySelector('.cha-o');
+  s.addEventListener('change', () => { o.hidden = s.value !== 'OTRO'; setErr('charla', ''); refrescaOpciones(); });
+  o.addEventListener('input', () => setErr('charla', ''));
+  d.querySelector('.rm').onclick = () => { d.remove(); updAdd(); setErr('charla', ''); refrescaOpciones(); };
+  $('cha_extra').appendChild(d); updAdd(); refrescaOpciones(); s.focus();
+}
+$('add_pon').onclick = addPon; $('add_cha').onclick = addCha;
+
+/* ---- coherencia: sin repetidas y sin dos actividades a la misma hora ---- */
+const aMin = h => { const m = (h || '').match(/(\d{1,2}):(\d{2})/); return m ? (+m[1]) * 60 + (+m[2]) : null; };
+function slotObj(dia, hora, esPon) {
+  const d = (String(dia).match(/\d+/) || [''])[0], t = (hora || '').match(/\d{1,2}:\d{2}/g) || [];
+  if (!d || !t.length) return null;
+  const ini = aMin(t[0]); const fin = t[1] ? aMin(t[1]) : ini + (esPon ? 20 : 30);
+  return { d, ini, fin };
+}
+const choca = (a, b) => a && b && a.d === b.d && a.ini < b.fin && b.ini < a.fin;
+function slotDe(v) {
+  if (v.startsWith('P:')) { const p = DATA.P.find(x => x.cod === v.slice(2)); return p ? slotObj(p.dia, p.hora, true) : null; }
+  if (v.startsWith('E:')) { let r = null; DATA.E.forEach(g => g.items.forEach(x => { if (x.id === v.slice(2)) r = slotObj(x.dia, x.hora, false); })); return r; }
+  return null;
+}
+function restaura(s) { [...s.options].forEach(o => { if (o.dataset.t !== undefined) { o.textContent = o.dataset.t; } o.disabled = false; }); }
+function refrescaOpciones() { refrescaSet(chaSelects()); refrescaSet(ponInputs()); }
+function refrescaSet(sel) {
+  sel.forEach(s => {
+    const otros = sel.filter(x => x !== s && x.value && x.value !== 'OTRO').map(x => x.value), sl = otros.map(slotDe);
+    [...s.options].forEach(o => {
+      if (!o.value || o.value === 'OTRO') return;
+      if (o.dataset.t === undefined) o.dataset.t = o.textContent;
+      let why = '';
+      if (otros.includes(o.value)) why = ' — ya la eligió';
+      else { const a = slotDe(o.value); if (a && sl.some(b => choca(a, b))) why = ' — mismo horario que otra elegida'; }
+      o.disabled = !!why; o.textContent = o.dataset.t + why;
+    });
+  });
+}
+$('charla').addEventListener('change', refrescaOpciones);
+
+/* ---- sugerencia de correo ---- */
+const TYPO = { 'gmial.com':'gmail.com','gmai.com':'gmail.com','gmail.co':'gmail.com','gamil.com':'gmail.com','gmail.con':'gmail.com','hotmial.com':'hotmail.com','hotmal.com':'hotmail.com','hotmail.con':'hotmail.com','outlok.com':'outlook.com','outlook.con':'outlook.com','yaho.com':'yahoo.com','yahoo.con':'yahoo.com','usbbog.edu.com':'usbbog.edu.co','unal.edu.com':'unal.edu.co' };
+$('correo').addEventListener('blur', () => {
+  const v = $('correo').value.trim().toLowerCase(), at = v.lastIndexOf('@');
+  const fix = at > 0 ? sugerir(v.slice(at + 1)) : '';
+  if (fix) { const nuevo = v.slice(0, at + 1) + fix; $('sugbtn').textContent = nuevo; $('sug').classList.add('on'); $('sugbtn').onclick = () => { $('correo').value = nuevo; $('correo2').value = $('correo2').value.trim().toLowerCase() === v ? nuevo : $('correo2').value; $('sug').classList.remove('on'); }; }
+  else $('sug').classList.remove('on');
+  if (v && !EMAIL.test(v)) setErr('correo', 'Escriba un correo válido, por ejemplo nombre@dominio.com.');
+  else if (v) chequeaCorreo();
+});
+
+/* ---- validación ---- */
+
+const EMAIL = /^(?!\.)(?!.*\.\.)[a-z0-9._%+\-]{1,64}(?<!\.)@(?:[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?\.)+[a-z]{2,24}$/;
+const COMUNES = ['gmail.com','hotmail.com','outlook.com','yahoo.com','icloud.com','live.com','outlook.es','hotmail.es','yahoo.es','correo.udistrital.edu.co','udistrital.edu.co','unal.edu.co','misena.edu.co','sena.edu.co'];
+function dist(a, b) { const m = a.length, n = b.length, d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]); for (let j = 1; j <= n; j++) d[0][j] = j; for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1)); return d[m][n]; }
+function sugerir(dom) { if (COMUNES.includes(dom)) return ''; if (TYPO[dom]) return TYPO[dom]; let best = '', bd = 3; COMUNES.forEach(c => { const x = dist(dom, c); if (x < bd && x <= (dom.length > 8 ? 2 : 1)) { bd = x; best = c; } }); return best; }
+/* ¿existe el dominio del correo? (consulta DNS pública; si no hay conexión no bloquea) */
+const dnsCache = {};
+async function dominioExiste(dom) {
+  if (dom in dnsCache) return dnsCache[dom];
+  const q = async tipo => { const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 4000); try { const r = await fetch('https://dns.google/resolve?name=' + encodeURIComponent(dom) + '&type=' + tipo, { signal: ctl.signal }); const j = await r.json(); return j; } finally { clearTimeout(to); } };
+  try {
+    const mx = await q('MX');
+    if (mx.Status === 0 && mx.Answer && mx.Answer.length) return (dnsCache[dom] = true);
+    if (mx.Status === 3) return (dnsCache[dom] = false);
+    const a = await q('A');
+    return (dnsCache[dom] = !!(a.Status === 0 && a.Answer && a.Answer.length));
+  } catch (e) { return null; }
+}
+const MSG_DOM = 'Ese dominio de correo no existe. Revise lo que escribió después de la @.';
+async function chequeaCorreo() {
+  const v = $('correo').value.trim().toLowerCase(); if (!EMAIL.test(v)) return true;
+  const ok = await dominioExiste(v.slice(v.lastIndexOf('@') + 1));
+  if (ok === false) { setErr('correo', MSG_DOM); return false; }
+  return true;
+}
+
+/* ---- países, indicativos y ciudades ---- */
+const OTRO = '__otro';
+const PAISES = [
+ ['Colombia','57',10,10,['Bogotá D.C.','Medellín','Cali','Barranquilla','Cartagena','Bucaramanga','Cúcuta','Pereira','Manizales','Santa Marta','Ibagué','Villavicencio','Pasto','Neiva','Armenia','Montería','Valledupar','Popayán','Tunja','Sincelejo','Florencia','Riohacha','Yopal','Soacha','Chía','Zipaquirá','Facatativá','Fusagasugá','Girardot','Duitama','Sogamoso']],
+ ['México','52',10,10,['Ciudad de México','Guadalajara','Monterrey','Puebla','Querétaro','Tijuana','León','Mérida']],
+ ['Perú','51',9,9,['Lima','Arequipa','Trujillo','Cusco','Chiclayo','Piura']],
+ ['Ecuador','593',9,9,['Quito','Guayaquil','Cuenca','Ambato','Manta']],
+ ['Argentina','54',10,10,['Buenos Aires','Córdoba','Rosario','Mendoza','La Plata','Tucumán']],
+ ['Chile','56',9,9,['Santiago','Valparaíso','Concepción','Antofagasta','Temuco']],
+ ['Brasil','55',10,11,['São Paulo','Río de Janeiro','Brasilia','Salvador','Belo Horizonte']],
+ ['Venezuela','58',10,10,['Caracas','Maracaibo','Valencia','Barquisimeto','Mérida']],
+ ['Panamá','507',8,8,['Ciudad de Panamá','Colón','David']],
+ ['Costa Rica','506',8,8,['San José','Heredia','Cartago','Alajuela']],
+ ['España','34',9,9,['Madrid','Barcelona','Valencia','Sevilla','Bilbao','Málaga']],
+ ['Estados Unidos','1',10,10,['Nueva York','Miami','Los Ángeles','Houston','Washington D.C.','Chicago']],
+ ['Canadá','1',10,10,['Toronto','Montreal','Vancouver','Ottawa']],
+ ['Bolivia','591',8,8,['La Paz','Santa Cruz de la Sierra','Cochabamba','Sucre']],
+ ['Uruguay','598',8,9,['Montevideo','Punta del Este']],
+ ['Paraguay','595',9,9,['Asunción','Ciudad del Este']],
+ ['Guatemala','502',8,8,['Ciudad de Guatemala','Quetzaltenango']],
+ ['Honduras','504',8,8,['Tegucigalpa','San Pedro Sula']],
+ ['El Salvador','503',8,8,['San Salvador','Santa Ana']],
+ ['Nicaragua','505',8,8,['Managua','León']],
+ ['República Dominicana','1',10,10,['Santo Domingo','Santiago de los Caballeros']],
+ ['Cuba','53',8,8,['La Habana','Santiago de Cuba']],
+ ['Francia','33',9,9,['París','Lyon','Marsella']],
+ ['Alemania','49',10,11,['Berlín','Múnich','Hamburgo']],
+ ['Italia','39',9,10,['Roma','Milán']],
+ ['Reino Unido','44',10,10,['Londres','Mánchester']],
+ ['Portugal','351',9,9,['Lisboa','Oporto']]
+];
+const opt = (v, t, sel) => { const o = document.createElement('option'); o.value = v; o.textContent = t; if (sel) o.selected = true; return o; };
+function initLugar() {
+  const P = $('pais'), I = $('indicativo'); P.innerHTML = ''; I.innerHTML = '';
+  PAISES.forEach((p, i) => { P.appendChild(opt(i, p[0], i === 0)); I.appendChild(opt(i, '+' + p[1] + '  ' + p[0], i === 0)); });
+  P.appendChild(opt(OTRO, 'Otro país…')); I.appendChild(opt(OTRO, 'Otro código…'));
+  $('pais_otro').value = ''; $('ciudad_otro').value = ''; $('ind_otro').value = ''; $('telefono').value = '';
+  onPais();
+}
+const paisSel = () => { const v = $('pais').value; return v === OTRO ? null : PAISES[+v]; };
+function onPais() {
+  const p = paisSel(), C = $('ciudad');
+  $('pais_otro').classList.toggle('hid', !!p);
+  C.innerHTML = '';
+  if (p) { C.appendChild(opt('', 'Seleccione su ciudad…')); p[4].forEach(c => C.appendChild(opt(c, c))); C.appendChild(opt(OTRO, 'Otra ciudad…')); C.classList.remove('hid'); }
+  else { C.classList.add('hid'); }
+  onCiudad();
+}
+function onCiudad() {
+  const sinLista = !paisSel();
+  $('ciudad_otro').classList.toggle('hid', !(sinLista || $('ciudad').value === OTRO));
+}
+const indSel = () => { const v = $('indicativo').value; return v === OTRO ? null : PAISES[+v]; };
+function onInd() { $('ind_otro').classList.toggle('hid', !!indSel()); }
+const paisTxt = () => { const p = paisSel(); return p ? p[0] : sp($('pais_otro').value); };
+const ciudadTxt = () => (!paisSel() || $('ciudad').value === OTRO) ? sp($('ciudad_otro').value) : $('ciudad').value;
+const dialTxt = () => { const p = indSel(); return p ? p[1] : $('ind_otro').value.replace(/\D/g, ''); };
+
+
+/* ---- reglas de cada campo ---- */
+const DOC = {
+  'CC':        { num: true,  min: 6, max: 10, hint: 'Solo números, de 6 a 10 dígitos, sin puntos ni espacios.' },
+  'TI':        { num: true,  min: 8, max: 11, hint: 'Solo números, de 8 a 11 dígitos.' },
+  'CE':        { num: true,  min: 4, max: 10, hint: 'Solo números, de 4 a 10 dígitos.' },
+  'Pasaporte': { num: false, min: 5, max: 15, hint: 'Letras y números, de 5 a 15 caracteres, sin espacios.' },
+  'PEP / PPT': { num: true,  min: 6, max: 15, hint: 'Solo números, de 6 a 15 dígitos.' },
+  'Otro':      { num: false, min: 4, max: 20, hint: 'Letras y números, de 4 a 20 caracteres, sin espacios.' }
+};
+const cleanDoc = v => { const d = DOC[$('tipo_doc').value]; v = (v || '').toUpperCase(); return d && d.num ? v.replace(/\D/g, '') : v.replace(/[^A-Z0-9]/g, ''); };
+const onlyLetters = v => (v || '').replace(/[^\p{L}'’.\- ]/gu, '').replace(/\s{2,}/g, ' ').replace(/^\s+/, '');
+const onlyPlace = v => (v || '').replace(/[^\p{L}'’.,\- ]/gu, '').replace(/\s{2,}/g, ' ').replace(/^\s+/, '');
+const nLetters = v => (v.match(/\p{L}/gu) || []).length;
+const sp = v => (v || '').replace(/\s+/g, ' ').trim();
+
+function msgDoc() {
+  const d = DOC[$('tipo_doc').value]; const v = cleanDoc($('documento').value);
+  if (!d) return 'Primero seleccione el tipo de documento.';
+  if (!v) return 'Escriba el número de documento.';
+  if (v.length < d.min || v.length > d.max) return 'El ' + $('tipo_doc').value + ' debe tener entre ' + d.min + ' y ' + d.max + (d.num ? ' dígitos.' : ' caracteres.');
+  if (!d.num && !/\d/.test(v) && $('tipo_doc').value === 'Pasaporte') return 'El pasaporte debe incluir al menos un número.';
+  if (/^(\d)\1+$/.test(v)) return 'Revise el número de documento.';
+  return '';
+}
+function msgNombre(id, que) {
+  const v = sp($(id).value);
+  if (v.length < 2) return 'Escriba ' + que + '.';
+  if (!/^\p{L}[\p{L}'’.\- ]*$/u.test(v) || nLetters(v) < 2) return 'Use solo letras (sin números ni símbolos).';
+  return '';
+}
+function msgLugar(id, que) {
+  const v = sp($(id).value);
+  if (v.length < 2) return 'Escriba ' + que + '.';
+  if (!/^\p{L}[\p{L}'’.,\- ]*$/u.test(v) || nLetters(v) < 2) return 'Use solo letras (sin números).';
+  return '';
+}
+function msgEntidad() {
+  const v = sp($('entidad').value);
+  if (v.length < 2 || nLetters(v) < 2) return 'Escriba el nombre de su entidad.';
+  return '';
+}
+function msgTel() {
+  const n = $('telefono').value; if (!n) return '';
+  const p = indSel();
+  if (!p) {
+    const d = dialTxt();
+    if (d.length < 1) return 'Escriba el código de marcación del país.';
+    if (n.length < 4 || d.length + n.length > 15) return 'Revise el número: es demasiado corto o largo.';
+    return '';
+  }
+  if (p[1] === '57' && !/^3/.test(n)) return 'Un celular de Colombia empieza por 3.';
+  if (/^(\d)\1+$/.test(n)) return 'Revise el número de celular.';
+  if (n.length < p[2] || n.length > p[3]) return 'El número de ' + p[0] + ' debe tener ' + (p[2] === p[3] ? p[2] : p[2] + ' a ' + p[3]) + ' dígitos (sin el indicativo).';
+  return '';
+}
+
+/* ---- filtros mientras se escribe ---- */
+$('tipo_doc').addEventListener('change', () => {
+  const d = DOC[$('tipo_doc').value];
+  $('h_documento').textContent = d ? d.hint : 'Primero elija el tipo de documento.';
+  $('documento').inputMode = d && d.num ? 'numeric' : 'text';
+  $('documento').maxLength = d ? d.max : 20;
+  $('documento').value = cleanDoc($('documento').value).slice(0, d ? d.max : 20);
+});
+$('documento').addEventListener('input', () => { const d = DOC[$('tipo_doc').value]; $('documento').value = cleanDoc($('documento').value).slice(0, d ? d.max : 20); });
+['nombres', 'apellidos'].forEach(id => $(id).addEventListener('input', () => { $(id).value = onlyLetters($(id).value); }));
+
+$('pais').addEventListener('change', () => { onPais(); const v = $('pais').value; if (v !== OTRO) { $('indicativo').value = v; onInd(); } });
+$('ciudad').addEventListener('change', onCiudad);
+$('indicativo').addEventListener('change', onInd);
+$('telefono').addEventListener('input', () => { $('telefono').value = $('telefono').value.replace(/\D/g, '').slice(0, 12); });
+$('ind_otro').addEventListener('input', () => { $('ind_otro').value = $('ind_otro').value.replace(/\D/g, '').slice(0, 4); });
+['pais_otro', 'ciudad_otro'].forEach(id => { $(id).addEventListener('input', () => { $(id).value = onlyPlace($(id).value); }); $(id).addEventListener('blur', () => { $(id).value = sp($(id).value); }); });
+['nombres', 'apellidos', 'entidad'].forEach(id => $(id).addEventListener('blur', () => { $(id).value = sp($(id).value); }));
+function setErr(id, m) { const e = $('e_' + id), el = $(id); if (e) e.textContent = m || ''; if (el && el.classList) el.classList.toggle('bad', !!m); return !m; }
+function validar() {
+  let ok = true, first = null;
+  const chk = (id, cond, m) => { const good = setErr(id, cond ? '' : m); if (!good) { ok = false; if (!first) first = $(id) || $('roles'); } };
+  const r = rolSel();
+  chk('rol', !!r, 'Elija el tipo de participación.');
+  chk('tipo_doc', !!$('tipo_doc').value, 'Seleccione el tipo de documento.');
+  const mD = msgDoc(); chk('documento', !mD, mD);
+  const mN = msgNombre('nombres', 'su(s) nombre(s)'); chk('nombres', !mN, mN);
+  const mA = msgNombre('apellidos', 'su(s) apellido(s)'); chk('apellidos', !mA, mA);
+  const c1 = $('correo').value.trim().toLowerCase(), c2 = $('correo2').value.trim().toLowerCase();
+  chk('correo', EMAIL.test(c1), 'Escriba un correo válido, por ejemplo nombre@dominio.com.');
+  chk('correo2', c1 === c2, 'Los dos correos deben ser iguales.');
+  const mE = msgEntidad(); chk('entidad', !mE, mE);
+  const mT = msgTel(); chk('telefono', !mT, mT);
+  const mP = paisSel() ? '' : msgLugar('pais_otro', 'su país'); chk('pais', !mP, mP);
+  const mC = (paisSel() && $('ciudad').value && $('ciudad').value !== OTRO) ? '' : (paisSel() && !$('ciudad').value ? 'Seleccione su ciudad.' : msgLugar('ciudad_otro', 'su ciudad')); chk('ciudad', !mC, mC);
+  if (r === 'Ponente') {
+    const rows = ponRows(); let bad = '';
+    rows.forEach((x, k) => { if (!bad && !x.sel.value) bad = k === 0 ? 'Seleccione su ponencia.' : 'Seleccione la ponencia ' + (k + 1) + ' o quítela con la ✕.'; });
+    rows.forEach((x, k) => { if (!bad && !x.part.value) bad = 'Indique su participación en ' + (rows.length > 1 ? 'la ponencia ' + (k + 1) : 'su ponencia') + '.'; });
+    const vs = rows.map(x => x.sel.value); if (!bad && new Set(vs).size < vs.length) bad = 'Repitió una ponencia. Quite la duplicada con la ✕.';
+    if (!bad) { const sl = vs.map(slotDe); for (let i = 0; i < sl.length && !bad; i++) for (let j = i + 1; j < sl.length; j++) if (choca(sl[i], sl[j])) { bad = 'Dos de sus ponencias coinciden en el mismo horario. Cambie una.'; break; } }
+    chk('ponencia', !bad, bad);
+  }
+  if (r === 'Invitado' || r === 'Asistente') {
+    const sel = chaSelects(), vals = sel.map(s => s.value); let bad = '';
+    if (r === 'Invitado' && !vals[0]) bad = 'Indique a qué evento o charla es invitado.';
+    sel.forEach((s, k) => { if (!bad && k > 0 && !s.value) bad = 'Elija la charla adicional o quítela con la ✕.'; });
+    sel.forEach(s => { if (!bad && s.value === 'OTRO') { const o = s === $('charla') ? $('charla_otra') : s.closest('.xrow').querySelector('.cha-o'); if (o.value.trim().length < 3) bad = 'Escriba el nombre del evento o charla.'; } });
+    const ne = vals.filter(v => v && v !== 'OTRO'); if (!bad && new Set(ne).size < ne.length) bad = 'Eligió la misma charla dos veces. Quite la repetida con la ✕.';
+    if (!bad) { const sl = ne.map(slotDe); for (let i = 0; i < sl.length && !bad; i++) for (let j = i + 1; j < sl.length; j++) if (choca(sl[i], sl[j])) { bad = 'Dos de las charlas elegidas son en el mismo horario. Solo puede asistir a una.'; break; } }
+    chk('charla', !bad, bad);
+  }
+  const a = $('acepta').checked; setErr('acepta', a ? '' : 'Debe autorizar el tratamiento de datos para continuar.'); if (!a) { ok = false; if (!first) first = $('acepta'); }
+  if (!ok && first && first.scrollIntoView) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  return ok;
+}
+
+/* ---- envío ---- */
+function charlaDe(v, otro) {
+  if (!v) return null;
+  if (v === 'OTRO') return { tipo: 'otro', titulo: (otro || '').trim() };
+  if (v.startsWith('E:')) {
+    const id = v.slice(2); let e = null; DATA.E.forEach(g => g.items.forEach(x => { if (x.id === id) e = x; }));
+    return e ? { tipo: e.tipo, titulo: e.tit, dia: e.dia, hora: e.hora, responsable: e.resp || '' } : null;
+  }
+  const p = DATA.P.find(x => x.cod === v.slice(2)); return p ? { tipo: 'ponencia', cod: p.cod, titulo: p.tit, dia: p.dia, hora: p.hora, lugar: p.lugar, modalidad: p.mod } : null;
+}
+function charlasObj() {
+  const out = chaSelects().map(x => charlaDe(x.value, x === $('charla') ? $('charla_otra').value : ((x.closest('.xrow') || document).querySelector('.cha-o') || {}).value)).filter(Boolean);
+  return out.length ? out : null;
+}
+function payload() {
+  const r = rolSel();
+  const tel = $('telefono').value ? '+' + dialTxt() + $('telefono').value : '';
+  return {
+    origen: 'presencial',
+    rol: r, tipo_doc: $('tipo_doc').value, documento: cleanDoc($('documento').value),
+    nombres: sp($('nombres').value), apellidos: sp($('apellidos').value), correo: $('correo').value.trim().toLowerCase(),
+    telefono: tel || null, pais: paisTxt(), ciudad: ciudadTxt(), entidad: sp($('entidad').value),
+    ponencia: r === 'Ponente' ? ponRows().filter(x => x.sel.value).map(x => { const pm = DATA.P.find(q => q.cod === x.sel.value.slice(2)); return pm ? { cod: pm.cod, titulo: pm.tit, dia: pm.dia, hora: pm.hora, lugar: pm.lugar, modalidad: pm.mod, participacion: x.part.value } : null; }).filter(Boolean) : null,
+    charla: (r === 'Asistente' || r === 'Invitado') ? charlasObj() : null,
+    acepta_datos: true
+  };
+}
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function show(html) { $('box').innerHTML = html; $('ov').classList.add('on'); }
+function hide() { $('ov').classList.remove('on'); }
+let timer = null;
+function reset() { clearInterval(timer); hide(); { const v = $('bv'); if (v) { v.classList.remove('on'); $('bvdim').classList.remove('on'); $('bvskip').classList.remove('on'); try { v.pause(); } catch (e) {} } } $('f').reset(); initLugar(); onInd(); $('ponchip').classList.remove('on'); $('sug').classList.remove('on'); onRol(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function bienvenida() {
+  const v = $('bv'), d = $('bvdim'), s = $('bvskip');
+  if (!v || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const fin = () => { v.classList.remove('on'); d.classList.remove('on'); s.classList.remove('on'); try { v.pause(); } catch (e) {} };
+  v.onended = fin; s.onclick = fin;
+  try { v.currentTime = 0; } catch (e) {}
+  v.muted = false; v.volume = 1;
+  let p = v.play();
+  const go = () => { v.classList.add('on'); d.classList.add('on'); s.classList.add('on'); };
+  if (p && p.then) p.then(go).catch(() => { v.muted = true; v.play().then(go).catch(() => {}); }); else go();
+}
+function okScreen(nombre, correo) {
+  let n = 22; bienvenida();
+  show('<div class="mark" style="background:var(--ok)">✓</div><h3>¡Registro exitoso, ' + esc(nombre) + '!</h3><p>En uno o dos minutos recibirá su sticker de identificación en</p><p><b style="color:var(--ink)">' + esc(correo) + '</b></p><p style="font-size:13px;margin-top:10px">Guárdelo en su celular y téngalo a la mano durante el congreso. Si no lo ve, revise la carpeta de spam.</p><button id="nuevo" type="button">Nuevo registro (<span id="cnt">' + n + '</span>)</button>');
+  $('nuevo').onclick = reset;
+  timer = setInterval(() => { n--; const c = $('cnt'); if (c) c.textContent = n; if (n <= 0) reset(); }, 1000);
+}
+function errScreen(m) { show('<div class="mark" style="background:var(--err)">!</div><h3>No se pudo registrar</h3><p>' + esc(m) + '</p><button type="button" id="cerrar">Volver al formulario</button>'); $('cerrar').onclick = hide; }
+
+let busy = false;
+$('f').addEventListener('submit', async ev => {
+  ev.preventDefault(); if (busy) return;
+  if (!validar()) return;
+  busy = true; $('send').disabled = true;
+  if (!(await chequeaCorreo())) { busy = false; $('send').disabled = false; $('correo').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+  show('<div class="spin"></div><h3>Guardando su registro…</h3><p>Un momento, no cierre esta página.</p>');
+  const body = payload();
+  try {
+    if ($('web').value) { okScreen(body.nombres.split(' ')[0], body.correo); return; }   /* trampa anti-robots */
+    const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 30000);
+    const res = await fetch(SUPABASE_URL + '/rest/v1/registros', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Prefer': 'return=minimal' },
+      body: JSON.stringify(body), signal: ctl.signal
+    });
+    clearTimeout(to);
+    if (res.status === 201 || res.status === 204) okScreen(body.nombres.split(' ')[0], body.correo);
+    else {
+      let j = {}; try { j = await res.json(); } catch (e) {}
+      if (res.status === 409 || j.code === '23505') errScreen('Ya existe un registro con ese documento. Si no recibió su sticker, avise al personal del evento.');
+      else if (res.status === 400 || res.status === 422) errScreen('Hay un dato que no es válido. Revise el formulario e intente de nuevo.');
+      else errScreen('No pudimos guardar su registro. Intente de nuevo en un momento.');
+    }
+  } catch (e) {
+    errScreen(e.name === 'AbortError' ? 'Tardó demasiado en responder. Intente de nuevo.' : 'No hay conexión a internet. Revise su conexión e intente de nuevo.');
+  } finally { busy = false; $('send').disabled = false; }
+});
+document.querySelectorAll('#f input, #f select').forEach(el => { const h = () => { if (el.id) { setErr(el.id, ''); if (el.id === 'correo') setErr('correo2', ''); } }; el.addEventListener('input', h); el.addEventListener('change', h); });
+initLugar(); onInd();
+onRol();
+</script>
+</body>
+</html>

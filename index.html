@@ -147,6 +147,12 @@ footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;
   .logos img{height:36px}
 }
 @media(max-width:340px){.roles{grid-template-columns:1fr}}
+.bvdim{position:fixed;inset:0;background:rgba(10,31,64,.55);z-index:15;opacity:0;pointer-events:none;transition:opacity .6s}
+.bvdim.on{opacity:1;pointer-events:auto}
+#bv{position:fixed;inset:0;width:100%;height:100%;object-fit:contain;mix-blend-mode:screen;z-index:20;opacity:0;pointer-events:none;transition:opacity .8s;background:transparent}
+#bv.on{opacity:1}
+#bvskip{position:fixed;right:16px;bottom:16px;z-index:25;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:6px 14px;font:500 13px inherit;cursor:pointer;display:none}
+#bvskip.on{display:block}
 </style>
 </head>
 <body>
@@ -265,6 +271,7 @@ footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;
 
 <div class="ov" id="ov"><div class="box" id="box"></div></div>
 
+<div class="bvdim" id="bvdim"></div><video id="bv" src="assets/bienvenida.mp4" playsinline preload="auto"></video><button id="bvskip" type="button">Saltar</button>
 <script>
 /* ============ CONEXIÓN CON SUPABASE (llave pública: solo puede insertar) ============ */
 const SUPABASE_URL = 'https://lhmsnlglynyscypnjavv.supabase.co';
@@ -653,9 +660,20 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 function show(html) { $('box').innerHTML = html; $('ov').classList.add('on'); }
 function hide() { $('ov').classList.remove('on'); }
 let timer = null;
-function reset() { clearInterval(timer); hide(); $('f').reset(); initLugar(); onInd(); $('ponchip').classList.remove('on'); $('sug').classList.remove('on'); onRol(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function reset() { clearInterval(timer); hide(); { const v = $('bv'); if (v) { v.classList.remove('on'); $('bvdim').classList.remove('on'); $('bvskip').classList.remove('on'); try { v.pause(); } catch (e) {} } } $('f').reset(); initLugar(); onInd(); $('ponchip').classList.remove('on'); $('sug').classList.remove('on'); onRol(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function bienvenida() {
+  const v = $('bv'), d = $('bvdim'), s = $('bvskip');
+  if (!v || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const fin = () => { v.classList.remove('on'); d.classList.remove('on'); s.classList.remove('on'); try { v.pause(); } catch (e) {} };
+  v.onended = fin; s.onclick = fin;
+  try { v.currentTime = 0; } catch (e) {}
+  v.muted = false; v.volume = 1;
+  let p = v.play();
+  const go = () => { v.classList.add('on'); d.classList.add('on'); s.classList.add('on'); };
+  if (p && p.then) p.then(go).catch(() => { v.muted = true; v.play().then(go).catch(() => {}); }); else go();
+}
 function okScreen(nombre, correo) {
-  let n = 12;
+  let n = 22; bienvenida();
   show('<div class="mark" style="background:var(--ok)">✓</div><h3>¡Registro exitoso, ' + esc(nombre) + '!</h3><p>En uno o dos minutos recibirá su sticker de identificación en</p><p><b style="color:var(--ink)">' + esc(correo) + '</b></p><p style="font-size:13px;margin-top:10px">Guárdelo en su celular y téngalo a la mano durante el congreso. Si no lo ve, revise la carpeta de spam.</p><button id="nuevo" type="button">Nuevo registro (<span id="cnt">' + n + '</span>)</button>');
   $('nuevo').onclick = reset;
   timer = setInterval(() => { n--; const c = $('cnt'); if (c) c.textContent = n; if (n <= 0) reset(); }, 1000);
