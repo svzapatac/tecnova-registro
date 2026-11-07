@@ -177,7 +177,7 @@ footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;
 
   <div class="cond" id="c_ponente">
     <label for="ponencia">Nombre de su ponencia <span class="req">*</span></label>
-    <input type="text" id="ponencia" list="lista-ponencias" placeholder="Escriba o elija el título de su ponencia" autocomplete="off">
+    <input type="text" id="ponencia" list="lista-ponencias" placeholder="Escriba o elija el título de su ponencia" autocomplete="off" maxlength="400">
     <datalist id="lista-ponencias"></datalist>
     <div class="chip" id="ponchip"></div>
     <div class="hint">Si su ponencia está en el programa, aparece al escribir. Si no, escriba el título completo.</div>
@@ -199,24 +199,24 @@ footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;
     <div><label for="tipo_doc">Tipo de documento <span class="req">*</span></label>
       <select id="tipo_doc"><option value="">Seleccione…</option><option>CC</option><option>CE</option><option>TI</option><option>Pasaporte</option><option>PEP / PPT</option><option>Otro</option></select><div class="msg" id="e_tipo_doc"></div></div>
     <div><label for="documento">Número de documento <span class="req">*</span></label>
-      <input type="text" id="documento" inputmode="text" autocapitalize="characters"><div class="msg" id="e_documento"></div></div>
+      <input type="text" id="documento" inputmode="text" autocapitalize="characters" maxlength="20" autocomplete="off"><div class="hint" id="h_documento">Primero elija el tipo de documento.</div><div class="msg" id="e_documento"></div></div>
     <div><label for="nombres">Nombre(s) <span class="req">*</span></label>
-      <input type="text" id="nombres" autocapitalize="words"><div class="msg" id="e_nombres"></div></div>
+      <input type="text" id="nombres" autocapitalize="words" maxlength="60"><div class="msg" id="e_nombres"></div></div>
     <div><label for="apellidos">Apellido(s) <span class="req">*</span></label>
-      <input type="text" id="apellidos" autocapitalize="words"><div class="msg" id="e_apellidos"></div></div>
+      <input type="text" id="apellidos" autocapitalize="words" maxlength="60"><div class="msg" id="e_apellidos"></div></div>
     <div><label for="correo">Correo electrónico <span class="req">*</span></label>
       <input type="email" id="correo" inputmode="email" autocapitalize="none" spellcheck="false">
       <div class="sug" id="sug">¿Quiso decir <button type="button" id="sugbtn"></button>?</div><div class="msg" id="e_correo"></div></div>
     <div><label for="correo2">Confirme su correo <span class="req">*</span></label>
       <input type="email" id="correo2" inputmode="email" autocapitalize="none" spellcheck="false"><div class="msg" id="e_correo2"></div></div>
     <div><label for="telefono">Celular <span class="opt">(opcional)</span></label>
-      <input type="tel" id="telefono" inputmode="tel"></div>
+      <input type="tel" id="telefono" inputmode="tel" maxlength="16" placeholder="Ej.: 3001234567"><div class="msg" id="e_telefono"></div></div>
     <div><label for="entidad">Entidad, universidad o empresa <span class="req">*</span></label>
-      <input type="text" id="entidad" autocapitalize="words"><div class="msg" id="e_entidad"></div></div>
+      <input type="text" id="entidad" autocapitalize="words" maxlength="150"><div class="msg" id="e_entidad"></div></div>
     <div><label for="pais">País de residencia <span class="req">*</span></label>
-      <input type="text" id="pais" value="Colombia" list="lista-paises"><datalist id="lista-paises"></datalist><div class="msg" id="e_pais"></div></div>
+      <input type="text" id="pais" value="Colombia" list="lista-paises" maxlength="60"><datalist id="lista-paises"></datalist><div class="msg" id="e_pais"></div></div>
     <div><label for="ciudad">Ciudad de residencia <span class="req">*</span></label>
-      <input type="text" id="ciudad" autocapitalize="words"><div class="msg" id="e_ciudad"></div></div>
+      <input type="text" id="ciudad" autocapitalize="words" maxlength="60"><div class="msg" id="e_ciudad"></div></div>
   </div>
 
   <div class="hp" aria-hidden="true"><label>No llenar<input type="text" id="web" tabindex="-1" autocomplete="off"></label></div>
@@ -320,6 +320,71 @@ $('correo').addEventListener('blur', () => {
 
 /* ---- validación ---- */
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+/* ---- reglas de cada campo ---- */
+const DOC = {
+  'CC':        { num: true,  min: 6, max: 10, hint: 'Solo números, de 6 a 10 dígitos, sin puntos ni espacios.' },
+  'TI':        { num: true,  min: 8, max: 11, hint: 'Solo números, de 8 a 11 dígitos.' },
+  'CE':        { num: true,  min: 4, max: 10, hint: 'Solo números, de 4 a 10 dígitos.' },
+  'Pasaporte': { num: false, min: 5, max: 15, hint: 'Letras y números, de 5 a 15 caracteres, sin espacios.' },
+  'PEP / PPT': { num: true,  min: 6, max: 15, hint: 'Solo números, de 6 a 15 dígitos.' },
+  'Otro':      { num: false, min: 4, max: 20, hint: 'Letras y números, de 4 a 20 caracteres, sin espacios.' }
+};
+const cleanDoc = v => { const d = DOC[$('tipo_doc').value]; v = (v || '').toUpperCase(); return d && d.num ? v.replace(/\D/g, '') : v.replace(/[^A-Z0-9]/g, ''); };
+const onlyLetters = v => (v || '').replace(/[^\p{L}'’.\- ]/gu, '').replace(/\s{2,}/g, ' ').replace(/^\s+/, '');
+const onlyPlace = v => (v || '').replace(/[^\p{L}'’.,\- ]/gu, '').replace(/\s{2,}/g, ' ').replace(/^\s+/, '');
+const nLetters = v => (v.match(/\p{L}/gu) || []).length;
+const sp = v => (v || '').replace(/\s+/g, ' ').trim();
+
+function msgDoc() {
+  const d = DOC[$('tipo_doc').value]; const v = cleanDoc($('documento').value);
+  if (!d) return 'Primero seleccione el tipo de documento.';
+  if (!v) return 'Escriba el número de documento.';
+  if (v.length < d.min || v.length > d.max) return 'El ' + $('tipo_doc').value + ' debe tener entre ' + d.min + ' y ' + d.max + (d.num ? ' dígitos.' : ' caracteres.');
+  if (!d.num && !/\d/.test(v) && $('tipo_doc').value === 'Pasaporte') return 'El pasaporte debe incluir al menos un número.';
+  if (/^(\d)\1+$/.test(v)) return 'Revise el número de documento.';
+  return '';
+}
+function msgNombre(id, que) {
+  const v = sp($(id).value);
+  if (v.length < 2) return 'Escriba ' + que + '.';
+  if (!/^\p{L}[\p{L}'’.\- ]*$/u.test(v) || nLetters(v) < 2) return 'Use solo letras (sin números ni símbolos).';
+  return '';
+}
+function msgLugar(id, que) {
+  const v = sp($(id).value);
+  if (v.length < 2) return 'Escriba ' + que + '.';
+  if (!/^\p{L}[\p{L}'’.,\- ]*$/u.test(v) || nLetters(v) < 2) return 'Use solo letras (sin números).';
+  return '';
+}
+function msgEntidad() {
+  const v = sp($('entidad').value);
+  if (v.length < 2 || nLetters(v) < 2) return 'Escriba el nombre de su entidad.';
+  return '';
+}
+function msgTel() {
+  const raw = $('telefono').value.replace(/\s/g, ''); if (!raw) return '';
+  if (!/^\+?\d+$/.test(raw)) return 'Use solo números (puede iniciar con +).';
+  const dig = raw.replace(/\D/g, '');
+  if (/^(\+?57)?3\d{9}$/.test(raw) && (dig.length === 10 || dig.length === 12)) return '';
+  if (norm($('pais').value) === 'colombia' && !raw.startsWith('+')) return 'El celular de Colombia tiene 10 dígitos y empieza por 3.';
+  if (dig.length < 7 || dig.length > 15) return 'El número debe tener entre 7 y 15 dígitos.';
+  return '';
+}
+
+/* ---- filtros mientras se escribe ---- */
+$('tipo_doc').addEventListener('change', () => {
+  const d = DOC[$('tipo_doc').value];
+  $('h_documento').textContent = d ? d.hint : 'Primero elija el tipo de documento.';
+  $('documento').inputMode = d && d.num ? 'numeric' : 'text';
+  $('documento').maxLength = d ? d.max : 20;
+  $('documento').value = cleanDoc($('documento').value).slice(0, d ? d.max : 20);
+});
+$('documento').addEventListener('input', () => { const d = DOC[$('tipo_doc').value]; $('documento').value = cleanDoc($('documento').value).slice(0, d ? d.max : 20); });
+['nombres', 'apellidos'].forEach(id => $(id).addEventListener('input', () => { $(id).value = onlyLetters($(id).value); }));
+['ciudad', 'pais'].forEach(id => $(id).addEventListener('input', () => { $(id).value = onlyPlace($(id).value); }));
+$('telefono').addEventListener('input', () => { $('telefono').value = $('telefono').value.replace(/(?!^\+)[^\d ]/g, ''); });
+['nombres', 'apellidos', 'ciudad', 'pais', 'entidad', 'ponencia'].forEach(id => $(id).addEventListener('blur', () => { $(id).value = sp($(id).value); }));
 function setErr(id, m) { const e = $('e_' + id), el = $(id); if (e) e.textContent = m || ''; if (el && el.classList) el.classList.toggle('bad', !!m); return !m; }
 function validar() {
   let ok = true, first = null;
@@ -327,16 +392,17 @@ function validar() {
   const r = rolSel();
   chk('rol', !!r, 'Elija el tipo de participación.');
   chk('tipo_doc', !!$('tipo_doc').value, 'Seleccione el tipo de documento.');
-  chk('documento', $('documento').value.replace(/[\s.\-]/g, '').length >= 4, 'Escriba el número de documento.');
-  chk('nombres', $('nombres').value.trim().length >= 2, 'Escriba su(s) nombre(s).');
-  chk('apellidos', $('apellidos').value.trim().length >= 2, 'Escriba su(s) apellido(s).');
+  const mD = msgDoc(); chk('documento', !mD, mD);
+  const mN = msgNombre('nombres', 'su(s) nombre(s)'); chk('nombres', !mN, mN);
+  const mA = msgNombre('apellidos', 'su(s) apellido(s)'); chk('apellidos', !mA, mA);
   const c1 = $('correo').value.trim().toLowerCase(), c2 = $('correo2').value.trim().toLowerCase();
   chk('correo', EMAIL.test(c1), 'Escriba un correo válido.');
   chk('correo2', c1 === c2, 'Los dos correos deben ser iguales.');
-  chk('entidad', $('entidad').value.trim().length >= 2, 'Escriba su entidad.');
-  chk('pais', $('pais').value.trim().length >= 2, 'Escriba el país.');
-  chk('ciudad', $('ciudad').value.trim().length >= 2, 'Escriba la ciudad.');
-  if (r === 'Ponente') chk('ponencia', $('ponencia').value.trim().length >= 5, 'Escriba el nombre de su ponencia.');
+  const mE = msgEntidad(); chk('entidad', !mE, mE);
+  const mT = msgTel(); chk('telefono', !mT, mT);
+  const mP = msgLugar('pais', 'el país'); chk('pais', !mP, mP);
+  const mC = msgLugar('ciudad', 'la ciudad'); chk('ciudad', !mC, mC);
+  if (r === 'Ponente') chk('ponencia', sp($('ponencia').value).length >= 5 && nLetters($('ponencia').value) >= 4, 'Escriba el nombre de su ponencia.');
   if (r === 'Invitado') {
     const v = $('charla').value;
     chk('charla', !!v && (v !== 'OTRO' || $('charla_otra').value.trim().length >= 3), 'Indique a qué evento o charla es invitado.');
@@ -361,9 +427,9 @@ function payload() {
   const tel = $('telefono').value.trim();
   return {
     origen: 'presencial',
-    rol: r, tipo_doc: $('tipo_doc').value, documento: $('documento').value.replace(/[\s.\-]/g, '').toUpperCase(),
-    nombres: $('nombres').value.trim(), apellidos: $('apellidos').value.trim(), correo: $('correo').value.trim().toLowerCase(),
-    telefono: tel || null, pais: $('pais').value.trim(), ciudad: $('ciudad').value.trim(), entidad: $('entidad').value.trim(),
+    rol: r, tipo_doc: $('tipo_doc').value, documento: cleanDoc($('documento').value),
+    nombres: sp($('nombres').value), apellidos: sp($('apellidos').value), correo: $('correo').value.trim().toLowerCase(),
+    telefono: tel.replace(/\s/g, '') || null, pais: sp($('pais').value), ciudad: sp($('ciudad').value), entidad: sp($('entidad').value),
     ponencia: r === 'Ponente' ? (pm ? { cod: pm.cod, titulo: pm.tit, dia: pm.dia, hora: pm.hora, lugar: pm.lugar, modalidad: pm.mod } : { cod: '', titulo: pon }) : null,
     charla: (r === 'Asistente' || r === 'Invitado') ? charlaObj() : null,
     acepta_datos: true
