@@ -155,6 +155,11 @@ footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;
 #bvskip{position:fixed;right:16px;bottom:16px;z-index:25;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:6px 14px;font:500 13px inherit;cursor:pointer;display:none}
 #bvskip.on{display:block}
 .rut{margin-top:30px}
+.gift{display:flex;gap:14px;align-items:flex-start;margin:-4px 0 16px;padding:14px 16px;border-radius:8px;background:linear-gradient(120deg,#0f2b54,#17407a);color:#fff}
+.gift .gi{font-size:30px;line-height:1}
+.gift b{display:block;font-size:14.5px;font-weight:600;margin-bottom:3px}
+.gift span{display:block;font-size:12.5px;line-height:1.5;color:#d5e0f1}
+.gift span b{display:inline;color:#ffb899;font-size:inherit}
 .rut .intro{font-size:13.5px;color:var(--mut);margin:-6px 0 14px;line-height:1.5}
 .rut .intro b{color:var(--navy)}
 .rbox{position:relative}
@@ -289,11 +294,11 @@ footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;
   </div>
 
   <div class="rut" id="rutas">
-    <div class="sec"><em>03</em><h2>Su ruta de interés</h2></div>
-    <p class="intro">Cuéntenos qué le apasiona y armamos su camino en TECNOVA. Elija hasta <b>3 rutas</b>: al asistir a <b>3 de sus 4 charlas</b> recibirá la <b>insignia de especialista</b> en ese tema. <span class="opt" style="color:var(--mut)">(Opcional)</span></p>
-    <div class="rbox"><input type="text" id="interes" maxlength="120" autocomplete="off" placeholder="¿Qué tema le interesa? Ej.: agentes de IA, ciberseguridad, energía solar…" aria-label="Tema de interés"></div>
+    <div class="sec"><em>03</em><h2>Su ruta de innovación</h2></div>
+    <div class="gift"><span class="gi">🏅</span><div><b>Gane una insignia digital de especialista</b><span>Cada ruta reúne 4 conferencias para innovar en un área. Elija <b>una o varias</b> y, al completar su ruta, recibirá la insignia que certifica que se especializó en ese tema. Puede compartirla en LinkedIn.</span></div></div>
+    <div class="rbox"><input type="text" id="interes" maxlength="120" autocomplete="off" placeholder="Su tema: ej. agentes de IA, energía solar…" aria-label="Tema de interés"></div>
     <div class="rsug" id="rsug"></div>
-    <div class="rcnt"><span>Toque una ruta para agregarla</span><span><b id="rn">0</b> de 3 elegidas</span></div>
+    <div class="rcnt"><span>Toque las rutas que le interesen</span><span><b id="rn">0</b> de 3 elegidas</span></div>
     <div class="rgrid" id="rgrid"></div>
     <div class="rdet" id="rdet"></div>
   </div>
@@ -381,7 +386,7 @@ function onRol() {
   $('lockmsg').classList.toggle('on', !r);
   $('c_ponente').classList.toggle('on', r === 'Ponente');
   if (r === 'Ponente') { buildPon(); $('particip').value = ''; $('ponchip').classList.remove('on'); }
-  const showCharla = r === 'Asistente' || r === 'Invitado';
+  const showCharla = r === 'Invitado';   /* el asistente elige rutas de interés, no charlas sueltas */
   $('c_charla').classList.toggle('on', showCharla);
   if (showCharla) {
     const inv = r === 'Invitado';
@@ -662,7 +667,7 @@ function validar() {
     if (!bad) { const sl = vs.map(slotDe); for (let i = 0; i < sl.length && !bad; i++) for (let j = i + 1; j < sl.length; j++) if (choca(sl[i], sl[j])) { bad = 'Dos de sus ponencias coinciden en el mismo horario. Cambie una.'; break; } }
     chk('ponencia', !bad, bad);
   }
-  if (r === 'Invitado' || r === 'Asistente') {
+  if (r === 'Invitado') {
     const sel = chaSelects(), vals = sel.map(s => s.value); let bad = '';
     if (r === 'Invitado' && !vals[0]) bad = 'Indique a qué evento o charla es invitado.';
     sel.forEach((s, k) => { if (!bad && k > 0 && !s.value) bad = 'Elija la charla adicional o quítela con la ✕.'; });
@@ -699,7 +704,7 @@ function payload() {
     nombres: sp($('nombres').value), apellidos: sp($('apellidos').value), correo: $('correo').value.trim().toLowerCase(),
     telefono: tel || null, pais: paisTxt(), ciudad: ciudadTxt(), entidad: sp($('entidad').value),
     ponencia: r === 'Ponente' ? ponRows().filter(x => x.sel.value).map(x => { const pm = DATA.P.find(q => q.cod === x.sel.value.slice(2)); return pm ? { cod: pm.cod, titulo: pm.tit, dia: pm.dia, hora: pm.hora, lugar: pm.lugar, modalidad: pm.mod, participacion: x.part.value } : null; }).filter(Boolean) : null,
-    charla: (r === 'Asistente' || r === 'Invitado') ? charlasObj() : null,
+    charla: r === 'Invitado' ? charlasObj() : null,
     interes: sp($('interes').value) || null,
     rutas: rutasSel.length ? rutasSel.map(k => { const r = RUTAS.find(x => x.c === k); return { cod: r.c, nombre: r.n }; }) : null,
     acepta_datos: true
@@ -709,7 +714,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 function show(html) { $('box').innerHTML = html; $('ov').classList.add('on'); }
 function hide() { $('ov').classList.remove('on'); }
 let timer = null;
-function reset() { clearInterval(timer); hide(); try { rutasSel = []; rRender(); } catch (e) {} window._bvGo = false; { const v = $('bv'); if (v) { v.classList.remove('on'); $('bvdim').classList.remove('on'); $('bvskip').classList.remove('on'); try { v.pause(); } catch (e) {} } } $('f').reset(); initLugar(); onInd(); $('ponchip').classList.remove('on'); $('sug').classList.remove('on'); onRol(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function reset() { clearInterval(timer); hide(); window._rutaOk = false; try { rutasSel = []; rRender(); } catch (e) {} window._bvGo = false; { const v = $('bv'); if (v) { v.classList.remove('on'); $('bvdim').classList.remove('on'); $('bvskip').classList.remove('on'); try { v.pause(); } catch (e) {} } } $('f').reset(); initLugar(); onInd(); $('ponchip').classList.remove('on'); $('sug').classList.remove('on'); onRol(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function prepVideo() {
   const v = $('bv'); if (!v) return;
   try { v.muted = false; const p = v.play(); if (p && p.then) p.then(() => { if (!window._bvGo) { v.pause(); v.currentTime = 0; } }).catch(() => { v.muted = true; v.load(); }); } catch (e) {}
@@ -760,6 +765,12 @@ let busy = false;
 $('f').addEventListener('submit', async ev => {
   ev.preventDefault(); if (busy) return;
   if (!validar()) return;
+  if (rolSel() === 'Asistente' && !rutasSel.length && !window._rutaOk) {
+    show('<div class="mark" style="background:var(--acc)">🏅</div><h3>¿Sin insignia?</h3><p>Elija al menos una ruta de innovación y reciba una <b>insignia digital de especialista</b> al completarla. Toma solo unos segundos.</p><button type="button" id="rEleg">Elegir mi ruta</button><button type="button" id="rSigue" style="background:none;color:var(--mut);border:1.5px solid var(--line);margin-top:8px">Continuar sin ruta</button>');
+    $('rEleg').onclick = () => { hide(); $('rutas').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    $('rSigue').onclick = () => { window._rutaOk = true; hide(); $('f').requestSubmit(); };
+    return;
+  }
   prepVideo();
   busy = true; $('send').disabled = true;
   if (!(await chequeaCorreo())) { busy = false; $('send').disabled = false; $('correo').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
@@ -819,13 +830,13 @@ function rRender() {
   const sg = rScore($('interes').value).map(x => x.r.c);
   const full = rutasSel.length >= 3, bloq = !rolSel();
   $('rgrid').innerHTML = RUTAS.map(r => { const [a, b] = rparts(r.n), on = rutasSel.includes(r.c);
-    return '<button type="button" class="rcard' + (on ? ' on' : '') + (sg.includes(r.c) ? ' sg' : '') + '" data-c="' + r.c + '"' + ((full && !on) || bloq ? ' disabled' : '') + ' aria-pressed="' + on + '"><span class="rk"></span><span class="ri">' + r.i + '</span><b>' + esc(a) + '</b><small>' + esc(b || '4 charlas') + '</small></button>'; }).join('');
+    return '<button type="button" class="rcard' + (on ? ' on' : '') + (sg.includes(r.c) ? ' sg' : '') + '" data-c="' + r.c + '"' + ((full && !on) || bloq ? ' disabled' : '') + ' aria-pressed="' + on + '"><span class="rk"></span><span class="ri">' + r.i + '</span><b>' + esc(a) + '</b><small>' + esc(b || '4 conferencias') + '</small></button>'; }).join('');
   $('rn').textContent = rutasSel.length;
   const sb = $('rsug'), pend = sg.filter(c => !rutasSel.includes(c));
   if (pend.length && !full) { sb.innerHTML = 'Por lo que escribió, le sugerimos: ' + pend.map(c => '<button type="button" data-s="' + c + '">+ ' + esc(rparts(RUTAS.find(r => r.c === c).n)[1] || rparts(RUTAS.find(r => r.c === c).n)[0]) + '</button>').join(''); sb.classList.add('on'); }
   else sb.classList.remove('on');
   $('rdet').innerHTML = rutasSel.map(c => { const r = RUTAS.find(x => x.c === c), [a, b] = rparts(r.n);
-    return '<section><h4><span style="font-size:20px">' + r.i + '</span>' + esc(a + (b ? ' · ' + b : '')) + '</h4><p class="badge">Asista a <b>3 de estas 4 charlas</b> y gane la insignia <b>Explorador · ' + esc(b || a) + '</b></p><ol>' +
+    return '<section><h4><span style="font-size:20px">' + r.i + '</span>' + esc(a + (b ? ' · ' + b : '')) + '</h4><p class="badge">Complete <b>3 de estas 4 conferencias</b> y reciba la insignia <b>Explorador · ' + esc(b || a) + '</b></p><ol>' +
       rActs(r).map((x, i) => '<li><i>' + (i + 1) + '</i><span>' + esc(x.t) + '<em>' + esc(x.s) + '</em></span></li>').join('') + '</ol></section>'; }).join('');
 }
 function rToggle(c) {
