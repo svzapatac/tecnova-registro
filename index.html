@@ -154,6 +154,42 @@ footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;
 #bv.on~#bvc{opacity:1}
 #bvskip{position:fixed;right:16px;bottom:16px;z-index:25;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:6px 14px;font:500 13px inherit;cursor:pointer;display:none}
 #bvskip.on{display:block}
+.rut{margin-top:30px}
+.rut .intro{font-size:13.5px;color:var(--mut);margin:-6px 0 14px;line-height:1.5}
+.rut .intro b{color:var(--navy)}
+.rbox{position:relative}
+.rbox input{padding-left:42px}
+.rbox:before{content:"✦";position:absolute;left:15px;top:13px;color:var(--acc);font-size:17px;z-index:1}
+.rsug{display:none;margin-top:10px;padding:10px 14px;background:linear-gradient(90deg,#fff4ee,#fff);border-left:4px solid var(--acc);font-size:13px;color:var(--navy)}
+.rsug.on{display:block}
+.rsug button{all:unset;cursor:pointer;margin:3px 6px 3px 0;padding:3px 11px;border-radius:14px;background:var(--acc);color:#fff;font-weight:600;font-size:12.5px;display:inline-block}
+.rcnt{display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px;font-size:12.5px;color:var(--mut)}
+.rcnt b{color:var(--navy);font-weight:600}
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rcard{all:unset;box-sizing:border-box;cursor:pointer;position:relative;display:flex;flex-direction:column;gap:3px;padding:12px 12px 11px;border:1.5px solid var(--line);border-radius:8px;background:#fff;transition:.15s;min-height:92px}
+.rcard:hover{border-color:var(--blue);transform:translateY(-1px);box-shadow:0 4px 12px rgba(15,43,84,.1)}
+.rcard .ri{font-size:22px;line-height:1}
+.rcard b{font-weight:600;font-size:12.5px;line-height:1.25;color:var(--navy);margin-top:3px}
+.rcard small{font-size:11.5px;line-height:1.3;color:var(--mut)}
+.rcard .rk{position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;background:#fff}
+.rcard.on{background:var(--navy);border-color:var(--navy)}
+.rcard.on b{color:#fff}.rcard.on small{color:#c9d6ea}
+.rcard.on .rk{background:var(--acc);border-color:var(--acc)}
+.rcard.on .rk:after{content:"✓"}
+.rcard.sg:not(.on){border-color:var(--acc);box-shadow:0 0 0 3px rgba(231,91,47,.15)}
+.rcard.sg:not(.on):before{content:"Sugerida";position:absolute;right:34px;top:11px;font-size:10px;font-weight:700;color:var(--acc);letter-spacing:.04em;text-transform:uppercase}
+.rcard[disabled]{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+.rdet{margin-top:14px;display:grid;gap:12px}
+.rdet section{border:1px solid var(--line);border-top:4px solid var(--acc);border-radius:6px;padding:12px 14px;background:#fff}
+.rdet h4{margin:0 0 6px;font-size:13.5px;color:var(--navy);display:flex;gap:8px;align-items:center}
+.rdet .badge{margin:0 0 8px;font-size:12px;color:var(--mut)}
+.rdet .badge b{color:var(--acc)}
+.rdet ol{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+.rdet li{display:grid;grid-template-columns:26px 1fr;gap:8px;font-size:12.5px;line-height:1.35;color:var(--ink)}
+.rdet li i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--soft);color:var(--navy);font-weight:700;font-size:11.5px;display:flex;align-items:center;justify-content:center}
+.rdet li span{display:block}
+.rdet li em{font-style:normal;display:block;color:var(--mut);font-size:11.5px;margin-top:1px}
+@media(max-width:640px){.rgrid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -252,6 +288,16 @@ footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;
       <input type="text" id="ciudad_otro" class="hid sub" autocapitalize="words" maxlength="60" placeholder="Escriba su ciudad" aria-label="Otra ciudad"><div class="msg" id="e_ciudad"></div></div>
   </div>
 
+  <div class="rut" id="rutas">
+    <div class="sec"><em>03</em><h2>Su ruta de interés</h2></div>
+    <p class="intro">Cuéntenos qué le apasiona y armamos su camino en TECNOVA. Elija hasta <b>3 rutas</b>: al asistir a <b>3 de sus 4 charlas</b> recibirá la <b>insignia de especialista</b> en ese tema. <span class="opt" style="color:var(--mut)">(Opcional)</span></p>
+    <div class="rbox"><input type="text" id="interes" maxlength="120" autocomplete="off" placeholder="¿Qué tema le interesa? Ej.: agentes de IA, ciberseguridad, energía solar…" aria-label="Tema de interés"></div>
+    <div class="rsug" id="rsug"></div>
+    <div class="rcnt"><span>Toque una ruta para agregarla</span><span><b id="rn">0</b> de 3 elegidas</span></div>
+    <div class="rgrid" id="rgrid"></div>
+    <div class="rdet" id="rdet"></div>
+  </div>
+
   <div class="hp" aria-hidden="true"><label>No llenar<input type="text" id="web" tabindex="-1" autocomplete="off"></label></div>
 
   <div class="consent">
@@ -330,7 +376,7 @@ function buildPon() {
 
 /* ---- campos según el rol ---- */
 function onRol() {
-  const r = rolSel();
+  const r = rolSel(); try { rRender(); } catch (e) {}
   document.querySelectorAll('#f input:not([name=rol]):not(#web), #f select, #send').forEach(el => { el.disabled = !r; });
   $('lockmsg').classList.toggle('on', !r);
   $('c_ponente').classList.toggle('on', r === 'Ponente');
@@ -654,6 +700,8 @@ function payload() {
     telefono: tel || null, pais: paisTxt(), ciudad: ciudadTxt(), entidad: sp($('entidad').value),
     ponencia: r === 'Ponente' ? ponRows().filter(x => x.sel.value).map(x => { const pm = DATA.P.find(q => q.cod === x.sel.value.slice(2)); return pm ? { cod: pm.cod, titulo: pm.tit, dia: pm.dia, hora: pm.hora, lugar: pm.lugar, modalidad: pm.mod, participacion: x.part.value } : null; }).filter(Boolean) : null,
     charla: (r === 'Asistente' || r === 'Invitado') ? charlasObj() : null,
+    interes: sp($('interes').value) || null,
+    rutas: rutasSel.length ? rutasSel.map(k => { const r = RUTAS.find(x => x.c === k); return { cod: r.c, nombre: r.n }; }) : null,
     acepta_datos: true
   };
 }
@@ -661,7 +709,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 function show(html) { $('box').innerHTML = html; $('ov').classList.add('on'); }
 function hide() { $('ov').classList.remove('on'); }
 let timer = null;
-function reset() { clearInterval(timer); hide(); window._bvGo = false; { const v = $('bv'); if (v) { v.classList.remove('on'); $('bvdim').classList.remove('on'); $('bvskip').classList.remove('on'); try { v.pause(); } catch (e) {} } } $('f').reset(); initLugar(); onInd(); $('ponchip').classList.remove('on'); $('sug').classList.remove('on'); onRol(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function reset() { clearInterval(timer); hide(); try { rutasSel = []; rRender(); } catch (e) {} window._bvGo = false; { const v = $('bv'); if (v) { v.classList.remove('on'); $('bvdim').classList.remove('on'); $('bvskip').classList.remove('on'); try { v.pause(); } catch (e) {} } } $('f').reset(); initLugar(); onInd(); $('ponchip').classList.remove('on'); $('sug').classList.remove('on'); onRol(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function prepVideo() {
   const v = $('bv'); if (!v) return;
   try { v.muted = false; const p = v.play(); if (p && p.then) p.then(() => { if (!window._bvGo) { v.pause(); v.currentTime = 0; } }).catch(() => { v.muted = true; v.load(); }); } catch (e) {}
@@ -720,11 +768,16 @@ $('f').addEventListener('submit', async ev => {
   try {
     if ($('web').value) { okScreen(body.nombres.split(' ')[0], body.correo); return; }   /* trampa anti-robots */
     const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 30000);
-    const res = await fetch(SUPABASE_URL + '/rest/v1/registros', {
+    const enviar = b => fetch(SUPABASE_URL + '/rest/v1/registros', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Prefer': 'return=minimal' },
-      body: JSON.stringify(body), signal: ctl.signal
+      body: JSON.stringify(b), signal: ctl.signal
     });
+    let res = await enviar(body);
+    if (res.status === 400 && (body.interes || body.rutas)) {   /* la base aún no tiene las columnas de rutas: se guarda sin ellas */
+      let t = ''; try { t = await res.clone().text(); } catch (e) {}
+      if (/interes|rutas|PGRST204/i.test(t)) { const b2 = Object.assign({}, body); delete b2.interes; delete b2.rutas; res = await enviar(b2); }
+    }
     clearTimeout(to);
     if (res.status === 201 || res.status === 204) okScreen(body.nombres.split(' ')[0], body.correo);
     else {
@@ -738,8 +791,55 @@ $('f').addEventListener('submit', async ev => {
   } finally { busy = false; $('send').disabled = false; }
 });
 document.querySelectorAll('#f input, #f select').forEach(el => { const h = () => { if (el.id) { setErr(el.id, ''); if (el.id === 'correo') setErr('correo2', ''); } }; el.addEventListener('input', h); el.addEventListener('change', h); });
+const RUTAS = [{"c": "CIB-1", "n": "Ciberseguridad: Redes e IoT seguros", "i": "🔐", "a": ["14", "19", "20", "36"], "k": "ciberseguridad seguridad informatica redes red iot intrusiones hacking firewall vpn hardening ataques malware"}, {"c": "CIB-2", "n": "Ciberseguridad: Personas, identidad y defensa", "i": "🛡️", "a": ["12", "46", "52", "25"], "k": "ciberseguridad identidad privacidad ingenieria social phishing biometria huella digital defensa reputacion"}, {"c": "IA-1", "n": "IA: Agentes e IA generativa", "i": "🤖", "a": ["18", "54", "39", "66"], "k": "agentes agente ia inteligencia artificial generativa chatbot asistente virtual llm gpt conversacional multiagente"}, {"c": "IA-2", "n": "IA: En el aula y la docencia", "i": "🎓", "a": ["01", "06", "55", "38"], "k": "ia inteligencia artificial educacion docente docencia aula pedagogia ensenanza tutor tutores"}, {"c": "IA-3", "n": "IA: Diagnóstico médico", "i": "🩻", "a": ["28", "29", "15", "16"], "k": "ia inteligencia artificial diagnostico medicina cancer imagenes deep learning clasificacion tumores salud"}, {"c": "SAL-1", "n": "Salud: Señales biomédicas y neurociencia", "i": "🫀", "a": ["44", "48", "04", "17"], "k": "senales biomedicas ecg eeg ppg neurociencia cerebro corazon biosensor salud"}, {"c": "SAL-2", "n": "Salud: Biotecnología e inclusión", "i": "🧬", "a": ["32", "64", "56", "58"], "k": "biotecnologia bioquimica proteinas inclusion discapacidad cuidadores realidad virtual rehabilitacion medicina tradicional salud"}, {"c": "DAT", "n": "Ciencia de datos: Machine Learning aplicado", "i": "📊", "a": ["34", "05", "13", "69"], "k": "ciencia datos machine learning aprendizaje automatico prediccion algoritmos analitica finanzas estadistica"}, {"c": "ENE", "n": "Energía: Solar y economía circular", "i": "☀️", "a": ["09", "10", "27", "62"], "k": "energia solar fotovoltaica electrica electricas redes calidad aire monitoreo"}, {"c": "AMB", "n": "Ambiente: Ciudades inteligentes y agro", "i": "🌱", "a": ["57", "61", "24", "11"], "k": "ambiente ambiental ciudades inteligentes agro agricultura drones dron residuos sostenibilidad reciclaje"}, {"c": "ROB", "n": "Robótica: Control y aeronáutica", "i": "🦾", "a": ["22", "23", "31", "26"], "k": "robotica robots control automatizacion aeronautica aviones simulacion pid drones"}, {"c": "IOT", "n": "IoT y prototipos para la industria", "i": "📡", "a": ["37", "35", "49", "41"], "k": "iot internet cosas prototipos mecatronica industria hidroponia electronica sensores"}, {"c": "STEM", "n": "STEM y microaprendizaje", "i": "🔬", "a": ["33", "07", "59", "60"], "k": "stem steam microaprendizaje microlearning whatsapp retos ensenanza ciencia astronomia ninos colegios"}, {"c": "TIC", "n": "Brecha digital y apropiación de TIC", "i": "🌐", "a": ["02", "43", "08", "30"], "k": "brecha digital tic tecnologia educativa transformacion pagina web redes sociales juridico derecho"}, {"c": "SOC", "n": "Innovación social y gestión", "i": "🤝", "a": ["42", "53", "51", "40"], "k": "innovacion social gestion deporte futbol sociedad bienestar organizacional empresas asistencia"}, {"c": "MAG", "n": "Conferencias magistrales: Visionarios", "i": "🎤", "a": ["W1", "W2", "W3", "J4"], "k": "conferencias magistrales keynote expertos internacionales"}, {"c": "EMPL", "n": "Empleabilidad: Tu camino profesional", "i": "💼", "a": ["J2", "J3", "J5", "J6"], "k": "empleo empleabilidad hoja vida trabajo carrera networking oportunidades laborales"}, {"c": "EMPR", "n": "Emprendimiento: Startups y pitch", "i": "🚀", "a": ["V2", "V3", "V4", "V6"], "k": "emprendimiento emprender startup startups pitch negocios empresa capital riesgo inversion"}];
+const RTW = {"21": "20", "47": "26", "63": "26", "50": "35", "65": "51"};
+let rutasSel = [];
+const rnorm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const rparts = n => { const i = n.indexOf(':'); return i < 0 ? [n, ''] : [n.slice(0, i), n.slice(i + 1).trim()]; };
+function rActs(r) {
+  return r.a.map(c => {
+    let t = '', slots = [];
+    const ev = DATA.E.flatMap(g => g.items).find(x => x.id === c);
+    if (ev) { t = ev.tit; slots = [(ev.dia.replace(' nov', '') + (ev.hora ? ' · ' + ev.hora : ''))]; }
+    else {
+      const cods = [c].concat(Object.keys(RTW).filter(k => RTW[k] === c));
+      const ps = DATA.P.filter(p => cods.includes(p.cod)); t = ps[0] ? ps[0].tit : c;
+      const seen = {}; ps.forEach(p => { const k = p.dia.replace(' nov', '') + ' · ' + p.hora + ' · ' + p.lugar; seen[k] = 1; }); slots = Object.keys(seen);
+    }
+    return { t, s: slots.join('  |  ') };
+  });
+}
+function rScore(txt) {
+  const toks = rnorm(txt).split(/[^a-z0-9]+/).filter(x => x.length >= 3); if (!toks.length) return [];
+  return RUTAS.map(r => { const kws = rnorm(r.k).split(' '); let s = 0;
+    toks.forEach(t => { if (kws.some(k => k === t || (t.length >= 4 && (k.startsWith(t) || t.startsWith(k) && k.length >= 4)))) s++; });
+    return { r, s }; }).filter(x => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 3);
+}
+function rRender() {
+  const sg = rScore($('interes').value).map(x => x.r.c);
+  const full = rutasSel.length >= 3, bloq = !rolSel();
+  $('rgrid').innerHTML = RUTAS.map(r => { const [a, b] = rparts(r.n), on = rutasSel.includes(r.c);
+    return '<button type="button" class="rcard' + (on ? ' on' : '') + (sg.includes(r.c) ? ' sg' : '') + '" data-c="' + r.c + '"' + ((full && !on) || bloq ? ' disabled' : '') + ' aria-pressed="' + on + '"><span class="rk"></span><span class="ri">' + r.i + '</span><b>' + esc(a) + '</b><small>' + esc(b || '4 charlas') + '</small></button>'; }).join('');
+  $('rn').textContent = rutasSel.length;
+  const sb = $('rsug'), pend = sg.filter(c => !rutasSel.includes(c));
+  if (pend.length && !full) { sb.innerHTML = 'Por lo que escribió, le sugerimos: ' + pend.map(c => '<button type="button" data-s="' + c + '">+ ' + esc(rparts(RUTAS.find(r => r.c === c).n)[1] || rparts(RUTAS.find(r => r.c === c).n)[0]) + '</button>').join(''); sb.classList.add('on'); }
+  else sb.classList.remove('on');
+  $('rdet').innerHTML = rutasSel.map(c => { const r = RUTAS.find(x => x.c === c), [a, b] = rparts(r.n);
+    return '<section><h4><span style="font-size:20px">' + r.i + '</span>' + esc(a + (b ? ' · ' + b : '')) + '</h4><p class="badge">Asista a <b>3 de estas 4 charlas</b> y gane la insignia <b>Explorador · ' + esc(b || a) + '</b></p><ol>' +
+      rActs(r).map((x, i) => '<li><i>' + (i + 1) + '</i><span>' + esc(x.t) + '<em>' + esc(x.s) + '</em></span></li>').join('') + '</ol></section>'; }).join('');
+}
+function rToggle(c) {
+  if (!rolSel()) return;
+  const i = rutasSel.indexOf(c); if (i >= 0) rutasSel.splice(i, 1); else if (rutasSel.length < 3) rutasSel.push(c); rRender();
+}
+function rReset() { rutasSel = []; rRender(); }
+$('rgrid').addEventListener('click', e => { const b = e.target.closest('.rcard'); if (b && !b.disabled) rToggle(b.dataset.c); });
+$('rsug').addEventListener('click', e => { const b = e.target.closest('button[data-s]'); if (b) rToggle(b.dataset.s); });
+$('interes').addEventListener('input', rRender);
+rRender();
 initLugar(); onInd();
 onRol();
+rRender();
 </script>
 </body>
 </html>
