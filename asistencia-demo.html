@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEMO · Control de asistencia · TECNOVA 2026</title>
+<meta name="robots" content="noindex">
+<style>
+@font-face{font-family:Poppins;font-weight:400;font-display:swap;src:url(assets/fonts/poppins-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:500;font-display:swap;src:url(assets/fonts/poppins-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:600;font-display:swap;src:url(assets/fonts/poppins-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:700;font-display:swap;src:url(assets/fonts/poppins-latin-700-normal.woff2) format("woff2")}
+:root{--ink:#102542;--navy:#0f2b54;--navy2:#0a1f40;--blue:#17407a;--acc:#E75B2F;--mut:#55657a;--line:#c9d3df;--soft:#eef2f7;--ok:#14804a;--err:#b3261e;--gold:#f2b705}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--soft);color:var(--ink);font:400 15px/1.55 Poppins,"Segoe UI",Arial,sans-serif;min-height:100vh}
+.top{border-bottom:2px solid var(--navy);background:#fff}
+.top .in{max-width:620px;margin:0 auto;padding:10px 18px;display:flex;justify-content:space-between;align-items:center}
+.top img.t{height:50px;width:auto;display:block}.top img.r{height:46px;width:auto;display:block}
+.hero{background:linear-gradient(120deg,var(--navy2),var(--blue));color:#fff}
+.hero .in{max-width:620px;margin:0 auto;padding:22px 18px 26px}
+.hero small{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#ffb899;font-weight:600}
+.hero h1{margin:4px 0 6px;font-size:25px;line-height:1.2;font-weight:700}
+.hero p{margin:0;font-size:13.5px;color:#d5e0f1}
+.clock{display:inline-flex;gap:8px;align-items:center;margin-top:12px;padding:5px 14px;border-radius:20px;background:rgba(255,255,255,.14);font-size:13px;font-weight:500}
+.clock i{width:8px;height:8px;border-radius:50%;background:#3ddc84;box-shadow:0 0 0 3px rgba(61,220,132,.25)}
+main{max-width:620px;margin:-14px auto 40px;padding:0 14px}
+.card{background:#fff;border:1px solid var(--line);border-top:4px solid var(--acc);border-radius:8px;padding:22px 20px 24px;box-shadow:0 6px 22px rgba(15,43,84,.08)}
+.step{display:flex;align-items:baseline;gap:10px;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.step em{font-style:normal;font-weight:700;font-size:13px;color:var(--acc);letter-spacing:.06em}
+.step h2{margin:0;font-size:13.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--navy)}
+.step+*{}
+.sp{height:20px}
+label{display:block;font-weight:500;font-size:13px;color:var(--navy);margin:12px 0 5px}
+input,select{width:100%;min-height:50px;padding:10px 13px;border:1.5px solid #b6c2d1;border-radius:6px;font:400 16px Poppins,Arial,sans-serif;color:var(--ink);background:#fff}
+select{padding-right:8px}
+input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(23,64,122,.16)}
+.hint{font-size:12.5px;color:var(--mut);margin-top:6px}
+.empty{padding:14px 16px;background:#fff7f2;border-left:4px solid var(--acc);border-radius:0 6px 6px 0;font-size:13.5px;color:var(--navy)}
+.empty b{display:block;margin-bottom:2px}
+.key{position:relative}
+.key:before{content:"🔑";position:absolute;left:13px;top:13px;font-size:18px;z-index:1}
+.key input{padding-left:44px;font-weight:600;letter-spacing:.02em}
+.btn{width:100%;margin-top:18px;min-height:54px;border:0;border-radius:6px;background:var(--acc);color:#fff;font:600 16px Poppins,Arial,sans-serif;cursor:pointer;box-shadow:0 4px 12px rgba(231,91,47,.3)}
+.btn:disabled{opacity:.6;cursor:progress}
+.link{all:unset;display:block;margin:14px auto 0;text-align:center;color:var(--blue);font-weight:600;font-size:13.5px;text-decoration:underline;cursor:pointer}
+.msg{display:none;margin-top:14px;padding:11px 14px;border-radius:6px;font-size:13.5px}
+.msg.on{display:block}.msg.err{background:#fdecea;color:var(--err);border-left:4px solid var(--err)}
+.msg a{color:inherit;font-weight:600}
+.res{display:none;margin-top:18px}.res.on{display:block}
+.ok{text-align:center;padding:6px 0 4px}
+.mark{width:68px;height:68px;border-radius:50%;background:var(--ok);color:#fff;font-size:36px;line-height:68px;margin:0 auto 10px;animation:pop .5s cubic-bezier(.2,1.5,.4,1)}
+@keyframes pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+.ok h3{margin:0 0 4px;font-size:20px;color:var(--navy)}
+.ok p{margin:0;font-size:13.5px;color:var(--mut)}
+.ok .t{margin-top:8px;font-weight:600;color:var(--ink);font-size:14px}
+.won{margin-top:16px;padding:14px 16px;border-radius:8px;background:linear-gradient(120deg,#fff4cc,#ffe08a);border:1.5px solid var(--gold);color:#5a4300;font-size:14px;text-align:center;animation:pop .6s}
+.won b{display:block;font-size:16px;color:#3d2e00}
+.prog{margin-top:18px}
+.prog h4{margin:0 0 8px;font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--navy)}
+.pr{margin-bottom:12px}
+.pr .n{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;font-weight:500;color:var(--navy)}
+.pr .n span:last-child{font-weight:700;white-space:nowrap}
+.bar{height:10px;border-radius:6px;background:#e3e9f1;margin-top:5px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--blue),#2c7be5);transition:width .8s}
+.pr.done .bar i{background:linear-gradient(90deg,#14804a,#3ddc84)}
+.pr.done .n span:last-child{color:var(--ok)}
+.sum{font-size:12.5px;color:var(--mut);margin-top:10px;text-align:center}
+.foot{text-align:center;font-size:12px;color:var(--mut);margin:18px 10px 0}
+.foot a{color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="top"><div class="in">
+  <img class="t" src="assets/tecnova-logo.png" alt="TECNOVA 2026">
+  <img class="r" src="assets/logos/01_tecred.png" alt="TEC-RED">
+</div></div>
+
+<section class="hero"><div class="in">
+  <small>TECNOVA 2026 · 11–13 nov · Bogotá</small>
+  <h1>Control de asistencia</h1>
+  <p>Confirme su asistencia a la conferencia en la que está y avance en su ruta de innovación.</p>
+  <div class="clock"><i></i><span>Hora en Bogotá: <b id="hora">--:--</b></span></div>
+</div></section>
+
+<div style="max-width:620px;margin:0 auto;padding:12px 14px 0"><div style="background:#fff7d6;border:1.5px solid #f2b705;border-radius:8px;padding:12px 14px;font-size:13.5px;color:#5a4300"><b>🧪 Modo demostración.</b> Aquí nada se guarda y los datos ya están puestos. Elija una conferencia y pruebe escribir palabras equivocadas: solo se desbloquea con la palabra exacta (da igual mayúsculas o tildes). Las palabras de esta demo son: <b id="pistas"></b>. La ruta se completa con 3 de las 4 conferencias.</div></div>
+<main style="margin-top:8px">
+<form class="card" id="f" novalidate autocomplete="on">
+  <div class="step"><em>01</em><h2>Sus datos</h2></div>
+  <label for="doc">Número de documento</label>
+  <input id="doc" inputmode="text" autocapitalize="characters" autocomplete="off" maxlength="20" placeholder="El mismo con el que se registró">
+  <label for="correo">Correo electrónico</label>
+  <input id="correo" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="email" maxlength="120" placeholder="El mismo de su registro">
+
+  <div class="sp"></div>
+  <div class="step"><em>02</em><h2>Conferencia de este momento</h2></div>
+  <div id="vacio" class="empty" hidden><b>No hay conferencias en este momento.</b>Vuelva cuando empiece la charla a la que asiste. Aparecen desde 5 minutos antes de que inicie.</div>
+  <div id="selwrap"><label for="act" style="margin-top:0">¿A cuál está asistiendo?</label>
+    <select id="act" aria-label="Conferencia"></select>
+    <div class="hint" id="cuenta"></div></div>
+
+  <div class="sp"></div>
+  <div class="step"><em>03</em><h2>Palabra clave</h2></div>
+  <div class="key"><input id="clave" autocapitalize="none" autocomplete="off" spellcheck="false" maxlength="40" placeholder="Escríbala exactamente"></div>
+  <div class="hint">La palabra clave la anuncia el ponente o aparece en la pantalla de la sala. No importa si usa mayúsculas o tildes.</div>
+
+  <div class="msg err" id="err" role="alert"></div>
+  <button class="btn" id="go" type="submit">Confirmar mi asistencia</button>
+  <button class="link" id="ver" type="button">Solo ver mi avance en las rutas</button>
+
+  <div class="res" id="res" aria-live="polite"></div>
+</form>
+<p class="foot">(Demostración) · ¿Aún no se ha registrado? <a href="./">Regístrese aquí</a> · Dudas: tecred@usbbog.edu.co</p>
+</main>
+
+<script>
+const SUPABASE_URL = 'https://lhmsnlglynyscypnjavv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_deVkpWRVb9jbNNjUFzWRdw_1sSXVp7Q';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ST = { get(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+
+function reloj() { try { $('hora').textContent = new Date().toLocaleTimeString('es-CO', { timeZone: 'America/Bogota', hour: '2-digit', minute: '2-digit', hour12: false }); } catch (e) {} }
+reloj(); setInterval(reloj, 15000);
+
+const DEMO_ACTS = [{"id": "P18_12_1520", "grupo": "18", "tipo": "ponencia", "titulo": "Arquitectura multiagente para gestionar, propagar y publicar redes profesionales", "sala": "SALA P05", "modalidad": "Presencial", "desde": "15:20", "hasta": "15:40", "clave": "colmena"}, {"id": "P54_12_2020", "grupo": "54", "tipo": "ponencia", "titulo": "Diseño e implementación inicial de Mati como arquitectura conversacional para construir tutores pedagógicos de inteligencia artificial", "sala": "SALA V04", "modalidad": "Virtual", "desde": "20:20", "hasta": "20:40", "clave": "chatbot"}, {"id": "P39_11_1420", "grupo": "39", "tipo": "ponencia", "titulo": "PsyBridge propuesta de asistente virtual de apoyo emocional", "sala": "SALA P03", "modalidad": "Presencial", "desde": "14:20", "hasta": "14:40", "clave": "empatia"}, {"id": "P66_11_1520", "grupo": "66", "tipo": "ponencia", "titulo": "Wikipedias, Producción Científica, Empresariado Comercio Exterior e Inteligencia Artificial Generativa", "sala": "SALA P03", "modalidad": "Presencial", "desde": "15:20", "hasta": "15:40", "clave": "enciclopedia"}];
+const DEMO_RUTA = { cod: 'IA-1', nombre: 'IA: Agentes e IA generativa', meta: 3 };
+const demoHechas = new Set();
+const dnorm = t => String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+$('pistas').textContent = DEMO_ACTS.map(a => a.clave).join(' · ');
+const demoRutas = () => [{ cod: DEMO_RUTA.cod, nombre: DEMO_RUTA.nombre, meta: DEMO_RUTA.meta, hechas: demoHechas.size, total: 4, completa: demoHechas.size >= DEMO_RUTA.meta }];
+async function rpc(fn, body) {
+  await new Promise(r => setTimeout(r, 350));
+  if (fn === 'actividades_ahora') return DEMO_ACTS.map(a => ({ id: a.id, tipo: a.tipo, titulo: a.titulo, sala: a.sala, modalidad: a.modalidad, desde: a.desde, hasta: a.hasta }));
+  if (fn === 'mi_progreso') return { ok: true, rutas: demoRutas(), asistencias: demoHechas.size };
+  const a = DEMO_ACTS.find(x => x.id === body.p_actividad); if (!a) return { ok: false, error: 'actividad_invalida' };
+  if (!dnorm(body.p_clave) || dnorm(body.p_clave) !== dnorm(a.clave)) return { ok: false, error: 'clave_incorrecta' };
+  const antes = demoHechas.size >= DEMO_RUTA.meta, ya = demoHechas.has(a.grupo); demoHechas.add(a.grupo);
+  const nuevas = (!antes && demoHechas.size >= DEMO_RUTA.meta) ? [DEMO_RUTA.nombre] : [];
+  return { ok: true, ya_registrada: ya, titulo: a.titulo, rutas: demoRutas(), rutas_nuevas: nuevas, en_rutas: [DEMO_RUTA.nombre] };
+}
+
+let lista = [];
+async function cargaLista() {
+  try {
+    lista = await rpc('actividades_ahora', {}, 12000);
+  } catch (e) { return; }
+  const sel = $('act'), prev = sel.value;
+  const grupos = {};
+  lista.forEach(a => { const g = a.modalidad || 'General'; (grupos[g] = grupos[g] || []).push(a); });
+  let h = '<option value="">Seleccione la conferencia…</option>';
+  Object.keys(grupos).forEach(g => {
+    h += '<optgroup label="' + esc(g) + '">' + grupos[g].map(a => { const t = a.titulo.length > 85 ? a.titulo.slice(0, 83) + '…' : a.titulo;
+      return '<option value="' + esc(a.id) + '">' + esc((a.sala ? a.sala + ' · ' : '') + a.desde + ' · ' + t) + '</option>'; }).join('') + '</optgroup>';
+  });
+  sel.innerHTML = h;
+  if (prev && lista.some(a => a.id === prev)) sel.value = prev;
+  else if (lista.length === 1) sel.value = lista[0].id;
+  $('vacio').hidden = lista.length > 0; $('selwrap').hidden = lista.length === 0;
+  $('cuenta').textContent = lista.length ? (lista.length === 1 ? '1 conferencia en curso.' : lista.length + ' conferencias en curso. Elija la suya.') : '';
+}
+cargaLista(); 
+document.addEventListener('visibilitychange', () => { if (!document.hidden) cargaLista(); });
+
+$('doc').value = '1012345678'; $('correo').value = 'demo@tecnova.co';
+const ERR = {
+  no_registrado: 'No encontramos un registro con ese documento y correo. Revise que sean los mismos de su registro o <a href="./">regístrese aquí</a>.',
+  fuera_de_hora: 'Esa conferencia no está en curso en este momento. Actualice la lista y elija la que está viendo.',
+  clave_incorrecta: 'La palabra clave no coincide. Verifique con la que dio el ponente o la que aparece en pantalla e intente de nuevo.',
+  demasiados_intentos: 'Demasiados intentos fallidos. Espere unos minutos o acérquese al personal del evento.',
+  actividad_invalida: 'Elija una conferencia de la lista.'
+};
+const setErr = m => { const e = $('err'); e.innerHTML = m || ''; e.classList.toggle('on', !!m); };
+function datos() {
+  const doc = $('doc').value.replace(/[^A-Za-z0-9]/g, ''), c = $('correo').value.trim().toLowerCase();
+  if (doc.length < 4) { setErr('Escriba su número de documento.'); $('doc').focus(); return null; }
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(c)) { setErr('Escriba un correo válido.'); $('correo').focus(); return null; }
+  return { doc, c };
+}
+function progreso(rutas) {
+  if (!rutas || !rutas.length) return '<div class="sum">No eligió rutas de innovación al registrarse. Su asistencia igual queda guardada.</div>';
+  return '<div class="prog"><h4>Su avance en las rutas</h4>' + rutas.map(r => { const pc = Math.min(100, Math.round(r.hechas / r.meta * 100));
+    return '<div class="pr' + (r.completa ? ' done' : '') + '"><div class="n"><span>' + esc(r.nombre) + '</span><span>' + (r.completa ? '✓ Completa' : Math.min(r.hechas, r.meta) + ' de ' + r.meta) + '</span></div><div class="bar"><i style="width:' + pc + '%"></i></div></div>'; }).join('') +
+    '</div><div class="sum">Complete 3 conferencias de cada ruta para recibir su insignia digital.</div>';
+}
+function pinta(html) { const r = $('res'); r.innerHTML = html; r.classList.add('on'); r.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+
+$('f').addEventListener('submit', async ev => {
+  ev.preventDefault(); setErr(''); $('res').classList.remove('on');
+  const d = datos(); if (!d) return;
+  if (!$('act').value) { setErr(lista.length ? 'Elija la conferencia a la que está asistiendo.' : 'No hay conferencias en curso en este momento.'); return; }
+  if (!$('clave').value.trim()) { setErr('Escriba la palabra clave de la conferencia.'); $('clave').focus(); return; }
+  $('go').disabled = true; $('go').textContent = 'Verificando…';
+  try {
+    const r = await rpc('registrar_asistencia', { p_documento: d.doc, p_correo: d.c, p_actividad: $('act').value, p_clave: $('clave').value });
+    if (!r.ok) { setErr(ERR[r.error] || 'No se pudo registrar. Intente de nuevo.'); if (r.error === 'fuera_de_hora') cargaLista(); }
+    else {
+      $('clave').value = '';
+      let h = '<div class="ok"><div class="mark">✓</div><h3>' + (r.ya_registrada ? 'Ya la teníamos registrada' : '¡Asistencia confirmada!') + '</h3><p>' + (r.ya_registrada ? 'Esta conferencia ya estaba en su historial.' : 'Quedó guardada en su historial.') + '</p><div class="t">' + esc(r.titulo) + '</div></div>';
+      if (r.rutas_nuevas && r.rutas_nuevas.length) h += '<div class="won"><b>🏅 ¡Completó ' + (r.rutas_nuevas.length > 1 ? 'sus rutas' : 'su ruta') + '!</b>' + r.rutas_nuevas.map(esc).join(' · ') + '<br>Recibirá su insignia digital en su correo.</div>';
+      else if (!r.ya_registrada && r.en_rutas && r.en_rutas.length) h += '<div class="sum" style="color:var(--ok);font-weight:600">Esta conferencia suma a: ' + r.en_rutas.map(esc).join(' · ') + '</div>';
+      pinta(h + progreso(r.rutas));
+    }
+  } catch (e) { setErr(e.name === 'AbortError' ? 'Tardó demasiado en responder. Intente de nuevo.' : 'No hay conexión o el servicio no responde. Intente de nuevo en un momento.'); }
+  finally { $('go').disabled = false; $('go').textContent = 'Confirmar mi asistencia'; }
+});
+$('ver').addEventListener('click', async () => {
+  setErr(''); $('res').classList.remove('on'); const d = datos(); if (!d) return;
+  try {
+    const r = await rpc('mi_progreso', { p_documento: d.doc, p_correo: d.c });
+    if (!r.ok) setErr(ERR[r.error] || 'No se pudo consultar.');
+    else pinta('<div class="ok"><h3>Su avance</h3><p>' + r.asistencias + (r.asistencias === 1 ? ' conferencia confirmada' : ' conferencias confirmadas') + '</p></div>' + progreso(r.rutas));
+  } catch (e) { setErr('No hay conexión o el servicio no responde. Intente de nuevo.'); }
+});
+</script>
+</body>
+</html>
