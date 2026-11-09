@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moderadores · Control de ponentes · TECNOVA 2026</title>
+<meta name="robots" content="noindex">
+<style>
+@font-face{font-family:Poppins;font-weight:400;font-display:swap;src:url(assets/fonts/poppins-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:500;font-display:swap;src:url(assets/fonts/poppins-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:600;font-display:swap;src:url(assets/fonts/poppins-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:700;font-display:swap;src:url(assets/fonts/poppins-latin-700-normal.woff2) format("woff2")}
+:root{--ink:#102542;--navy:#0f2b54;--navy2:#0a1f40;--blue:#17407a;--acc:#E75B2F;--mut:#55657a;--line:#c9d3df;--soft:#eef2f7;--ok:#14804a;--err:#b3261e;--gold:#f2b705}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--soft);color:var(--ink);font:400 15px/1.55 Poppins,"Segoe UI",Arial,sans-serif;min-height:100vh}
+.top{border-bottom:2px solid var(--navy);background:#fff}
+.top .in{max-width:620px;margin:0 auto;padding:10px 18px;display:flex;justify-content:space-between;align-items:center}
+.top img.t{height:50px;width:auto;display:block}.top img.r{height:46px;width:auto;display:block}
+.hero{background:linear-gradient(120deg,var(--navy2),var(--blue));color:#fff}
+.hero .in{max-width:620px;margin:0 auto;padding:22px 18px 26px}
+.hero small{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#ffb899;font-weight:600}
+.hero h1{margin:4px 0 6px;font-size:25px;line-height:1.2;font-weight:700}
+.hero p{margin:0;font-size:13.5px;color:#d5e0f1}
+.clock{display:inline-flex;gap:8px;align-items:center;margin-top:12px;padding:5px 14px;border-radius:20px;background:rgba(255,255,255,.14);font-size:13px;font-weight:500}
+.clock i{width:8px;height:8px;border-radius:50%;background:#3ddc84;box-shadow:0 0 0 3px rgba(61,220,132,.25)}
+main{max-width:620px;margin:-14px auto 40px;padding:0 14px}
+.card{background:#fff;border:1px solid var(--line);border-top:4px solid var(--acc);border-radius:8px;padding:22px 20px 24px;box-shadow:0 6px 22px rgba(15,43,84,.08)}
+.step{display:flex;align-items:baseline;gap:10px;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.step em{font-style:normal;font-weight:700;font-size:13px;color:var(--acc);letter-spacing:.06em}
+.step h2{margin:0;font-size:13.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--navy)}
+.step+*{}
+.sp{height:20px}
+label{display:block;font-weight:500;font-size:13px;color:var(--navy);margin:12px 0 5px}
+input,select{width:100%;min-height:50px;padding:10px 13px;border:1.5px solid #b6c2d1;border-radius:6px;font:400 16px Poppins,Arial,sans-serif;color:var(--ink);background:#fff}
+select{padding-right:8px}
+input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(23,64,122,.16)}
+.hint{font-size:12.5px;color:var(--mut);margin-top:6px}
+.empty{padding:14px 16px;background:#fff7f2;border-left:4px solid var(--acc);border-radius:0 6px 6px 0;font-size:13.5px;color:var(--navy)}
+.empty b{display:block;margin-bottom:2px}
+.key{position:relative}
+.key:before{content:"🔑";position:absolute;left:13px;top:13px;font-size:18px;z-index:1}
+.key input{padding-left:44px;font-weight:600;letter-spacing:.02em}
+.btn{width:100%;margin-top:18px;min-height:54px;border:0;border-radius:6px;background:var(--acc);color:#fff;font:600 16px Poppins,Arial,sans-serif;cursor:pointer;box-shadow:0 4px 12px rgba(231,91,47,.3)}
+.btn:disabled{opacity:.6;cursor:progress}
+.link{all:unset;display:block;margin:14px auto 0;text-align:center;color:var(--blue);font-weight:600;font-size:13.5px;text-decoration:underline;cursor:pointer}
+.msg{display:none;margin-top:14px;padding:11px 14px;border-radius:6px;font-size:13.5px}
+.msg.on{display:block}.msg.err{background:#fdecea;color:var(--err);border-left:4px solid var(--err)}
+.msg a{color:inherit;font-weight:600}
+.res{display:none;margin-top:18px}.res.on{display:block}
+.ok{text-align:center;padding:6px 0 4px}
+.mark{width:68px;height:68px;border-radius:50%;background:var(--ok);color:#fff;font-size:36px;line-height:68px;margin:0 auto 10px;animation:pop .5s cubic-bezier(.2,1.5,.4,1)}
+@keyframes pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+.ok h3{margin:0 0 4px;font-size:20px;color:var(--navy)}
+.ok p{margin:0;font-size:13.5px;color:var(--mut)}
+.ok .t{margin-top:8px;font-weight:600;color:var(--ink);font-size:14px}
+.won{margin-top:16px;padding:14px 16px;border-radius:8px;background:linear-gradient(120deg,#fff4cc,#ffe08a);border:1.5px solid var(--gold);color:#5a4300;font-size:14px;text-align:center;animation:pop .6s}
+.won b{display:block;font-size:16px;color:#3d2e00}
+.prog{margin-top:18px}
+.prog h4{margin:0 0 8px;font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--navy)}
+.pr{margin-bottom:12px}
+.pr .n{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;font-weight:500;color:var(--navy)}
+.pr .n span:last-child{font-weight:700;white-space:nowrap}
+.bar{height:10px;border-radius:6px;background:#e3e9f1;margin-top:5px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--blue),#2c7be5);transition:width .8s}
+.pr.done .bar i{background:linear-gradient(90deg,#14804a,#3ddc84)}
+.pr.done .n span:last-child{color:var(--ok)}
+.sum{font-size:12.5px;color:var(--mut);margin-top:10px;text-align:center}
+.foot{text-align:center;font-size:12px;color:var(--mut);margin:18px 10px 0}
+.foot a{color:var(--blue)}
+
+.hero .in,.top .in{max-width:720px}main{max-width:720px}
+.pon{border:1.5px solid var(--line);border-radius:8px;margin-top:14px;overflow:hidden;background:#fff}
+.pon.ok{border-color:#9bd3b4}
+.ph{padding:11px 14px;background:var(--soft);border-bottom:1px solid var(--line)}
+.ph .h{font-size:12.5px;font-weight:600;color:var(--acc);letter-spacing:.04em}
+.ph .t{font-size:14px;font-weight:600;line-height:1.35;color:var(--navy);margin-top:2px}
+.au{padding:10px 14px;border-bottom:1px solid #e8edf3}
+.au:last-of-type{border-bottom:0}
+.au .n{font-size:14.5px;font-weight:600;line-height:1.3}.au .r{font-size:12px;color:var(--mut);font-weight:400}
+.sg{display:flex;gap:8px;margin-top:8px}
+.sg button{all:unset;box-sizing:border-box;flex:1;text-align:center;min-height:46px;line-height:46px;border:1.5px solid #b6c2d1;border-radius:6px;font:600 14px Poppins,Arial,sans-serif;color:var(--mut);cursor:pointer;background:#fff}
+.sg button.si.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.sg button.no.on{background:var(--err);border-color:var(--err);color:#fff}
+.sg button:focus-visible{outline:3px solid rgba(23,64,122,.3)}
+.atajo{display:flex;gap:10px;padding:9px 14px 12px;background:#fafbfd;border-top:1px solid #e8edf3}
+.atajo button{all:unset;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--blue);text-decoration:underline}
+textarea{width:100%;min-height:84px;padding:10px 13px;border:1.5px solid #b6c2d1;border-radius:6px;font:400 15px Poppins,Arial,sans-serif;color:var(--ink);resize:vertical}
+.bar2{position:sticky;bottom:0;margin:18px -20px -24px;padding:12px 20px 16px;background:#fff;border-top:1px solid var(--line);border-radius:0 0 8px 8px}
+.bar2 .c{font-size:13px;font-weight:600;color:var(--navy);display:flex;justify-content:space-between;gap:10px}
+.bar2 .bar{margin-top:6px}
+.bar2 .btn{margin-top:10px}
+.okmsg{margin-top:12px;padding:11px 14px;border-radius:6px;background:#e7f6ee;color:var(--ok);border-left:4px solid var(--ok);font-size:13.5px;display:none}.okmsg.on{display:block}
+</style>
+</head>
+<body>
+<div class="top"><div class="in">
+  <img class="t" src="assets/tecnova-logo.png" alt="TECNOVA 2026">
+  <img class="r" src="assets/logos/01_tecred.png" alt="TEC-RED">
+</div></div>
+
+<section class="hero"><div class="in">
+  <small>TECNOVA 2026 · Para moderadores de sala</small>
+  <h1>Control de ponentes</h1>
+  <p>Marque quiénes de los ponentes registrados asistieron y presentaron en su sala. Con esto se generan sus certificados de ponente.</p>
+</div></section>
+
+<main>
+<form class="card" id="f" novalidate>
+  <div id="p1">
+    <div class="step"><em>01</em><h2>Su sala</h2></div>
+    <label for="sala" style="margin-top:0">Sala que modera</label>
+    <select id="sala" aria-label="Sala"></select>
+    <label for="clave">Clave de moderador</label>
+    <div class="key"><input id="clave" autocapitalize="none" autocomplete="off" spellcheck="false" maxlength="40" placeholder="La que le entregó el comité"></div>
+    <div class="msg err" id="err" role="alert"></div>
+    <button class="btn" id="abrir" type="submit">Abrir mi sala</button>
+  </div>
+
+  <div id="p2" hidden>
+    <div class="step"><em>02</em><h2 id="tsala">Sala</h2></div>
+    <div class="hint" style="margin-top:0">Para cada autor toque <b>Asistió</b> o <b>No asistió</b>. Puede guardar varias veces y corregir después.</div>
+    <div id="lista"></div>
+    <label for="nota">Observaciones de la sala (opcional)</label>
+    <textarea id="nota" maxlength="1000" placeholder="Ej.: la ponencia 31 se presentó de forma virtual por falla de transporte"></textarea>
+    <div class="msg err" id="err2" role="alert"></div>
+    <div class="okmsg" id="okm" role="status"></div>
+    <div class="bar2">
+      <div class="c"><span id="cuenta">0 de 0 marcados</span><span id="pct"></span></div>
+      <div class="bar"><i id="fill" style="width:0"></i></div>
+      <button class="btn" id="guardar" type="button">Guardar</button>
+      <button class="link" id="salir" type="button">Cambiar de sala</button>
+    </div>
+  </div>
+</form>
+<p class="foot">Dudas: tecred@usbbog.edu.co</p>
+</main>
+
+<script>
+const SUPABASE_URL = 'https://lhmsnlglynyscypnjavv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_deVkpWRVb9jbNNjUFzWRdw_1sSXVp7Q';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ST = { get(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+const DIAS = { '2026-11-11': 'Miércoles 11 de noviembre', '2026-11-12': 'Jueves 12 de noviembre', '2026-11-13': 'Viernes 13 de noviembre' };
+const ERR = { clave_incorrecta: 'La clave no corresponde a esa sala. Revise que escogió la sala correcta.', demasiados_intentos: 'Demasiados intentos fallidos. Espere 10 minutos e intente de nuevo.' };
+let marcas = {}, inicial = {}, sala = '', clave = '', total = 0;
+
+async function rpc(fn, body, ms) {
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms || 20000);
+  try {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY }, body: JSON.stringify(body || {}), signal: ctl.signal });
+    if (!r.ok) throw new Error('http ' + r.status);
+    return await r.json();
+  } finally { clearTimeout(t); }
+}
+function error(id, m) { const e = $(id); e.textContent = m; e.classList.toggle('on', !!m); }
+
+async function cargaSalas() {
+  let l = [];
+  try { l = await rpc('mod_salas', {}, 12000); } catch (e) { error('err', 'No se pudo cargar la lista de salas. Revise su conexión y recargue la página.'); }
+  const g = {}; l.forEach(x => (g[x.dia] = g[x.dia] || []).push(x));
+  let h = '<option value="">Elija su sala…</option>';
+  Object.keys(g).sort().forEach(d => { h += '<optgroup label="' + esc(DIAS[d] || d) + '">' + g[d].map(x => '<option value="' + esc(x.sala) + '">' + esc(x.sala.replace('SALA', 'Sala')) + ' · ' + x.ponencias + ' ponencias</option>').join('') + '</optgroup>'; });
+  $('sala').innerHTML = h;
+  const s = ST.get('tn_mod_sala'); if (s) $('sala').value = s;
+}
+
+function pintaLista(ponencias) {
+  $('lista').innerHTML = ponencias.map(p => '<div class="pon" id="pon-' + esc(p.cod) + '"><div class="ph"><div class="h">' + esc(p.desde) + ' – ' + esc(p.hasta) + ' · Ponencia ' + esc(p.cod) + '</div><div class="t">' + esc(p.titulo) + '</div></div>' +
+    p.autores.map(a => '<div class="au"><div class="n">' + esc(a.nombre) + ' <span class="r">· ' + esc(a.rol) + '</span></div><div class="sg" data-id="' + esc(a.id) + '"><button type="button" class="si" data-v="1">Asistió</button><button type="button" class="no" data-v="0">No asistió</button></div></div>').join('') +
+    '<div class="atajo"><button type="button" data-todos="1" data-cod="' + esc(p.cod) + '">Todos asistieron</button><button type="button" data-todos="0" data-cod="' + esc(p.cod) + '">Ninguno asistió</button></div></div>').join('');
+  ponencias.forEach(p => p.autores.forEach(a => { marcas[a.id] = a.asistio === true ? true : a.asistio === false ? false : null; }));
+  inicial = Object.assign({}, marcas); total = Object.keys(marcas).length;
+  pintaTodo();
+}
+function pintaTodo() {
+  document.querySelectorAll('.sg').forEach(sg => { const v = marcas[sg.dataset.id]; sg.querySelector('.si').classList.toggle('on', v === true); sg.querySelector('.no').classList.toggle('on', v === false); });
+  document.querySelectorAll('.pon').forEach(p => p.classList.toggle('ok', [...p.querySelectorAll('.sg')].every(sg => marcas[sg.dataset.id] !== null)));
+  const m = Object.values(marcas).filter(v => v !== null).length;
+  $('cuenta').textContent = m + ' de ' + total + ' marcados'; $('pct').textContent = total ? Math.round(100 * m / total) + ' %' : ''; $('fill').style.width = (total ? 100 * m / total : 0) + '%';
+}
+$('lista').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.todos !== undefined) { const v = b.dataset.todos === '1'; document.querySelectorAll('#pon-' + CSS.escape(b.dataset.cod) + ' .sg').forEach(sg => { marcas[sg.dataset.id] = v; }); }
+  else if (b.dataset.v !== undefined) { const id = b.parentNode.dataset.id, v = b.dataset.v === '1'; marcas[id] = marcas[id] === v ? null : v; }
+  $('okm').classList.remove('on'); pintaTodo();
+});
+
+$('f').addEventListener('submit', async ev => {
+  ev.preventDefault(); error('err', '');
+  sala = $('sala').value; clave = $('clave').value.trim();
+  if (!sala) return error('err', 'Elija la sala que modera.');
+  if (!clave) return error('err', 'Escriba la clave de moderador.');
+  const b = $('abrir'); b.disabled = true; b.textContent = 'Abriendo…';
+  try {
+    const r = await rpc('mod_abrir', { p_sala: sala, p_clave: clave });
+    if (!r.ok) { error('err', ERR[r.error] || 'No se pudo abrir la sala.'); return; }
+    ST.set('tn_mod_sala', sala);
+    $('tsala').textContent = r.sala.replace('SALA', 'Sala') + ' · ' + (DIAS[(r.ponencias[0] || {}).dia] || '');
+    $('nota').value = r.nota || ''; pintaLista(r.ponencias); $('p1').hidden = true; $('p2').hidden = false; window.scrollTo({ top: 0 });
+  } catch (e) { error('err', 'Sin conexión con el servidor. Inténtelo de nuevo en unos segundos.'); }
+  finally { b.disabled = false; b.textContent = 'Abrir mi sala'; }
+});
+
+$('guardar').addEventListener('click', async () => {
+  error('err2', ''); $('okm').classList.remove('on');
+  const cambios = Object.keys(marcas).filter(id => marcas[id] !== inicial[id]).map(id => ({ id, asistio: marcas[id] }));
+  const b = $('guardar'); b.disabled = true; b.textContent = 'Guardando…';
+  try {
+    const r = await rpc('mod_marcar', { p_sala: sala, p_clave: clave, p_marcas: cambios, p_nota: $('nota').value });
+    if (!r.ok) { error('err2', ERR[r.error] || 'No se pudo guardar.'); return; }
+    inicial = Object.assign({}, marcas);
+    const falta = r.total - r.marcados;
+    $('okm').textContent = 'Guardado. ' + r.marcados + ' de ' + r.total + ' autores marcados' + (falta ? ' · le faltan ' + falta + '.' : ' · ¡sala completa, gracias!');
+    $('okm').classList.add('on');
+  } catch (e) { error('err2', 'No se pudo guardar (sin conexión). Sus marcas siguen aquí: intente de nuevo.'); }
+  finally { b.disabled = false; b.textContent = 'Guardar'; }
+});
+$('salir').addEventListener('click', () => {
+  const pend = Object.keys(marcas).some(id => marcas[id] !== inicial[id]);
+  if (pend && !confirm('Tiene marcas sin guardar. ¿Salir de todas formas?')) return;
+  marcas = {}; inicial = {}; $('p2').hidden = true; $('p1').hidden = false; $('clave').value = '';
+});
+window.addEventListener('beforeunload', e => { if (Object.keys(marcas).some(id => marcas[id] !== inicial[id])) { e.preventDefault(); e.returnValue = ''; } });
+cargaSalas();
+</script>
+</body>
+</html>
