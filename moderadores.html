@@ -103,14 +103,14 @@ textarea{width:100%;min-height:84px;padding:10px 13px;border:1.5px solid #b6c2d1
 <section class="hero"><div class="in">
   <small>TECNOVA 2026 · Para moderadores de sala</small>
   <h1>Control de ponentes</h1>
-  <p>Elija su nombre y marque quiénes de los ponentes asistieron y presentaron en su sala. Con esto se generan sus certificados de ponente.</p>
+  <p>Elija su sala y marque quiénes de los ponentes asistieron y presentaron en su sala. Con esto se generan sus certificados de ponente.</p>
 </div></section>
 
 <main>
 <form class="card" id="f" novalidate>
   <div id="p1">
-    <div class="step"><em>01</em><h2>Su nombre</h2></div>
-    <label for="sala" style="margin-top:0">Moderador/a</label>
+    <div class="step"><em>01</em><h2>Su sala</h2></div>
+    <label for="sala" style="margin-top:0">Sala y moderador/a</label>
     <select id="sala" aria-label="Moderador"></select>
     <label for="clave">Clave de moderador</label>
     <div class="key"><input id="clave" autocapitalize="none" autocomplete="off" spellcheck="false" maxlength="40" placeholder="La que le entregó el comité"></div>
@@ -130,7 +130,7 @@ textarea{width:100%;min-height:84px;padding:10px 13px;border:1.5px solid #b6c2d1
       <div class="c"><span id="cuenta">0 de 0 marcados</span><span id="pct"></span></div>
       <div class="bar"><i id="fill" style="width:0"></i></div>
       <button class="btn" id="guardar" type="button">Guardar</button>
-      <button class="link" id="salir" type="button">Cambiar de moderador</button>
+      <button class="link" id="salir" type="button">Cambiar de sala</button>
     </div>
   </div>
 </form>
@@ -144,8 +144,8 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const ST = { get(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
 const DIAS = { '2026-11-11': 'Miércoles 11 de noviembre', '2026-11-12': 'Jueves 12 de noviembre', '2026-11-13': 'Viernes 13 de noviembre' };
-const ERR = { clave_incorrecta: 'La clave no corresponde a ese nombre. Revise que escogió su nombre.', demasiados_intentos: 'Demasiados intentos fallidos. Espere 10 minutos e intente de nuevo.' };
-let marcas = {}, inicial = {}, sala = '', clave = '', total = 0;
+const ERR = { clave_incorrecta: 'La clave no corresponde a ese nombre. Revise que escogió su sala.', demasiados_intentos: 'Demasiados intentos fallidos. Espere 10 minutos e intente de nuevo.' };
+let marcas = {}, inicial = {}, sala = '', clave = '', total = 0, SEL = null;
 const DCORTO = { '2026-11-11': 'mié 11', '2026-11-12': 'jue 12', '2026-11-13': 'vie 13' };
 
 async function rpc(fn, body, ms) {
@@ -161,8 +161,14 @@ function error(id, m) { const e = $(id); e.textContent = m; e.classList.toggle('
 async function cargaSalas() {
   let l = [];
   try { l = await rpc('mod_lista', {}, 12000); } catch (e) { error('err', 'No se pudo cargar la lista. Revise su conexión y recargue la página.'); }
-  $('sala').innerHTML = '<option value="">Elija su nombre…</option>' + l.map(x => '<option value="' + esc(x.nombre) + '">' + esc(x.nombre) + ' — ' + x.sesiones.map(z => z.sala.replace('SALA', 'Sala') + ' ' + (DCORTO[z.dia] || z.dia)).join(' y ') + ' · ' + x.ponencias + ' ponencias</option>').join('');
-  const s = ST.get('tn_mod_nombre'); if (s) $('sala').value = s;
+  const g = {}; l.forEach(x => (g[x.dia] = g[x.dia] || []).push(x));
+  let h = '<option value="">Elija su sala…</option>';
+  Object.keys(g).sort().forEach(d => {
+    h += '<optgroup label="' + esc(DIAS[d] || d) + '">' + g[d].sort((a, b) => a.sala.localeCompare(b.sala)).map(x =>
+      '<option value="' + esc(d + '|' + x.sala + '|' + x.moderador) + '">' + esc(x.sala.replace('SALA', 'Sala') + (x.sala.indexOf('SALA P') === 0 ? ' · Presencial' : ' · Virtual') + ' — ' + x.moderador + ' (' + x.ponencias + ' ponencias)') + '</option>').join('') + '</optgroup>';
+  });
+  $('sala').innerHTML = h;
+  const s = ST.get('tn_mod_sel'); if (s) $('sala').value = s;
 }
 
 function pintaLista(ponencias) {
@@ -193,15 +199,15 @@ $('lista').addEventListener('click', e => {
 
 $('f').addEventListener('submit', async ev => {
   ev.preventDefault(); error('err', '');
-  sala = $('sala').value; clave = $('clave').value.trim();
-  if (!sala) return error('err', 'Elija su nombre.');
+  sala = $('sala').value; clave = $('clave').value.trim(); { const q = sala.split('|'); SEL = { dia: q[0], sala: q[1], mod: q[2] }; }
+  if (!sala) return error('err', 'Elija su sala.');
   if (!clave) return error('err', 'Escriba la clave de moderador.');
   const b = $('abrir'); b.disabled = true; b.textContent = 'Abriendo…';
   try {
-    const r = await rpc('mod_abrir', { p_moderador: sala, p_clave: clave });
+    const r = await rpc('mod_abrir', { p_moderador: SEL.mod, p_clave: clave, p_dia: SEL.dia, p_sala: SEL.sala });
     if (!r.ok) { error('err', ERR[r.error] || 'No se pudo abrir.'); return; }
-    ST.set('tn_mod_nombre', sala);
-    $('tsala').textContent = r.moderador;
+    ST.set('tn_mod_sel', sala);
+    $('tsala').textContent = r.sala.replace('SALA', 'Sala') + ' · ' + (DIAS[r.dia] || '') + ' · ' + r.moderador;
     $('nota').value = r.nota || ''; pintaLista(r.ponencias); $('p1').hidden = true; $('p2').hidden = false; window.scrollTo({ top: 0 });
   } catch (e) { error('err', 'Sin conexión con el servidor. Inténtelo de nuevo en unos segundos.'); }
   finally { b.disabled = false; b.textContent = 'Abrir mis ponencias'; }
@@ -212,7 +218,7 @@ $('guardar').addEventListener('click', async () => {
   const cambios = Object.keys(marcas).filter(id => marcas[id] !== inicial[id]).map(id => ({ id, asistio: marcas[id] }));
   const b = $('guardar'); b.disabled = true; b.textContent = 'Guardando…';
   try {
-    const r = await rpc('mod_marcar', { p_moderador: sala, p_clave: clave, p_marcas: cambios, p_nota: $('nota').value });
+    const r = await rpc('mod_marcar', { p_moderador: SEL.mod, p_clave: clave, p_dia: SEL.dia, p_sala: SEL.sala, p_marcas: cambios, p_nota: $('nota').value });
     if (!r.ok) { error('err2', ERR[r.error] || 'No se pudo guardar.'); return; }
     inicial = Object.assign({}, marcas);
     const falta = r.total - r.marcados;
