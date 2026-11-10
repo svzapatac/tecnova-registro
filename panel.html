@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TECNOVA · Atención</title>
+<style>
+  :root{--verde:#102542;--verde2:#1d4e89;--ambar:#f0a030;--rojo:#c8452f;--fondo:#eef2f7;--card:#fff;--linea:#dde3ec;--txt:#2a2a26;--sua:#7a7568}
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--fondo);color:var(--txt);height:100vh;height:100dvh;overflow:hidden}
+  button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:8px 14px}
+  [hidden]{display:none!important}
+  /* login */
+  #login{display:flex;align-items:center;justify-content:center;height:100%;padding:20px}
+  .box{background:var(--card);border:1px solid var(--linea);border-radius:16px;padding:28px;width:100%;max-width:380px}
+  .box h1{margin:0 0 4px;font-size:22px;color:var(--verde)}
+  .box p{margin:0 0 18px;color:var(--sua)}
+  input,textarea{font:inherit;width:100%;padding:10px 12px;border:1px solid var(--linea);border-radius:10px;background:#fff;color:var(--txt)}
+  .box button{width:100%;margin-top:12px;background:var(--verde);color:#fff;padding:11px}
+  details{margin-top:14px;color:var(--sua);font-size:13px} details input{margin-top:6px}
+  .err{color:var(--rojo);margin-top:10px;font-size:14px}
+  /* app */
+  #app{display:grid;grid-template-columns:340px 1fr;height:100%}
+  #lista{background:var(--card);border-right:1px solid var(--linea);display:flex;flex-direction:column;min-height:0}
+  .top{padding:14px 14px 8px;display:flex;align-items:center;justify-content:space-between}
+  .top b{font-size:18px;color:var(--verde)}
+  .top .tools{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--sua)}
+  .dot{width:8px;height:8px;border-radius:50%;background:#9bb;display:inline-block}
+  .dot.ok{background:#3aa66b}.dot.mal{background:var(--rojo)}
+  .tabs{display:flex;gap:6px;padding:0 12px 10px;border-bottom:1px solid var(--linea)}
+  .tab{flex:1;background:#e8edf5;color:var(--txt);padding:8px 6px;font-size:13px;position:relative}
+  .tab.on{background:var(--verde);color:#fff}
+  .tab .n{background:var(--rojo);color:#fff;border-radius:99px;font-size:11px;padding:1px 6px;margin-left:4px}
+  #items{overflow:auto;flex:1}
+  .it{padding:12px 14px;border-bottom:1px solid var(--linea);cursor:pointer;display:flex;gap:10px}
+  .it:hover{background:#f3f6fb}.it.sel{background:#e3eaf4}
+  .av{flex:none;width:38px;height:38px;border-radius:50%;background:var(--verde2);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600}
+  .it .c{min-width:0;flex:1}
+  .it .r1{display:flex;justify-content:space-between;gap:6px}
+  .it .nom{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .it .hora{font-size:12px;color:var(--sua);white-space:nowrap}
+  .it .prev{font-size:13px;color:var(--sua);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .it .mot{font-size:12px;color:var(--rojo);margin-top:2px}
+  .it.nl{background:#fff3dc}.it.nl .nom::after{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--rojo);margin-left:6px}
+  .it.urg{border-left:4px solid var(--rojo)}
+  .vacio{padding:30px 20px;text-align:center;color:var(--sua)}
+  /* chat */
+  #chat{display:flex;flex-direction:column;min-height:0;min-width:0}
+  #nochat{margin:auto;color:var(--sua);text-align:center;padding:20px}
+  .ch-h{background:var(--card);border-bottom:1px solid var(--linea);padding:10px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .ch-h .back{display:none;background:#e8edf5}
+  .ch-h .t{flex:1;min-width:140px}.ch-h .t b{display:block}.ch-h .t span{font-size:12px;color:var(--sua)}
+  .btn-v{background:var(--verde);color:#fff}.btn-g{background:#e8edf5}.btn-a{background:var(--ambar);color:#2a2a26}
+  .aviso{margin:10px 14px 0;padding:9px 12px;border-radius:10px;font-size:13px}
+  .aviso.mot{background:#fdeae5;color:#8a2d1d}.aviso.win{background:#fff1cf;color:#6b4b00}
+  .ctx{margin:10px 14px 0;display:flex;gap:6px;flex-wrap:wrap}
+  .ctx span{background:#e3eaf4;border-radius:99px;padding:3px 10px;font-size:12px}
+  #msgs{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:6px}
+  .b{max-width:78%;padding:8px 12px;border-radius:14px;white-space:pre-wrap;word-wrap:break-word}
+  .b small{display:block;font-size:11px;opacity:.6;margin-top:3px}
+  .b.cli{align-self:flex-start;background:#fff;border:1px solid var(--linea);border-bottom-left-radius:4px}
+  .b.bot{align-self:flex-end;background:#e4ebe6;border-bottom-right-radius:4px}
+  .b.hum{align-self:flex-end;background:var(--verde);color:#fff;border-bottom-right-radius:4px}
+  .b .q{font-size:11px;opacity:.7;display:block}
+  .rap{display:flex;gap:6px;overflow:auto;padding:8px 14px 0}
+  .rap button{flex:none;background:#e3eaf4;font-size:13px;padding:6px 10px}
+  .comp{display:flex;gap:8px;padding:10px 14px;background:var(--card);border-top:1px solid var(--linea);margin-top:8px}
+  .comp textarea{resize:none;height:44px;max-height:120px}
+  .comp button{background:var(--verde);color:#fff;padding:0 18px}
+  .comp button:disabled{opacity:.5}
+  #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#2a2a26;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;max-width:90vw;z-index:9}
+  @media(max-width:760px){
+    #app{grid-template-columns:1fr}
+    #chat{display:none}
+    body.ver-chat #lista{display:none}
+    body.ver-chat #chat{display:flex}
+    .ch-h .back{display:inline-block}
+    .b{max-width:90%}
+  }
+  .est{margin:10px 14px 0;padding:10px 12px;border-radius:10px;background:#e8f1fb;font-size:13px}
+  .res{margin:10px 14px 0;padding:10px 12px;border-radius:10px;background:#fdeae5;font-size:13px}
+</style>
+</head>
+<body>
+<div id="login"><div class="box"><h1>TECNOVA · Atención</h1><p>Todas las conversaciones del agente de WhatsApp: lo que escribe la persona, lo que responde el bot y lo que responde el equipo. Desde aquí puedes tomar una conversación y escribirle.</p>
+<input id="k" type="password" placeholder="Clave del panel" autocomplete="current-password"><button id="entrar">Entrar</button><div class="err" id="lerr"></div>
+<details><summary>Conexión (avanzado)</summary><input id="u" placeholder="URL de la API"></details></div></div>
+<div id="app" hidden>
+<section id="lista"><div class="top"><b>Atención</b><div class="tools"><span class="dot" id="dot"></span><span id="est">…</span>
+<button class="btn-g" id="snd" style="padding:4px 8px">🔔</button><button class="btn-g" id="out" style="padding:4px 8px">Salir</button></div></div>
+<div class="tabs"><button class="tab on" data-t="todas">Todas<span class="n" id="n0" style="background:#7a7568">0</span></button><button class="tab" data-t="humano">Necesitan persona<span class="n" id="n1" hidden></span></button><button class="tab" data-t="sin">Sin responder<span class="n" id="n2" hidden></span></button><button class="tab" data-t="bot">Con el bot</button></div>
+<div style="padding:8px 12px;border-bottom:1px solid var(--linea)"><input id="q" placeholder="Buscar por nombre, número o texto…"></div><div id="items"></div></section>
+<section id="chat"><div id="nochat">Elige una conversación de la izquierda.</div>
+<div id="conv" hidden style="display:none;flex-direction:column;min-height:0;flex:1">
+<div class="ch-h"><button class="back" id="back">←</button><div class="t"><b id="cn"></b><span id="cs"></span></div>
+<button class="btn-v" id="tomar">Tomar conversación</button><button class="btn-g" id="devolver">Resolver y devolver al bot</button>
+<a id="wa" target="_blank" rel="noopener"><button class="btn-a">Abrir en WhatsApp</button></a></div>
+<div id="avisos"></div><div id="msgs"></div><div class="rap" id="rap"></div>
+<div class="comp"><textarea id="txt" placeholder="Escribe tu respuesta… (Enter envía, Shift+Enter salto de línea)"></textarea><button id="env">Enviar</button></div>
+</div></section></div><div id="toast" hidden></div>
+<script>
+const DEFAULT_API="https://prueba-n8n.zaqd7q.easypanel.host/webhook/tecnova-panel-api";
+const $=id=>document.getElementById(id);
+const S={key:localStorage.getItem('tnv_key')||'',api:localStorage.getItem('tnv_api')||DEFAULT_API,chats:[],sin:[],sel:null,tab:'todas',msgs:{},corr:{},q:'',sonido:localStorage.getItem('tnv_snd')!=='0',maxCli:0,primera:true,enviando:false,timer:null,estado:{}};
+const RAPIDAS=['Hola {n}, soy del equipo de TECNOVA. Con gusto le ayudo 😊','Entiendo la molestia, gracias por avisarnos. Ya lo estamos revisando y le cuento en un momento.','Ya quedó solucionado. Revise su correo (y la carpeta de spam) y me confirma si le llegó.','Gracias por su paciencia, que disfrute el congreso 🙌'];
+async function api(accion,extra={}){const r=await fetch(S.api,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({key:S.key,accion,...extra})});if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}
+function toast(t,ms=3500){const e=$('toast');e.textContent=t;e.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>e.hidden=true,ms);}
+function min(t){return t?(Date.now()-Date.parse(t))/60000:0}
+function hace(t){if(!t)return'';const m=Math.round(min(t));if(m<1)return'ahora';if(m<60)return m+' min';const h=Math.floor(m/60);return h<24?h+' h':Math.floor(h/24)+' d';}
+const nom=c=>c.nombre||('+'+c.wa_id);
+const pendiente=c=>c.humano||(c.escalacion&&!c.escalacion.atendida);
+function ult(c){const m=c.ult;return m?(m.rol==='user'?'':(m.humano?'Equipo: ':'Bot: '))+m.texto:''}
+function beep(){if(!S.sonido)return;try{const a=new(window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.setValueAtTime(.15,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.5);o.start();o.stop(a.currentTime+.5)}catch(e){}}
+async function cargar(){try{const d=await api('lista');if(!d.ok){if(d.error==='clave_incorrecta')return salir('Clave incorrecta');throw new Error(d.error)}
+S.chats=d.chats;S.sin=d.sin_responder;S.total=d.total;$('dot').className='dot ok';$('est').textContent='en vivo';
+const nuevo=Math.max(0,...S.chats.filter(c=>c.sin_leer).map(c=>Date.parse(c.ultimo_cliente||0)||0));if(!S.primera&&nuevo>S.maxCli)beep();S.maxCli=Math.max(S.maxCli,nuevo);S.primera=false;pintarLista();await cargarChat()}
+catch(e){$('dot').className='dot mal';$('est').textContent='sin conexión'}}
+function pintarLista(){const hum=S.chats.filter(pendiente).sort((a,b)=>(b.sin_leer-a.sin_leer)||(Date.parse(b.ultimo_cliente||b.ultima)-Date.parse(a.ultimo_cliente||a.ultima)));const bot=S.chats.filter(c=>!pendiente(c));
+const q=S.q.trim().toLowerCase();const todas=S.chats.filter(c=>!q||((c.nombre||'')+' '+c.wa_id+' '+((c.ult&&c.ult.texto)||'')).toLowerCase().includes(q)).sort((a,b)=>Date.parse(b.ultima)-Date.parse(a.ultima));$('n0').textContent=S.total||S.chats.length;const p=hum.filter(c=>c.sin_leer).length;$('n1').hidden=!p;$('n1').textContent=p;$('n2').hidden=!S.sin.length;$('n2').textContent=S.sin.length;
+document.title=(p+S.sin.length?`(${p+S.sin.length}) `:'')+'TECNOVA · Atención';const cont=$('items');cont.textContent='';
+const add=(c,extra)=>{const d=document.createElement('div');d.className='it'+(S.sel===c.wa_id?' sel':'')+(c.sin_leer?' nl':'')+(c.sin_leer&&min(c.ultimo_cliente)>10?' urg':'');
+const av=document.createElement('div');av.className='av';av.textContent=(c.nombre||'#').trim()[0].toUpperCase();const col=document.createElement('div');col.className='c';
+const r1=document.createElement('div');r1.className='r1';const n=document.createElement('span');n.className='nom';n.textContent=nom(c);const h=document.createElement('span');h.className='hora';h.textContent=hace(c.ultimo_cliente||c.ultima);r1.append(n,h);if(S.tab==='todas'){const g=document.createElement('span');g.className='hora';g.textContent=(c.humano?'👤 Equipo':'🤖 Bot')+' · '+(c.n_msgs||0)+' msgs';r1.after(g)}
+const pv=document.createElement('div');pv.className='prev';pv.textContent=extra||ult(c);col.append(r1,pv);
+if(c.escalacion&&c.sin_leer){const m=document.createElement('div');m.className='mot';m.textContent=c.escalacion.motivo||'Necesita una persona';col.append(m)}
+d.append(av,col);d.onclick=()=>abrir(c.wa_id);cont.append(d)};
+if(S.tab==='todas'){todas.forEach(c=>add(c));if(!todas.length)cont.innerHTML='<div class="vacio">No hay conversaciones'+(q?' que coincidan.':' todavía.')+'</div>'}
+else if(S.tab==='humano'){hum.forEach(c=>add(c));if(!hum.length)cont.innerHTML='<div class="vacio">Nadie esperando. Todo al día 🙂</div>'}
+else if(S.tab==='bot'){bot.forEach(c=>add(c));if(!bot.length)cont.innerHTML='<div class="vacio">Sin conversaciones recientes con el bot.</div>'}
+else{S.sin.forEach(s=>add({wa_id:s.wa_id,nombre:s.nombre,sin_leer:true,ultimo_cliente:s.desde,ultima:s.desde,mensajes:[],escalacion:{motivo:'El bot no alcanzó a responder'}},s.texto));if(!S.sin.length)cont.innerHTML='<div class="vacio">Ningún mensaje quedó sin responder.</div>'}}
+function msgsDe(c){return S.msgs[c.wa_id]||[]}
+async function cargarChat(){if(!S.sel){pintarChat(false);return}try{const d=await api('chat',{wa:S.sel});if(d.ok){S.msgs[S.sel]=d.mensajes;S.corr[S.sel]=d.correcciones||[]}}catch(e){}pintarChat(false)}
+function sel(){return S.chats.find(c=>c.wa_id===S.sel)||(S.sel?{wa_id:S.sel,nombre:null,humano:false,sin_leer:false}:null)}
+function abrir(id){S.sel=id;document.body.classList.add('ver-chat');pintarLista();pintarChat(true);cargarChat().then(()=>pintarChat(true));const c=sel();if(c&&c.sin_leer)api('leer',{wa:id}).then(cargar).catch(()=>{})}
+function pintarChat(f){const c=sel();$('nochat').hidden=!!c;const cv=$('conv');cv.hidden=!c;cv.style.display=c?'flex':'none';if(!c)return;
+$('cn').textContent=nom(c);$('cs').textContent='+'+c.wa_id+' · '+(c.humano?'atiende una persona':'lo atiende el bot');$('wa').href='https://wa.me/'+c.wa_id;$('tomar').hidden=c.humano;$('devolver').hidden=!(c.humano||(c.escalacion&&!c.escalacion.atendida));
+const av=$('avisos');av.textContent='';const e=c.escalacion;
+if(e&&!e.atendida){const d=document.createElement('div');d.className='res';d.innerHTML='';const b=document.createElement('b');b.textContent='Lo que pasó: ';d.append(b,document.createTextNode((e.motivo||'')+(e.resumen?' — '+e.resumen:'')+(e.documento?' · Documento: '+e.documento:'')));
+if(e.documento){const bt=document.createElement('button');bt.textContent='Ver su estado en el sistema';bt.className='btn-g';bt.style.cssText='margin-left:8px;padding:3px 10px';bt.onclick=()=>verEstado(e.documento);d.append(bt)}av.append(d)}
+for(const k of (S.corr[c.wa_id]||[])){const d=document.createElement('div');d.className='est';d.textContent='✏️ Corrección de nombre por el bot: '+k.antes+' → '+k.despues;av.append(d)}
+if(S.estado[c.wa_id]){const d=document.createElement('div');d.className='est';d.textContent=S.estado[c.wa_id];av.append(d)}
+if(c.ultimo_cliente&&min(c.ultimo_cliente)>24*60){const d=document.createElement('div');d.className='aviso win';d.textContent='Pasaron más de 24 h desde su último mensaje: WhatsApp no deja enviar texto libre desde aquí. Escríbale desde "Abrir en WhatsApp" o por correo.';av.append(d)}
+const MS=msgsDe(c);const sig=c.wa_id+JSON.stringify(MS.map(x=>x.t+x.texto));const m=$('msgs');
+if(f||m.dataset.sig!==sig){const abajo=f||m.scrollHeight-m.scrollTop-m.clientHeight<80;m.textContent='';m.dataset.sig=sig;
+for(const x of MS){const b=document.createElement('div');b.className='b '+(x.rol==='user'?'cli':x.humano?'hum':'bot');{const q=document.createElement('span');q.className='q';q.textContent=x.rol==='user'?'Persona':(x.humano?'Equipo (tú)':'Bot');b.append(q)}
+const t=document.createElement('span');t.textContent=x.texto;b.append(t);const s=document.createElement('small');s.textContent=new Date(x.t).toLocaleString('es-CO',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});b.append(s);m.append(b)}
+if(abajo)m.scrollTop=m.scrollHeight}
+const rap=$('rap');if(rap.dataset.n!==c.wa_id){rap.textContent='';rap.dataset.n=c.wa_id;const n1=(c.nombre||'').split(' ')[0];RAPIDAS.forEach(r=>{const b=document.createElement('button');const t=r.replace('{n}',n1||'');b.textContent=t.length>40?t.slice(0,38)+'…':t;b.onclick=()=>{$('txt').value=t.replace('Hola ,','Hola,');$('txt').focus()};rap.append(b)})}}
+async function verEstado(doc){try{const d=await api('estado',{documento:doc});const s=d.estado||{};S.estado[S.sel]=!s.registrado?'No aparece registrado con ese documento.':`${s.nombre||''} · rol ${s.rol||'?'} · sticker: ${s.sticker_estado||'?'} · conferencias asistidas: ${s.conferencias_asistidas} · certificados: ${(s.certificados||[]).map(x=>x.tipo+' '+x.estado).join(', ')||'ninguno'} · ${s.certificado_envio_activo?'envío de certificados activo':'envío de certificados aún NO activado'} · correo ${s.correo_enmascarado||''}`;pintarChat(true)}catch(e){toast('No se pudo consultar')}}
+async function enviar(){const t=$('txt').value.trim();if(!t||S.enviando||!S.sel)return;S.enviando=true;$('env').disabled=true;
+try{const d=await api('enviar',{wa:S.sel,texto:t});if(d.ok){$('txt').value='';await cargar()}else toast(d.error==='whatsapp'?('WhatsApp no dejó enviar el mensaje'+(/131047|24/.test(d.detalle||'')?' (pasaron más de 24 h: escríbale desde WhatsApp o por correo).':'. '+(d.detalle||''))):'No se pudo enviar: '+d.error,7000)}
+catch(e){toast('Sin conexión, el mensaje NO se envió. Intenta de nuevo.',6000)}S.enviando=false;$('env').disabled=false}
+async function simple(a,ok){try{const d=await api(a,{wa:S.sel});if(d.ok){toast(ok);await cargar()}else toast('Error: '+d.error)}catch(e){toast('Sin conexión')}}
+function salir(m){clearInterval(S.timer);localStorage.removeItem('tnv_key');S.key='';$('app').hidden=true;$('login').hidden=false;$('lerr').textContent=m||''}
+async function entrar(){S.key=$('k').value.trim()||S.key;S.api=$('u').value.trim()||S.api;if(!S.key)return;$('lerr').textContent='Conectando…';
+try{const d=await api('ping');if(!d.ok){$('lerr').textContent='Clave incorrecta';return}}catch(e){$('lerr').textContent='No se pudo conectar con la API. ¿El flujo está activo en n8n?';return}
+localStorage.setItem('tnv_key',S.key);localStorage.setItem('tnv_api',S.api);$('login').hidden=true;$('app').hidden=false;S.primera=true;await cargar();clearInterval(S.timer);S.timer=setInterval(cargar,6000)}
+$('u').value=S.api;$('k').value=S.key;$('entrar').onclick=entrar;$('k').onkeydown=e=>{if(e.key==='Enter')entrar()};$('out').onclick=()=>salir('');$('env').onclick=enviar;
+$('txt').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();enviar()}};
+$('tomar').onclick=()=>simple('tomar','Conversación tomada: el bot ya no responde aquí');$('devolver').onclick=()=>simple('devolver','Resuelta y devuelta al bot');$('back').onclick=()=>document.body.classList.remove('ver-chat');
+$('snd').textContent=S.sonido?'🔔':'🔕';$('snd').onclick=()=>{S.sonido=!S.sonido;localStorage.setItem('tnv_snd',S.sonido?'1':'0');$('snd').textContent=S.sonido?'🔔':'🔕';if(S.sonido)beep()};
+$('q').oninput=()=>{S.q=$('q').value;pintarLista()};
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{S.tab=b.dataset.t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));pintarLista()});
+if(S.key)entrar();
+</script>
+</body>
+</html>
