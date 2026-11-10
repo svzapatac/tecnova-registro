@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Su semblanza · TECNOVA 2026</title>
+<style>
+@font-face{font-family:Poppins;font-weight:400;font-display:swap;src:url(assets/fonts/poppins-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:600;font-display:swap;src:url(assets/fonts/poppins-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:700;font-display:swap;src:url(assets/fonts/poppins-latin-700-normal.woff2) format("woff2")}
+:root{--ink:#102542;--navy:#0f2b54;--acc:#E75B2F;--mut:#55657a;--line:#c9d3df;--soft:#eef2f7;--ok:#14804a;--err:#b3261e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--soft);color:var(--ink);font:400 15px/1.55 Poppins,"Segoe UI",Arial,sans-serif}
+.top{background:#fff;border-bottom:2px solid var(--navy);padding:12px 20px}
+.top img{height:52px;display:block;margin:0 auto}
+.hero{background:var(--navy);color:#fff;padding:30px 20px 34px;text-align:center}
+.hero .k{font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--acc)}
+.hero h1{margin:8px 0 6px;font-size:28px;line-height:1.15}
+.hero p{margin:0 auto;max-width:520px;color:#cdd9ea}
+.card{max-width:560px;margin:-18px auto 40px;background:#fff;border-radius:18px;padding:26px 24px;box-shadow:0 8px 30px rgba(15,43,84,.12)}
+label.t{display:block;font-weight:600;margin:18px 0 8px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;border:2px solid var(--line);border-radius:14px;padding:13px 14px;cursor:pointer;font-weight:600}
+.opt input{accent-color:var(--acc);width:20px;height:20px;margin:0}
+.opt.on{border-color:var(--acc);background:#fff4ee}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.row2{grid-template-columns:1fr}}
+input[type=text],textarea{width:100%;min-height:230px;resize:vertical;line-height:1.5;font:inherit;border:2px solid var(--line);border-radius:12px;padding:12px 13px;color:var(--ink)}
+input[type=text]:focus,textarea:focus{outline:none;border-color:var(--navy)}
+.hint{font-size:13px;color:var(--mut);margin-top:6px}
+.btn{width:100%;margin-top:24px;border:0;border-radius:999px;background:var(--acc);color:#fff;font:700 16px Poppins,Arial,sans-serif;padding:15px;cursor:pointer}
+.btn:disabled{opacity:.55;cursor:default}
+.msg{margin-top:14px;font-weight:600}
+.msg.err{color:var(--err)} .msg.ok{color:var(--ok)}
+.hide{display:none}
+.hello{font-size:17px;margin:0 0 4px}
+.legal{font-size:12px;color:var(--mut);margin-top:16px;line-height:1.45}
+.done{text-align:center;padding:10px 0}
+.done b{display:block;font-size:20px;margin:6px 0}
+.cnt{display:flex;justify-content:space-between;font-size:13px;margin-top:8px;color:var(--mut)}
+.cnt b.ok{color:var(--ok)} .cnt b.warn{color:#b86e00}
+</style>
+</head>
+<body>
+<div class="top"><img src="assets/tecnova-logo.png" alt="TECNOVA 2026"></div>
+<div class="hero">
+  <div class="k">11–13 NOV · BOGOTÁ</div>
+  <h1>Su semblanza</h1>
+  <p>Para presentarlo ante el público y difundir el evento. Escriba una semblanza breve de su trayectoria, de 100 a 150 palabras.</p>
+</div>
+
+<div class="card" id="card">
+  <div id="cargando">Cargando sus datos…</div>
+  <div id="invalido" class="hide"><b>Este enlace no es válido.</b><p>Use el botón del correo que le enviamos o escríbanos a <a href="mailto:tecred@usbbog.edu.co">tecred@usbbog.edu.co</a>.</p></div>
+
+  <form id="f" class="hide" novalidate>
+    <p class="hello" id="hola"></p>
+    <label class="t" for="txt">Escriba aquí su semblanza</label>
+    <textarea id="txt" maxlength="2000" placeholder="Ej.: Ingeniero de sistemas, magíster en…, con más de 10 años de experiencia en… Actualmente se desempeña como… en…"></textarea>
+    <div class="cnt"><span>Recomendado: 100 a 150 palabras</span><b id="cuenta">0 palabras</b></div>
+    <button class="btn" id="enviar" type="submit">Enviar mi semblanza</button>
+    <div class="msg" id="msg" role="status"></div>
+    <p class="legal">La usaremos para presentarlo en el congreso y en la difusión del evento. Puede volver a abrir el enlace del correo y corregirla cuando quiera.</p>
+  </form>
+
+  <div id="gracias" class="done hide">
+    <div style="font-size:42px">✅</div>
+    <b>¡Gracias! Recibimos su semblanza.</b>
+    <p class="hint">Si necesita cambiarla, vuelva a abrir el enlace del correo.</p>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://lhmsnlglynyscypnjavv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_deVkpWRVb9jbNNjUFzWRdw_1sSXVp7Q';
+const $ = id => document.getElementById(id);
+const TOKEN = (new URLSearchParams(location.search).get('t') || '').trim();
+async function rpc(fn, body) {
+  const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 20000);
+  try {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY }, body: JSON.stringify(body), signal: ctl.signal });
+    if (!r.ok) throw new Error('http ' + r.status);
+    return await r.json();
+  } finally { clearTimeout(to); }
+}
+const palabras = t => (t.trim().match(/\S+/g) || []).length;
+function cuenta() {
+  const n = palabras($('txt').value), c = $('cuenta');
+  c.textContent = n + (n === 1 ? ' palabra' : ' palabras');
+  c.className = (n >= 100 && n <= 150) ? 'ok' : (n > 0 ? 'warn' : '');
+}
+$('txt').addEventListener('input', cuenta);
+(async () => {
+  if (!TOKEN) { $('cargando').classList.add('hide'); $('invalido').classList.remove('hide'); return; }
+  try {
+    const d = await rpc('semblanza_datos', { p_token: TOKEN });
+    $('cargando').classList.add('hide');
+    if (!d || !d.nombre) { $('invalido').classList.remove('hide'); return; }
+    $('hola').innerHTML = 'Hola, <b>' + String(d.nombre).replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';') + '</b>.';
+    $('f').classList.remove('hide');
+    if (d.texto) $('txt').value = d.texto;
+    cuenta();
+  } catch (e) { $('cargando').textContent = 'No pudimos cargar sus datos. Intente de nuevo en un momento.'; }
+})();
+$('f').addEventListener('submit', async ev => {
+  ev.preventDefault(); const m = $('msg'); m.className = 'msg'; m.textContent = '';
+  const t = $('txt').value.trim(), n = palabras(t);
+  if (n < 30) { m.className = 'msg err'; m.textContent = 'Escriba al menos unas 30 palabras para que podamos presentarlo bien.'; return; }
+  if (n > 200) { m.className = 'msg err'; m.textContent = 'Es muy larga (' + n + ' palabras). Por favor déjela en máximo 150.'; return; }
+  const b = $('enviar'); b.disabled = true; b.textContent = 'Enviando…';
+  try {
+    const r = await rpc('semblanza_guardar', { p_token: TOKEN, p_texto: t });
+    if (!r || !r.ok) { m.className = 'msg err'; m.textContent = 'No se pudo guardar. Revise el texto e intente de nuevo.'; return; }
+    $('f').classList.add('hide'); $('gracias').classList.remove('hide'); window.scrollTo({ top: 0 });
+  } catch (e) { m.className = 'msg err'; m.textContent = 'Sin conexión con el servidor. Su texto sigue aquí: intente de nuevo.'; }
+  finally { b.disabled = false; b.textContent = 'Enviar mi semblanza'; }
+});
+</script>
+</body>
+</html>
