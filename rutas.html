@@ -226,10 +226,8 @@ footer .lb{text-align:center;font-size:11px;font-weight:600;letter-spacing:.2em;
 <main class="rfm">
   <div class="card" id="paso1">
     <p class="rhi">1. Confirme quién es</p>
-    <p class="rsub">Use el mismo documento y correo con los que se registró.</p>
-    <label for="doc">Número de documento</label>
-    <input type="text" id="doc" inputmode="text" autocomplete="off" maxlength="20" placeholder="Sin puntos ni espacios">
-    <label for="mail">Correo con el que se registró</label>
+    <p class="rsub">Escriba el correo electrónico con el que se registró.</p>
+    <label for="mail">Correo electrónico</label>
     <input type="email" id="mail" autocomplete="email" maxlength="150" placeholder="usted@correo.com">
     <div class="err" id="e1"></div>
     <button class="send" id="ir" type="button">Continuar</button>
@@ -345,16 +343,16 @@ let ident = null, busy = false;
 $('rgrid').addEventListener('click', e => { const b = e.target.closest('.rcard'); if (b && !b.disabled) rToggle(b.dataset.c); });
 $('rsug').addEventListener('click', e => { const b = e.target.closest('button[data-s]'); if (b) rToggle(b.dataset.s); });
 $('interes').addEventListener('input', rRender);
-const cleanDoc = v => (v || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 $('ir').onclick = async () => {
   if (busy) return;
-  const doc = cleanDoc($('doc').value), mail = $('mail').value.trim().toLowerCase();
-  if (!doc || !/^\S+@\S+\.\S+$/.test(mail)) { $('e1').textContent = 'Escriba su documento y un correo válido.'; return; }
+  const mail = $('mail').value.trim().toLowerCase();
+  if (!/^\S+@\S+\.\S+$/.test(mail)) { $('e1').textContent = 'Escriba un correo electrónico válido.'; return; }
   $('e1').textContent = ''; busy = true; $('ir').disabled = true;
   try {
-    const r = await rpc('rutas_consultar', { p_documento: doc, p_correo: mail });
-    if (!r || !r.ok) { $('e1').textContent = 'No encontramos un registro con ese documento y correo. Revise los datos o regístrese en el formulario del congreso.'; return; }
-    ident = { doc, mail };
+    const r = await rpc('rutas_consultar_correo', { p_correo: mail });
+    if (r && r.error === 'varios') { $('e1').textContent = 'Ese correo tiene más de un registro. Escriba al equipo del congreso para que lo ayuden.'; return; }
+    if (!r || !r.ok) { $('e1').textContent = 'No encontramos un registro con ese correo. Revise que esté bien escrito o regístrese en el formulario del congreso.'; return; }
+    ident = { mail };
     rFijas = new Set(r.completas || []);
     rutasSel = (r.rutas || []).filter(c => RUTAS.some(x => x.c === c));
     rCalcBloq();
@@ -369,7 +367,7 @@ $('guardar').onclick = async () => {
   $('e2').textContent = ''; busy = true; $('guardar').disabled = true;
   show('<div class="spin"></div><h3>Guardando sus rutas…</h3><p>Un momento, no cierre esta página.</p>');
   try {
-    const r = await rpc('rutas_guardar', { p_documento: ident.doc, p_correo: ident.mail, p_rutas: rutasSel });
+    const r = await rpc('rutas_guardar_correo', { p_correo: ident.mail, p_rutas: rutasSel });
     if (r && r.ok) {
       show('<div class="mark" style="background:var(--ok)">✓</div><h3>¡Listo! Sus rutas quedaron guardadas</h3><p>' + rutasSel.map(c => esc(RUTAS.find(x => x.c === c).n)).join('<br>') + '</p><p style="font-size:13px;margin-top:10px">En cada conferencia confirme su asistencia con el QR. Al completar 3 de una ruta, la insignia le llega al correo.</p><button type="button" id="ok">Cerrar</button>');
       $('ok').onclick = hide;
