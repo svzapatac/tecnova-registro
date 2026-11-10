@@ -70,6 +70,7 @@ input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 
 .foot a{color:var(--blue)}
 
 .hero .in,.top .in{max-width:720px}main{max-width:720px}
+.ses{margin-top:22px;padding:8px 12px;background:var(--acc);color:#fff;border-radius:6px;font-size:13px;font-weight:600;letter-spacing:.03em}
 .pon{border:1.5px solid var(--line);border-radius:8px;margin-top:14px;overflow:hidden;background:#fff}
 .pon.ok{border-color:#9bd3b4}
 .ph{padding:11px 14px;background:var(--soft);border-bottom:1px solid var(--line)}
@@ -102,26 +103,26 @@ textarea{width:100%;min-height:84px;padding:10px 13px;border:1.5px solid #b6c2d1
 <section class="hero"><div class="in">
   <small>TECNOVA 2026 · Para moderadores de sala</small>
   <h1>Control de ponentes</h1>
-  <p>Marque quiénes de los ponentes registrados asistieron y presentaron en su sala. Con esto se generan sus certificados de ponente.</p>
+  <p>Elija su nombre y marque quiénes de los ponentes asistieron y presentaron en su sala. Con esto se generan sus certificados de ponente.</p>
 </div></section>
 
 <main>
 <form class="card" id="f" novalidate>
   <div id="p1">
-    <div class="step"><em>01</em><h2>Su sala</h2></div>
-    <label for="sala" style="margin-top:0">Sala que modera</label>
-    <select id="sala" aria-label="Sala"></select>
+    <div class="step"><em>01</em><h2>Su nombre</h2></div>
+    <label for="sala" style="margin-top:0">Moderador/a</label>
+    <select id="sala" aria-label="Moderador"></select>
     <label for="clave">Clave de moderador</label>
     <div class="key"><input id="clave" autocapitalize="none" autocomplete="off" spellcheck="false" maxlength="40" placeholder="La que le entregó el comité"></div>
     <div class="msg err" id="err" role="alert"></div>
-    <button class="btn" id="abrir" type="submit">Abrir mi sala</button>
+    <button class="btn" id="abrir" type="submit">Abrir mis ponencias</button>
   </div>
 
   <div id="p2" hidden>
-    <div class="step"><em>02</em><h2 id="tsala">Sala</h2></div>
+    <div class="step"><em>02</em><h2 id="tsala">Moderador</h2></div>
     <div class="hint" style="margin-top:0">Para cada autor toque <b>Asistió</b> o <b>No asistió</b>. Puede guardar varias veces y corregir después.</div>
     <div id="lista"></div>
-    <label for="nota">Observaciones de la sala (opcional)</label>
+    <label for="nota">Observaciones (opcional)</label>
     <textarea id="nota" maxlength="1000" placeholder="Ej.: la ponencia 31 se presentó de forma virtual por falla de transporte"></textarea>
     <div class="msg err" id="err2" role="alert"></div>
     <div class="okmsg" id="okm" role="status"></div>
@@ -129,7 +130,7 @@ textarea{width:100%;min-height:84px;padding:10px 13px;border:1.5px solid #b6c2d1
       <div class="c"><span id="cuenta">0 de 0 marcados</span><span id="pct"></span></div>
       <div class="bar"><i id="fill" style="width:0"></i></div>
       <button class="btn" id="guardar" type="button">Guardar</button>
-      <button class="link" id="salir" type="button">Cambiar de sala</button>
+      <button class="link" id="salir" type="button">Cambiar de moderador</button>
     </div>
   </div>
 </form>
@@ -143,8 +144,9 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const ST = { get(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
 const DIAS = { '2026-11-11': 'Miércoles 11 de noviembre', '2026-11-12': 'Jueves 12 de noviembre', '2026-11-13': 'Viernes 13 de noviembre' };
-const ERR = { clave_incorrecta: 'La clave no corresponde a esa sala. Revise que escogió la sala correcta.', demasiados_intentos: 'Demasiados intentos fallidos. Espere 10 minutos e intente de nuevo.' };
+const ERR = { clave_incorrecta: 'La clave no corresponde a ese nombre. Revise que escogió su nombre.', demasiados_intentos: 'Demasiados intentos fallidos. Espere 10 minutos e intente de nuevo.' };
 let marcas = {}, inicial = {}, sala = '', clave = '', total = 0;
+const DCORTO = { '2026-11-11': 'mié 11', '2026-11-12': 'jue 12', '2026-11-13': 'vie 13' };
 
 async function rpc(fn, body, ms) {
   const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms || 20000);
@@ -158,18 +160,20 @@ function error(id, m) { const e = $(id); e.textContent = m; e.classList.toggle('
 
 async function cargaSalas() {
   let l = [];
-  try { l = await rpc('mod_salas', {}, 12000); } catch (e) { error('err', 'No se pudo cargar la lista de salas. Revise su conexión y recargue la página.'); }
-  const g = {}; l.forEach(x => (g[x.dia] = g[x.dia] || []).push(x));
-  let h = '<option value="">Elija su sala…</option>';
-  Object.keys(g).sort().forEach(d => { h += '<optgroup label="' + esc(DIAS[d] || d) + '">' + g[d].map(x => '<option value="' + esc(x.sala) + '">' + esc(x.sala.replace('SALA', 'Sala')) + ' · ' + x.ponencias + ' ponencias</option>').join('') + '</optgroup>'; });
-  $('sala').innerHTML = h;
-  const s = ST.get('tn_mod_sala'); if (s) $('sala').value = s;
+  try { l = await rpc('mod_lista', {}, 12000); } catch (e) { error('err', 'No se pudo cargar la lista. Revise su conexión y recargue la página.'); }
+  $('sala').innerHTML = '<option value="">Elija su nombre…</option>' + l.map(x => '<option value="' + esc(x.nombre) + '">' + esc(x.nombre) + ' — ' + x.sesiones.map(z => z.sala.replace('SALA', 'Sala') + ' ' + (DCORTO[z.dia] || z.dia)).join(' y ') + ' · ' + x.ponencias + ' ponencias</option>').join('');
+  const s = ST.get('tn_mod_nombre'); if (s) $('sala').value = s;
 }
 
 function pintaLista(ponencias) {
-  $('lista').innerHTML = ponencias.map(p => '<div class="pon" id="pon-' + esc(p.cod) + '"><div class="ph"><div class="h">' + esc(p.desde) + ' – ' + esc(p.hasta) + ' · Ponencia ' + esc(p.cod) + '</div><div class="t">' + esc(p.titulo) + '</div></div>' +
+  let ult = '';
+  $('lista').innerHTML = ponencias.map((p, i) => {
+    const k = 'k' + i, ses = p.dia + p.sala; let cab = '';
+    if (ses !== ult) { ult = ses; cab = '<div class="ses">' + esc(DIAS[p.dia] || p.dia) + ' · ' + esc(p.sala.replace('SALA', 'Sala')) + '</div>'; }
+    return cab + '<div class="pon" id="pon-' + k + '"><div class="ph"><div class="h">' + esc(p.desde) + ' – ' + esc(p.hasta) + ' · Ponencia ' + esc(p.cod) + '</div><div class="t">' + esc(p.titulo) + '</div></div>' +
     p.autores.map(a => '<div class="au"><div class="n">' + esc(a.nombre) + ' <span class="r">· ' + esc(a.rol) + '</span></div><div class="sg" data-id="' + esc(a.id) + '"><button type="button" class="si" data-v="1">Asistió</button><button type="button" class="no" data-v="0">No asistió</button></div></div>').join('') +
-    '<div class="atajo"><button type="button" data-todos="1" data-cod="' + esc(p.cod) + '">Todos asistieron</button><button type="button" data-todos="0" data-cod="' + esc(p.cod) + '">Ninguno asistió</button></div></div>').join('');
+    '<div class="atajo"><button type="button" data-todos="1" data-cod="' + k + '">Todos asistieron</button><button type="button" data-todos="0" data-cod="' + k + '">Ninguno asistió</button></div></div>';
+  }).join('');
   ponencias.forEach(p => p.autores.forEach(a => { marcas[a.id] = a.asistio === true ? true : a.asistio === false ? false : null; }));
   inicial = Object.assign({}, marcas); total = Object.keys(marcas).length;
   pintaTodo();
@@ -190,17 +194,17 @@ $('lista').addEventListener('click', e => {
 $('f').addEventListener('submit', async ev => {
   ev.preventDefault(); error('err', '');
   sala = $('sala').value; clave = $('clave').value.trim();
-  if (!sala) return error('err', 'Elija la sala que modera.');
+  if (!sala) return error('err', 'Elija su nombre.');
   if (!clave) return error('err', 'Escriba la clave de moderador.');
   const b = $('abrir'); b.disabled = true; b.textContent = 'Abriendo…';
   try {
-    const r = await rpc('mod_abrir', { p_sala: sala, p_clave: clave });
-    if (!r.ok) { error('err', ERR[r.error] || 'No se pudo abrir la sala.'); return; }
-    ST.set('tn_mod_sala', sala);
-    $('tsala').textContent = r.sala.replace('SALA', 'Sala') + ' · ' + (DIAS[(r.ponencias[0] || {}).dia] || '');
+    const r = await rpc('mod_abrir', { p_moderador: sala, p_clave: clave });
+    if (!r.ok) { error('err', ERR[r.error] || 'No se pudo abrir.'); return; }
+    ST.set('tn_mod_nombre', sala);
+    $('tsala').textContent = r.moderador;
     $('nota').value = r.nota || ''; pintaLista(r.ponencias); $('p1').hidden = true; $('p2').hidden = false; window.scrollTo({ top: 0 });
   } catch (e) { error('err', 'Sin conexión con el servidor. Inténtelo de nuevo en unos segundos.'); }
-  finally { b.disabled = false; b.textContent = 'Abrir mi sala'; }
+  finally { b.disabled = false; b.textContent = 'Abrir mis ponencias'; }
 });
 
 $('guardar').addEventListener('click', async () => {
@@ -208,11 +212,11 @@ $('guardar').addEventListener('click', async () => {
   const cambios = Object.keys(marcas).filter(id => marcas[id] !== inicial[id]).map(id => ({ id, asistio: marcas[id] }));
   const b = $('guardar'); b.disabled = true; b.textContent = 'Guardando…';
   try {
-    const r = await rpc('mod_marcar', { p_sala: sala, p_clave: clave, p_marcas: cambios, p_nota: $('nota').value });
+    const r = await rpc('mod_marcar', { p_moderador: sala, p_clave: clave, p_marcas: cambios, p_nota: $('nota').value });
     if (!r.ok) { error('err2', ERR[r.error] || 'No se pudo guardar.'); return; }
     inicial = Object.assign({}, marcas);
     const falta = r.total - r.marcados;
-    $('okm').textContent = 'Guardado. ' + r.marcados + ' de ' + r.total + ' autores marcados' + (falta ? ' · le faltan ' + falta + '.' : ' · ¡sala completa, gracias!');
+    $('okm').textContent = 'Guardado. ' + r.marcados + ' de ' + r.total + ' autores marcados' + (falta ? ' · le faltan ' + falta + '.' : ' · ¡todo completo, gracias!');
     $('okm').classList.add('on');
   } catch (e) { error('err2', 'No se pudo guardar (sin conexión). Sus marcas siguen aquí: intente de nuevo.'); }
   finally { b.disabled = false; b.textContent = 'Guardar'; }
