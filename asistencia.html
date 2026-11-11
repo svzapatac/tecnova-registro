@@ -86,10 +86,11 @@ input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 
 <main>
 <form class="card" id="f" novalidate autocomplete="on">
   <div class="step"><em>01</em><h2>Sus datos</h2></div>
-  <label for="doc">Número de documento</label>
-  <input id="doc" inputmode="text" autocapitalize="characters" autocomplete="off" maxlength="20" placeholder="El mismo con el que se registró">
   <label for="correo">Correo electrónico</label>
-  <input id="correo" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="email" maxlength="120" placeholder="El mismo de su registro">
+  <input id="correo" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="email" maxlength="120" placeholder="El mismo con el que se registró">
+  <div id="nomwrap" hidden><label for="nombre">Nombre completo</label>
+  <input id="nombre" autocomplete="name" maxlength="120" placeholder="Como se registró (nombre y apellido)">
+  <div class="hint">Este correo lo comparten varias personas; escriba su nombre para identificarlo.</div></div>
 
   <div class="sp"></div>
   <div class="step"><em>02</em><h2>Conferencia de este momento</h2></div>
@@ -153,9 +154,10 @@ async function cargaLista() {
 cargaLista(); setInterval(cargaLista, 30000);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) cargaLista(); });
 
-$('doc').value = ST.get('tn_doc'); $('correo').value = ST.get('tn_correo');
+$('correo').value = ST.get('tn_correo'); $('nombre').value = ST.get('tn_nombre');
 const ERR = {
-  no_registrado: 'No encontramos un registro con ese documento y correo. Revise que sean los mismos de su registro o <a href="./">regístrese aquí</a>.',
+  no_registrado: 'No encontramos un registro con ese correo. Escriba el mismo con el que se registró o <a href="./">regístrese aquí</a>.',
+  varios_con_ese_correo: 'Ese correo lo comparten varias personas. Escriba su nombre completo en el campo que apareció e intente de nuevo.',
   fuera_de_hora: 'Esa conferencia no está en curso en este momento. Actualice la lista y elija la que está viendo.',
   clave_incorrecta: 'La palabra clave no coincide. Verifique con la que dio el ponente o la que aparece en pantalla e intente de nuevo.',
   demasiados_intentos: 'Demasiados intentos fallidos. Espere unos minutos o acérquese al personal del evento.',
@@ -163,11 +165,12 @@ const ERR = {
 };
 const setErr = m => { const e = $('err'); e.innerHTML = m || ''; e.classList.toggle('on', !!m); };
 function datos() {
-  const doc = $('doc').value.replace(/[^A-Za-z0-9]/g, ''), c = $('correo').value.trim().toLowerCase();
-  if (doc.length < 4) { setErr('Escriba su número de documento.'); $('doc').focus(); return null; }
+  const c = $('correo').value.trim().toLowerCase(), nombre = $('nombre').value.trim();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(c)) { setErr('Escriba un correo válido.'); $('correo').focus(); return null; }
-  ST.set('tn_doc', doc); ST.set('tn_correo', c); return { doc, c };
+  if (!$('nomwrap').hidden && nombre.split(/\s+/).length < 2) { setErr('Escriba su nombre y apellido.'); $('nombre').focus(); return null; }
+  ST.set('tn_correo', c); ST.set('tn_nombre', nombre); return { doc: nombre, c };
 }
+const compartido = r => { if (r && r.error === 'varios_con_ese_correo') { $('nomwrap').hidden = false; $('nombre').focus(); } };
 function progreso(rutas) {
   if (!rutas || !rutas.length) return '<div class="sum">No eligió rutas de innovación al registrarse. Su asistencia igual queda guardada.</div>';
   return '<div class="prog"><h4>Su avance en las rutas</h4>' + rutas.map(r => { const pc = Math.min(100, Math.round(r.hechas / r.meta * 100));
@@ -184,7 +187,7 @@ $('f').addEventListener('submit', async ev => {
   $('go').disabled = true; $('go').textContent = 'Verificando…';
   try {
     const r = await rpc('registrar_asistencia', { p_documento: d.doc, p_correo: d.c, p_actividad: $('act').value, p_clave: $('clave').value });
-    if (!r.ok) { setErr(ERR[r.error] || 'No se pudo registrar. Intente de nuevo.'); if (r.error === 'fuera_de_hora') cargaLista(); }
+    if (!r.ok) { setErr(ERR[r.error] || 'No se pudo registrar. Intente de nuevo.'); compartido(r); if (r.error === 'fuera_de_hora') cargaLista(); }
     else {
       $('clave').value = '';
       let h = '<div class="ok"><div class="mark">✓</div><h3>' + (r.ya_registrada ? 'Ya la teníamos registrada' : '¡Asistencia confirmada!') + '</h3><p>' + (r.ya_registrada ? 'Esta conferencia ya estaba en su historial.' : 'Quedó guardada en su historial.') + '</p><div class="t">' + esc(r.titulo) + '</div></div>';
@@ -199,7 +202,7 @@ $('ver').addEventListener('click', async () => {
   setErr(''); $('res').classList.remove('on'); const d = datos(); if (!d) return;
   try {
     const r = await rpc('mi_progreso', { p_documento: d.doc, p_correo: d.c });
-    if (!r.ok) setErr(ERR[r.error] || 'No se pudo consultar.');
+    if (!r.ok) { setErr(ERR[r.error] || 'No se pudo consultar.'); compartido(r); }
     else pinta('<div class="ok"><h3>Su avance</h3><p>' + r.asistencias + (r.asistencias === 1 ? ' conferencia confirmada' : ' conferencias confirmadas') + '</p></div>' + progreso(r.rutas));
   } catch (e) { setErr('No hay conexión o el servicio no responde. Intente de nuevo.'); }
 });
