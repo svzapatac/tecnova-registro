@@ -79,8 +79,8 @@ input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 
 <section class="hero"><div class="in">
   <small>TECNOVA 2026 · 11–13 nov · Bogotá</small>
   <h1>Control de asistencia</h1>
-  <p>Confirme su asistencia a la conferencia en la que está y avance en su ruta de innovación.</p>
-  <div class="clock"><i></i><span>Hora en Bogotá: <b id="hora">--:--</b></span></div>
+  <p>Confirme su asistencia a la conferencia a la que asistió y avance en su ruta de innovación.</p>
+  
 </div></section>
 
 <main>
@@ -93,16 +93,19 @@ input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 
   <div class="hint">Este correo lo comparten varias personas; escriba su nombre para identificarlo.</div></div>
 
   <div class="sp"></div>
-  <div class="step"><em>02</em><h2>Conferencia de este momento</h2></div>
-  <div id="vacio" class="empty" hidden><b>No hay conferencias en este momento.</b>Vuelva cuando empiece la charla a la que asiste. Aparecen desde 5 minutos antes de que inicie.</div>
-  <div id="selwrap"><label for="act" style="margin-top:0">¿A cuál está asistiendo?</label>
-    <select id="act" aria-label="Conferencia"></select>
-    <div class="hint" id="cuenta"></div></div>
+  <div class="step"><em>02</em><h2>Su conferencia</h2></div>
+  <label for="dia" style="margin-top:0">Día</label>
+  <select id="dia" aria-label="Día"></select>
+  <label for="sala">Sala</label>
+  <select id="sala" aria-label="Sala"></select>
+  <label for="act">Conferencia a la que asistió</label>
+  <select id="act" aria-label="Conferencia"></select>
+  <div class="hint" id="cuenta"></div>
 
   <div class="sp"></div>
   <div class="step"><em>03</em><h2>Palabra clave</h2></div>
   <div class="key"><input id="clave" autocapitalize="none" autocomplete="off" spellcheck="false" maxlength="40" placeholder="Escríbala exactamente"></div>
-  <div class="hint">La palabra clave la anuncia el ponente o aparece en la pantalla de la sala. No importa si usa mayúsculas o tildes.</div>
+  <div class="hint">La palabra clave aparece en la pantalla de la sala. No importa si usa mayúsculas o tildes.</div>
 
   <div class="msg err" id="err" role="alert"></div>
   <button class="btn" id="go" type="submit">Confirmar mi asistencia</button>
@@ -120,8 +123,6 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const ST = { get(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
 
-function reloj() { try { $('hora').textContent = new Date().toLocaleTimeString('es-CO', { timeZone: 'America/Bogota', hour: '2-digit', minute: '2-digit', hour12: false }); } catch (e) {} }
-reloj(); setInterval(reloj, 15000);
 
 async function rpc(fn, body, ms) {
   const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), ms || 20000);
@@ -133,26 +134,32 @@ async function rpc(fn, body, ms) {
 }
 
 let lista = [];
-async function cargaLista() {
-  try {
-    lista = await rpc('actividades_ahora', {}, 12000);
-  } catch (e) { return; }
-  const sel = $('act'), prev = sel.value;
-  const grupos = {};
-  lista.forEach(a => { const g = a.modalidad || 'General'; (grupos[g] = grupos[g] || []).push(a); });
-  let h = '<option value="">Seleccione la conferencia…</option>';
-  Object.keys(grupos).forEach(g => {
-    h += '<optgroup label="' + esc(g) + '">' + grupos[g].map(a => { const t = a.titulo.length > 85 ? a.titulo.slice(0, 83) + '…' : a.titulo;
-      return '<option value="' + esc(a.id) + '">' + esc((a.sala ? a.sala + ' · ' : '') + a.desde + ' · ' + t) + '</option>'; }).join('') + '</optgroup>';
-  });
-  sel.innerHTML = h;
-  if (prev && lista.some(a => a.id === prev)) sel.value = prev;
-  else if (lista.length === 1) sel.value = lista[0].id;
-  $('vacio').hidden = lista.length > 0; $('selwrap').hidden = lista.length === 0;
-  $('cuenta').textContent = lista.length ? (lista.length === 1 ? '1 conferencia en curso.' : lista.length + ' conferencias en curso. Elija la suya.') : '';
+const DIAS = { '2026-11-11': 'Miércoles 11 de noviembre', '2026-11-12': 'Jueves 12 de noviembre', '2026-11-13': 'Viernes 13 de noviembre' };
+const nSala = s => String(s || 'General').replace('SALA', 'Sala');
+function pintaDias() {
+  const dias = [...new Set(lista.map(a => a.dia))].sort(), hoy = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Bogota' });
+  $('dia').innerHTML = dias.map(d => '<option value="' + d + '">' + esc(DIAS[d] || d) + '</option>').join('');
+  $('dia').value = dias.includes(hoy) ? hoy : (dias[0] || ''); pintaSalas();
 }
-cargaLista(); setInterval(cargaLista, 30000);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) cargaLista(); });
+function pintaSalas() {
+  const d = $('dia').value, prev = $('sala').value, salas = [...new Set(lista.filter(a => a.dia === d).map(a => a.sala || 'General'))].sort((x, y) => x.localeCompare(y, 'es', { numeric: true }));
+  $('sala').innerHTML = '<option value="">Seleccione la sala…</option>' + salas.map(s => '<option value="' + esc(s) + '">' + esc(nSala(s)) + '</option>').join('');
+  if (salas.includes(prev)) $('sala').value = prev; else if (salas.length === 1) $('sala').value = salas[0];
+  pintaCharlas();
+}
+function pintaCharlas() {
+  const d = $('dia').value, s = $('sala').value, xs = lista.filter(a => a.dia === d && (a.sala || 'General') === s);
+  $('act').innerHTML = '<option value="">' + (s ? 'Seleccione la conferencia…' : 'Primero elija la sala') + '</option>' + xs.map(a => { const t = a.titulo.length > 85 ? a.titulo.slice(0, 83) + '…' : a.titulo;
+    return '<option value="' + esc(a.id) + '">' + esc(a.desde + ' · ' + t) + '</option>'; }).join('');
+  if (xs.length === 1) $('act').value = xs[0].id;
+  $('cuenta').textContent = s ? (xs.length + (xs.length === 1 ? ' conferencia' : ' conferencias') + ' en esta sala. Elija a la que asistió.') : '';
+}
+async function cargaLista() {
+  try { lista = await rpc('asist_charlas', {}, 15000) || []; } catch (e) { setErr('No se pudo cargar la lista de conferencias. Recargue la página.'); return; }
+  pintaDias();
+}
+$('dia').addEventListener('change', pintaSalas); $('sala').addEventListener('change', pintaCharlas);
+cargaLista();
 
 $('correo').value = ST.get('tn_correo'); $('nombre').value = ST.get('tn_nombre');
 const ERR = {
@@ -182,12 +189,12 @@ function pinta(html) { const r = $('res'); r.innerHTML = html; r.classList.add('
 $('f').addEventListener('submit', async ev => {
   ev.preventDefault(); setErr(''); $('res').classList.remove('on');
   const d = datos(); if (!d) return;
-  if (!$('act').value) { setErr(lista.length ? 'Elija la conferencia a la que está asistiendo.' : 'No hay conferencias en curso en este momento.'); return; }
+  if (!$('act').value) { setErr('Elija el día, la sala y la conferencia a la que asistió.'); return; }
   if (!$('clave').value.trim()) { setErr('Escriba la palabra clave de la conferencia.'); $('clave').focus(); return; }
   $('go').disabled = true; $('go').textContent = 'Verificando…';
   try {
     const r = await rpc('registrar_asistencia', { p_documento: d.doc, p_correo: d.c, p_actividad: $('act').value, p_clave: $('clave').value });
-    if (!r.ok) { setErr(ERR[r.error] || 'No se pudo registrar. Intente de nuevo.'); compartido(r); if (r.error === 'fuera_de_hora') cargaLista(); }
+    if (!r.ok) { setErr(ERR[r.error] || 'No se pudo registrar. Intente de nuevo.'); compartido(r);  }
     else {
       $('clave').value = '';
       let h = '<div class="ok"><div class="mark">✓</div><h3>' + (r.ya_registrada ? 'Ya la teníamos registrada' : '¡Asistencia confirmada!') + '</h3><p>' + (r.ya_registrada ? 'Esta conferencia ya estaba en su historial.' : 'Quedó guardada en su historial.') + '</p><div class="t">' + esc(r.titulo) + '</div></div>';

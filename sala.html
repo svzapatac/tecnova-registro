@@ -135,7 +135,7 @@ async function revelar() {
   const box = $('w0'), a = ACT[SEL]; box.innerHTML = '<div class="go">Un momento…</div>';
   try {
     const r = await rpc('sala_palabra', { p_id: a.id });
-    if (!r || !r.ok) { box.innerHTML = '<div class="go">La palabra se puede revelar desde 10 minutos antes de que empiece la charla.</div><button class="rev" id="rev0">Intentar de nuevo</button>'; return; }
+    if (!r || !r.ok) { box.innerHTML = '<div class="go">No se pudo obtener la palabra. Intente de nuevo.</div><button class="rev" id="rev0">Intentar de nuevo</button>'; return; }
     const p = r.palabra;
     box.innerHTML = '<div class="word" id="ww0"></div><div class="go">Escríbala en el formulario de asistencia</div><button class="rev alt" id="ocu0">Ocultar</button>';
     const el = $('ww0'), ch = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&'; let n = 0;
