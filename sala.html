@@ -72,22 +72,26 @@ v.onended=fin;k.onclick=fin;})();
 
 <div class="login" id="login">
   <h1>Pantalla de sala</h1>
-  <p>Elija el día y su sala. Verá solo las charlas de esa sala y ese día.</p>
+  <p>Elija el día y la sala. Luego seleccione la conferencia que va a proyectar.</p>
   <label for="dia">Día</label>
   <select id="dia"><option value="2026-11-11">Miércoles 11 de noviembre</option><option value="2026-11-12">Jueves 12 de noviembre</option><option value="2026-11-13">Viernes 13 de noviembre</option></select>
   <label for="sala">Sala</label>
   <select id="sala"></select>
-  <label for="clave">Clave de la sala (la del moderador)</label>
-  <input id="clave" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Clave">
-  <button class="btn" id="abrir">Abrir pantalla</button>
+  <button class="btn" id="abrir">Continuar</button>
   <div class="err" id="err" role="status"></div>
+</div>
+
+<div id="elegir" class="login hide" style="max-width:820px">
+  <h1 id="elegirtit"></h1>
+  <p>Toque el nombre de la conferencia que se va a proyectar.</p>
+  <div id="opciones"></div>
 </div>
 
 <div id="pantalla" class="hide">
   <div class="hd"><div class="k">TECNOVA 2026 · ASISTENCIA</div><h2 id="titulo"></h2><small id="mod"></small></div>
   <div class="main">
     <div class="qr"><span class="n">1</span><h3>Escanee y registre<br>su asistencia</h3><img src="assets/qr_asistencia.png" alt="QR asistencia"><p>svzapatac.github.io/tecnova-registro/asistencia</p></div>
-    <div><div id="lista"></div></div>
+    <div><div id="lista"></div><button class="rev alt" id="otra" style="margin-top:14px">&larr; Elegir otra conferencia</button></div>
   </div>
 </div>
 
@@ -119,45 +123,46 @@ if (SALAS[hoy]) $('dia').value = hoy;
 salasDelDia();
 try { const s = JSON.parse(localStorage.getItem('tn_sala_pant') || 'null'); if (s && SALAS[s.dia]) { $('dia').value = s.dia; salasDelDia(); $('sala').value = s.sala; } } catch (e) {}
 
-let ACT = [];
-function horaBogota() { return new Date().toLocaleTimeString('en-GB', { timeZone: 'America/Bogota', hour: '2-digit', minute: '2-digit' }); }
-function pinta() {
-  const ahora = horaBogota(), esHoy = $('dia').value === new Date().toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
-  $('lista').innerHTML = ACT.length ? ACT.map((a, i) => {
-    const now = esHoy && ahora >= a.desde && ahora < a.hasta;
-    return '<div class="ch' + (now ? ' now' : '') + '" id="c' + i + '"><div class="h">' + esc(a.desde) + ' – ' + esc(a.hasta) + (now ? ' <span class="now-tag">EN CURSO</span>' : '') + '</div><div class="t">' + esc(a.titulo) + '</div>' +
-      '<div id="w' + i + '"><button class="rev" data-i="' + i + '">Revelar palabra sorpresa</button></div></div>';
-  }).join('') : '<div class="ch"><div class="t">No hay charlas programadas en esta sala para este día.</div></div>';
+let ACT = [], SEL = null;
+$('opciones').addEventListener('click', e => { const c = e.target.closest('[data-s]'); if (c) proyectar(+c.dataset.s); });
+function proyectar(i) {
+  SEL = i; const a = ACT[i], dia = $('dia').value, sala = $('sala').value;
+  $('titulo').textContent = (sala === 'AUDITORIO' ? 'Auditorio Lectus' : 'Sala ' + sala) + ' · ' + DIAS[dia]; $('mod').textContent = a.desde + ' – ' + a.hasta;
+  $('lista').innerHTML = '<div class="ch now"><div class="h">' + esc(a.desde) + ' – ' + esc(a.hasta) + ' <span class="now-tag">PROYECTANDO</span></div><div class="t">' + esc(a.titulo) + '</div><div id="w0"><button class="rev" id="rev0">Revelar palabra sorpresa</button></div></div>';
+  $('elegir').classList.add('hide'); $('pantalla').classList.remove('hide');
 }
-const REV = {};
-function revelar(i) {
-  const p = ACT[i].palabra, box = $('w' + i); REV[i] = true;
-  box.innerHTML = '<div class="word" id="ww' + i + '"></div><div class="go">Escríbala en el formulario de asistencia</div><button class="rev alt" data-o="' + i + '">Ocultar</button>';
-  const el = $('ww' + i), ch = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&'; let n = 0;
-  const id = setInterval(() => { n++; el.textContent = p.split('').map((c, k) => k < n / 2 ? c : ch[Math.floor(Math.random() * ch.length)]).join(''); if (n >= p.length * 2) { clearInterval(id); el.textContent = p; } }, 55);
+async function revelar() {
+  const box = $('w0'), a = ACT[SEL]; box.innerHTML = '<div class="go">Un momento…</div>';
+  try {
+    const r = await rpc('sala_palabra', { p_id: a.id });
+    if (!r || !r.ok) { box.innerHTML = '<div class="go">La palabra se puede revelar desde 10 minutos antes de que empiece la charla.</div><button class="rev" id="rev0">Intentar de nuevo</button>'; return; }
+    const p = r.palabra;
+    box.innerHTML = '<div class="word" id="ww0"></div><div class="go">Escríbala en el formulario de asistencia</div><button class="rev alt" id="ocu0">Ocultar</button>';
+    const el = $('ww0'), ch = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&'; let n = 0;
+    const id = setInterval(() => { n++; el.textContent = p.split('').map((c, k) => k < n / 2 ? c : ch[Math.floor(Math.random() * ch.length)]).join(''); if (n >= p.length * 2) { clearInterval(id); el.textContent = p; } }, 55);
+  } catch (x) { box.innerHTML = '<div class="go">Sin conexión.</div><button class="rev" id="rev0">Intentar de nuevo</button>'; }
 }
 $('lista').addEventListener('click', e => {
-  const r = e.target.closest('[data-i]'), o = e.target.closest('[data-o]');
-  if (r) revelar(+r.dataset.i);
-  if (o) { const i = +o.dataset.o; REV[i] = false; $('w' + i).innerHTML = '<button class="rev" data-i="' + i + '">Revelar palabra sorpresa</button>'; }
+  if (e.target.closest('#rev0')) revelar();
+  if (e.target.closest('#ocu0')) $('w0').innerHTML = '<button class="rev" id="rev0">Revelar palabra sorpresa</button>';
 });
+$('otra').addEventListener('click', () => { $('pantalla').classList.add('hide'); $('elegir').classList.remove('hide'); });
 $('abrir').addEventListener('click', async () => {
   const b = $('abrir'), e = $('err'); e.textContent = '';
-  const dia = $('dia').value, sala = $('sala').value, clave = $('clave').value.trim();
-  if (!clave) { e.textContent = 'Escriba la clave de la sala.'; return; }
-  b.disabled = true; b.textContent = 'Abriendo…';
+  const dia = $('dia').value, sala = $('sala').value;
+  b.disabled = true; b.textContent = 'Cargando…';
   try {
-    const r = await rpc('sala_actividades', { p_dia: dia, p_sala: sala, p_clave: clave });
-    if (!r || !r.ok) { e.textContent = r && r.error === 'demasiados_intentos' ? 'Demasiados intentos. Espere 10 minutos.' : 'La clave no corresponde a esa sala y día.'; return; }
-    ACT = r.actividades || []; try { localStorage.setItem('tn_sala_pant', JSON.stringify({ dia, sala })); } catch (x) {}
-    const m = SALAS[dia].find(s => s[0] === sala);
-    $('titulo').textContent = (sala === 'AUDITORIO' ? 'Auditorio Lectus' : 'Sala ' + sala) + ' · ' + DIAS[dia]; $('mod').textContent = sala === 'AUDITORIO' ? 'Conferencias y eventos del día' : 'Modera: ' + (m ? m[1] : '');
-    $('login').classList.add('hide'); $('pantalla').classList.remove('hide'); $('cambiar').classList.remove('hide'); pinta(); setInterval(() => { if (!Object.values(REV).some(Boolean)) pinta(); }, 60000);
+    const r = await rpc('sala_lista', { p_dia: dia, p_sala: sala });
+    ACT = (r && r.actividades) || []; try { localStorage.setItem('tn_sala_pant', JSON.stringify({ dia, sala })); } catch (x) {}
+    $('elegirtit').textContent = (sala === 'AUDITORIO' ? 'Auditorio Lectus' : 'Sala ' + sala) + ' · ' + DIAS[dia];
+    const ahora = horaBogota(), esHoy = dia === new Date().toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
+    $('opciones').innerHTML = ACT.length ? ACT.map((a, i) => { const now = esHoy && ahora >= a.desde && ahora < a.hasta; return '<div class="ch' + (now ? ' now' : '') + '" data-s="' + i + '" style="cursor:pointer"><div class="h">' + esc(a.desde) + ' – ' + esc(a.hasta) + (now ? ' <span class="now-tag">EN CURSO</span>' : '') + '</div><div class="t">' + esc(a.titulo) + '</div></div>'; }).join('') : '<div class="ch"><div class="t">No hay conferencias programadas en esta sala para este día.</div></div>';
+    $('login').classList.add('hide'); $('elegir').classList.remove('hide'); $('cambiar').classList.remove('hide');
   } catch (x) { e.textContent = 'Sin conexión. Intente de nuevo.'; }
-  finally { b.disabled = false; b.textContent = 'Abrir pantalla'; }
+  finally { b.disabled = false; b.textContent = 'Continuar'; }
 });
+function horaBogota() { return new Date().toLocaleTimeString('en-GB', { timeZone: 'America/Bogota', hour: '2-digit', minute: '2-digit' }); }
 $('cambiar').addEventListener('click', () => location.reload());
-$('clave').addEventListener('keydown', e => { if (e.key === 'Enter') $('abrir').click(); });
 </script>
 </body>
 </html>
