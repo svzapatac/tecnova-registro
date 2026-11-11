@@ -52,7 +52,7 @@ select,input{width:100%;font:inherit;color:#fff;background:var(--card);border:2p
   <h1>Pantalla de sala</h1>
   <p>Elija el día y su sala. Verá solo las charlas de esa sala y ese día.</p>
   <label for="dia">Día</label>
-  <select id="dia"><option value="2026-11-11">Miércoles 11 de noviembre</option><option value="2026-11-12">Jueves 12 de noviembre</option></select>
+  <select id="dia"><option value="2026-11-11">Miércoles 11 de noviembre</option><option value="2026-11-12">Jueves 12 de noviembre</option><option value="2026-11-13">Viernes 13 de noviembre</option></select>
   <label for="sala">Sala</label>
   <select id="sala"></select>
   <label for="clave">Clave de la sala (la del moderador)</label>
@@ -74,10 +74,11 @@ const SUPABASE_URL = 'https://lhmsnlglynyscypnjavv.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_deVkpWRVb9jbNNjUFzWRdw_1sSXVp7Q';
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';');
-const DIAS = { '2026-11-11': 'Miércoles 11 de noviembre', '2026-11-12': 'Jueves 12 de noviembre' };
+const DIAS = { '2026-11-11': 'Miércoles 11 de noviembre', '2026-11-12': 'Jueves 12 de noviembre', '2026-11-13': 'Viernes 13 de noviembre' };
 const SALAS = {
-  '2026-11-11': [['P01', 'Gustavo Andrés Romero Duque'], ['P02', 'Adriana López Vargas'], ['P03', 'Héctor Iván Tangarife Escobar'], ['V01', 'Juan Carlos Guevara Bolaños'], ['V02', 'Gloria Andrea Cavanzo Nisso'], ['V03', 'Catalina Suarez Pérez'], ['V04', 'Carlos Duarte Garzón']],
-  '2026-11-12': [['P01', 'Gustavo Andrés Romero Duque'], ['P02', 'Wilson Alexander Pinzón Rueda'], ['P03', 'Giovanni Sánchez Prieto'], ['V05', 'Juan Carlos Guevara Bolaños'], ['V06', 'Gloria Andrea Cavanzo Nisso'], ['V07', 'Catalina Suarez Pérez'], ['V08', 'Carlos Duarte Garzón']]
+  '2026-11-11': [['AUDITORIO', 'Auditorio Lectus · conferencias y eventos'], ['P01', 'Gustavo Andrés Romero Duque'], ['P02', 'Adriana López Vargas'], ['P03', 'Héctor Iván Tangarife Escobar'], ['V01', 'Juan Carlos Guevara Bolaños'], ['V02', 'Gloria Andrea Cavanzo Nisso'], ['V03', 'Catalina Suarez Pérez'], ['V04', 'Carlos Duarte Garzón']],
+  '2026-11-12': [['AUDITORIO', 'Auditorio Lectus · conferencias y eventos'], ['P01', 'Gustavo Andrés Romero Duque'], ['P02', 'Wilson Alexander Pinzón Rueda'], ['P03', 'Giovanni Sánchez Prieto'], ['V05', 'Juan Carlos Guevara Bolaños'], ['V06', 'Gloria Andrea Cavanzo Nisso'], ['V07', 'Catalina Suarez Pérez'], ['V08', 'Carlos Duarte Garzón']],
+  '2026-11-13': [['AUDITORIO', 'Auditorio Lectus · conferencias y eventos']]
 };
 async function rpc(fn, body) {
   const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 15000);
@@ -88,7 +89,7 @@ async function rpc(fn, body) {
   } finally { clearTimeout(to); }
 }
 function salasDelDia() {
-  const d = $('dia').value; $('sala').innerHTML = SALAS[d].map(s => '<option value="' + s[0] + '">Sala ' + s[0] + (s[0][0] === 'P' ? ' · Presencial' : ' · Virtual') + ' — ' + esc(s[1]) + '</option>').join('');
+  const d = $('dia').value; $('sala').innerHTML = SALAS[d].map(s => '<option value="' + s[0] + '">' + (s[0] === 'AUDITORIO' ? 'Auditorio Lectus' : 'Sala ' + s[0] + (s[0][0] === 'P' ? ' · Presencial' : ' · Virtual') + ' — ' + esc(s[1])) + '</option>').join('');
 }
 $('dia').addEventListener('change', salasDelDia);
 const hoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
@@ -128,7 +129,7 @@ $('abrir').addEventListener('click', async () => {
     if (!r || !r.ok) { e.textContent = r && r.error === 'demasiados_intentos' ? 'Demasiados intentos. Espere 10 minutos.' : 'La clave no corresponde a esa sala y día.'; return; }
     ACT = r.actividades || []; try { localStorage.setItem('tn_sala_pant', JSON.stringify({ dia, sala })); } catch (x) {}
     const m = SALAS[dia].find(s => s[0] === sala);
-    $('titulo').textContent = 'Sala ' + sala + ' · ' + DIAS[dia]; $('mod').textContent = 'Modera: ' + (m ? m[1] : '');
+    $('titulo').textContent = (sala === 'AUDITORIO' ? 'Auditorio Lectus' : 'Sala ' + sala) + ' · ' + DIAS[dia]; $('mod').textContent = sala === 'AUDITORIO' ? 'Conferencias y eventos del día' : 'Modera: ' + (m ? m[1] : '');
     $('login').classList.add('hide'); $('pantalla').classList.remove('hide'); $('cambiar').classList.remove('hide'); pinta(); setInterval(() => { if (!Object.values(REV).some(Boolean)) pinta(); }, 60000);
   } catch (x) { e.textContent = 'Sin conexión. Intente de nuevo.'; }
   finally { b.disabled = false; b.textContent = 'Abrir pantalla'; }
