@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Palabra sorpresa · TECNOVA 2026</title>
+<style>
+@font-face{font-family:Poppins;font-weight:400;font-display:swap;src:url(assets/fonts/poppins-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:600;font-display:swap;src:url(assets/fonts/poppins-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:700;font-display:swap;src:url(assets/fonts/poppins-latin-700-normal.woff2) format("woff2")}
+:root{--bg:#050d1f;--card:#0b1c3a;--cy:#39d6ff;--acc:#ff6a35;--mut:#8fa6c7;--line:#1d3a68}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -10%,#10305f 0,var(--bg) 55%);color:#eaf2ff;font:400 15px/1.5 Poppins,"Segoe UI",Arial,sans-serif;display:flex;flex-direction:column;align-items:center}
+.top{padding:18px 20px 0;text-align:center}
+.top img{height:46px;background:#fff;border-radius:12px;padding:6px 14px}
+.wrap{width:100%;max-width:520px;padding:14px 18px 40px}
+.k{text-align:center;color:var(--cy);font-weight:600;letter-spacing:.25em;font-size:12px;margin-top:10px}
+h1{text-align:center;font-size:28px;line-height:1.15;margin:6px 0 4px}
+.sub{text-align:center;color:var(--mut);margin:0 0 18px}
+.robot{display:block;margin:6px auto 0;width:150px;filter:drop-shadow(0 0 22px rgba(57,214,255,.45))}
+label{display:block;font-weight:600;margin:6px 0 8px}
+select{width:100%;font:inherit;color:#fff;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:13px 14px}
+.box{margin-top:18px;background:var(--card);border:2px solid var(--line);border-radius:20px;padding:22px 18px;text-align:center;position:relative;overflow:hidden}
+.box::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 40%,rgba(57,214,255,.10),transparent 60%);transform:translateX(-100%);animation:sw 3.2s infinite}
+@keyframes sw{to{transform:translateX(100%)}}
+.tag{font-size:12px;letter-spacing:.2em;color:var(--cy);font-weight:600}
+.charla{margin:8px 0 2px;font-weight:600;font-size:15px}
+.hora{color:var(--mut);font-size:13px}
+.word{margin:18px 0 6px;font:700 40px/1.1 Poppins,Arial,sans-serif;letter-spacing:.12em;color:#fff;text-shadow:0 0 18px rgba(57,214,255,.8);word-break:break-all;min-height:48px}
+.hint{color:var(--mut);font-size:13px}
+.msg{color:var(--mut);padding:8px 0}
+.btn{display:block;margin-top:16px;text-align:center;text-decoration:none;background:var(--acc);color:#fff;font-weight:700;border-radius:999px;padding:14px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="top"><img src="assets/tecnova-logo.png" alt="TECNOVA 2026"></div>
+<div class="wrap">
+  <img class="robot" src="assets/email/robot.png" alt="Robot TECNOVA">
+  <div class="k">ASISTENCIA</div>
+  <h1>La palabra sorpresa</h1>
+  <p class="sub">Aparece cuando empieza la charla de tu sala.</p>
+
+  <div id="selBox"><label for="sala">¿En qué sala estás?</label>
+  <select id="sala">
+    <option value="">Elige tu sala…</option>
+    <option value="AUDITORIO">Auditorio (conferencias y feria)</option>
+    <optgroup label="Presenciales"><option value="P01">Sala P01</option><option value="P02">Sala P02</option><option value="P03">Sala P03</option></optgroup>
+    <optgroup label="Virtuales"><option value="V01">Sala V01</option><option value="V02">Sala V02</option><option value="V03">Sala V03</option><option value="V04">Sala V04</option><option value="V05">Sala V05</option><option value="V06">Sala V06</option><option value="V07">Sala V07</option><option value="V08">Sala V08</option></optgroup>
+  </select></div>
+
+  <div class="box hide" id="box">
+    <div class="tag" id="tag"></div>
+    <div class="charla" id="charla"></div>
+    <div class="hora" id="hora"></div>
+    <div class="word hide" id="word"></div>
+    <div class="msg hide" id="msg"></div>
+    <div class="hint hide" id="hint">Escríbela en el formulario de asistencia.</div>
+  </div>
+  <a class="btn hide" id="ir" href="asistencia.html">Registrar mi asistencia</a>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://lhmsnlglynyscypnjavv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_deVkpWRVb9jbNNjUFzWRdw_1sSXVp7Q';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';');
+async function rpc(fn, body) {
+  const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 15000);
+  try {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY }, body: JSON.stringify(body), signal: ctl.signal });
+    if (!r.ok) throw new Error('http ' + r.status);
+    return await r.json();
+  } finally { clearTimeout(to); }
+}
+const q = new URLSearchParams(location.search);
+let sala = (q.get('sala') || '').trim().toUpperCase();
+if (sala) { $('selBox').classList.add('hide'); $('sala').value = sala; } else { try { sala = localStorage.getItem('tn_sala') || ''; $('sala').value = sala; } catch (e) {} }
+let ultima = '', timer = null;
+function revelar(p) {   // efecto de "descifrado"
+  const el = $('word'); el.classList.remove('hide'); const ch = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&'; let i = 0;
+  const id = setInterval(() => { i++; el.textContent = p.split('').map((c, k) => k < i / 2 ? c : ch[Math.floor(Math.random() * ch.length)]).join(''); if (i >= p.length * 2) { clearInterval(id); el.textContent = p; } }, 55);
+}
+async function cargar() {
+  if (!sala) { $('box').classList.add('hide'); return; }
+  let d; try { d = await rpc('palabra_actual', { p_sala: sala }); } catch (e) { $('box').classList.remove('hide'); $('tag').textContent = ''; $('charla').textContent = ''; $('hora').textContent = ''; $('word').classList.add('hide'); $('hint').classList.add('hide'); $('msg').classList.remove('hide'); $('msg').textContent = 'Sin conexión. Reintentando…'; return; }
+  $('box').classList.remove('hide'); $('msg').classList.add('hide'); $('ir').classList.remove('hide');
+  const clave = JSON.stringify(d);
+  if (clave === ultima) return; ultima = clave;
+  if (d.estado === 'ahora' && d.palabra) {
+    $('tag').textContent = 'CHARLA EN CURSO'; $('charla').textContent = d.titulo; $('hora').textContent = d.desde + ' – ' + d.hasta;
+    $('hint').classList.remove('hide'); revelar(d.palabra);
+  } else {
+    $('word').classList.add('hide'); $('hint').classList.add('hide'); $('msg').classList.remove('hide');
+    if (d.estado === 'pronto') { $('tag').textContent = 'PRÓXIMA CHARLA'; $('charla').textContent = d.titulo; $('hora').textContent = 'Empieza a las ' + d.desde; $('msg').textContent = 'La palabra se revela cuando empiece. Esta página se actualiza sola.'; }
+    else { $('tag').textContent = ''; $('charla').textContent = ''; $('hora').textContent = ''; $('msg').textContent = d.estado === 'sin_charla' ? 'No hay más charlas hoy en esta sala.' : 'Elige tu sala.'; }
+  }
+}
+$('sala').addEventListener('change', () => { sala = $('sala').value; ultima = ''; try { localStorage.setItem('tn_sala', sala); } catch (e) {} cargar(); });
+cargar(); timer = setInterval(cargar, 20000);
+</script>
+</body>
+</html>
